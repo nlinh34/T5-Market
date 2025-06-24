@@ -14,7 +14,7 @@ document.getElementById("checkout-form").addEventListener("submit", async functi
   const note = formData.get("note");
   const paymentMethod = formData.get("paymentMethod");
 
-  const cartRes = await fetch("http://127.0.0.1:5000/cart/get-current", {
+  const cartRes = await fetch("https://t5-market.onrender.com/cart/get-current", {
     headers: { Authorization: `Bearer ${token}` }
   });
   const cartData = await cartRes.json();
@@ -41,7 +41,7 @@ document.getElementById("checkout-form").addEventListener("submit", async functi
     paymentMethod
   };
 
-  const res = await fetch("http://127.0.0.1:5000/order/create", {
+  const res = await fetch("https://t5-market.onrender.com/order/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const orderItems = document.getElementById("order-items");
   const orderTotal = document.getElementById("order-total");
 
-  const cartRes = await fetch("http://127.0.0.1:5000/cart/get-current", {
+  const cartRes = await fetch("https://t5-market.onrender.com/cart/get-current", {
     headers: { Authorization: `Bearer ${token}` }
   });
 

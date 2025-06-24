@@ -13,7 +13,7 @@ export class OrderList {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/order/all", {
+      const res = await fetch("https://t5-market.onrender.com/order/all", {
         headers: {
           Authorization: `Bearer ${this.token}`,
         },

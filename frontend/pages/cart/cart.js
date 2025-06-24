@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.cartIsEmpty = true;
 
   async function fetchCart() {
-    const res = await fetch("http://127.0.0.1:5000/cart/get-current", {
+    const res = await fetch("https://t5-market.onrender.com/cart/get-current", {
       headers: { Authorization: `Bearer ${token}` }
     });
     const result = await res.json();
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function updateQuantity(productId, newQuantity) {
     if (newQuantity < 1) return;
-    await fetch("http://127.0.0.1:5000/cart/update", {
+    await fetch("https://t5-market.onrender.com/cart/update", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function deleteItem(productId) {
-    await fetch(`http://127.0.0.1:5000/cart/delete/${productId}`, {
+    await fetch(`https://t5-market.onrender.com/cart/delete/${productId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });

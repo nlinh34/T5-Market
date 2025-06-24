@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         try {
-            const res = await fetch("http://127.0.0.1:5000/cart/add", {
+            const res = await fetch("https://t5-market.onrender.com/cart/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const grid = document.querySelector(".products-grid");
             grid.innerHTML = '<div class="loading">Đang tải sản phẩm...</div>';
 
-            const response = await fetch("http://127.0.0.1:5000/products/approved");
+            const response = await fetch("https://t5-market.onrender.com/products/approved");
             if (!response.ok) throw new Error("Lỗi khi tải sản phẩm");
 
             const result = await response.json();
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const featuredGrid = document.querySelector(".featured-grid");
             featuredGrid.innerHTML = '<div class="loading">Đang tải sản phẩm nổi bật...</div>';
 
-            const response = await fetch("http://127.0.0.1:5000/products/featured");
+            const response = await fetch("https://t5-market.onrender.com/products/featured");
             if (!response.ok) throw new Error("Lỗi khi tải sản phẩm nổi bật");
 
             const result = await response.json();
@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (result.success) {
                 renderFeaturedProducts(result.data);
             } else {
-                const fallbackResponse = await fetch("http://127.0.0.1:5000/products/approved");
+                const fallbackResponse = await fetch("https://t5-market.onrender.com/products/approved");
                 if (fallbackResponse.ok) {
                     const fallbackResult = await fallbackResponse.json();
                     const featuredProducts = fallbackResult.data.slice(0, 6);
