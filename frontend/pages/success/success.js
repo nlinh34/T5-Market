@@ -5,14 +5,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Xoá từng sản phẩm khỏi giỏ hàng
-    const res = await fetch("http://127.0.0.1:5000/cart/get-current", {
+    const res = await fetch("https://t5-market.onrender.com/cart/get-current", {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
 
     if (data.success && data.data.length > 0) {
       for (const item of data.data) {
-        await fetch(`http://127.0.0.1:5000/cart/delete/${item.product_id._id}`, {
+        await fetch(`https://t5-market.onrender.com/cart/delete/${item.product_id._id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`

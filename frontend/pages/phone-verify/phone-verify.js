@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const userData = JSON.parse(tempUserData);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/auth/update-phone", {
+      const response = await fetch("https://t5-market.onrender.com/auth/update-phone", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

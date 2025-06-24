@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --- Load danh mục ---
   async function loadCategories() {
     try {
-      const response = await fetch("http://127.0.0.1:5000/categories/get-all", {
+      const response = await fetch("https://t5-market.onrender.com/categories/get-all", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/products", {
+      const res = await fetch("https://t5-market.onrender.com/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 import { apiCall } from "./utils/api.js";
 
 export const OrderAPI = {
-  baseURL: "http://127.0.0.1:5000/order",
+  baseURL: "https://t5-market.onrender.com/order",
 
   // USER
   createOrder: async (orderData) => {

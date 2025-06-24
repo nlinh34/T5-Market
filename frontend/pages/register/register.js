@@ -18,7 +18,7 @@ document
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/auth/sign-up", {
+      const response = await fetch("https://t5-market.onrender.com/auth/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
