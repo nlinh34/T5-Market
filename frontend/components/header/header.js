@@ -6,36 +6,46 @@ class Header extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <header>
-        <div class="logo">
-          <img class="logo-img" src="../../assests/images/logo.png" alt="">
-          <div class="logo-content">T5MARKET</div>
-        </div>
-
-        <form class="search">
-          <input type="text" placeholder="Tìm kiếm sản phẩm...">
-          <button type="submit">Tìm</button>
-        </form>
-
-        <div class="menu">
-          <a href="../../pages/home/index.html">Trang Chủ</a>
-          <a href="../../pages/menu/menu.html">Danh Mục</a>
-          <a href="../../pages/contact/contact.html">Liên Hệ</a>
-        </div>
-
-        <a href="../../pages/cart/cart.html" class="cart">
-          <div class="cart-icon">
-            <i class="fa fa-shopping-cart"></i>
-            <span class="cart-count">0</span>
+        <div class="top-header">
+          <div class="logo">
+            <img class="logo-img" src="../../assests/images/logo.png" alt="">
+            <div class="logo-content">T5MARKET</div>
           </div>
-        </a>
+          <div class="menu">
+            <a href="../../pages/home/index.html">Trang Chủ</a>
+            <a href="../../pages/menu/menu.html">Danh Mục</a>
+            <a href="../../pages/contact/contact.html">Liên Hệ</a>
+          </div>
+
+          <a href="../../pages/cart/cart.html" class="cart">
+            <div class="cart-icon">
+              <i class="fa fa-shopping-cart"></i>
+              <span class="cart-count">0</span>
+            </div>
+          </a>
+
+          <div class="account-dropdown">
+            <button class="account-toggle">
+              <i class="fas fa-user"></i> Tài khoản <span class="arrow">▼</span>
+            </button>
+            <div class="account-menu hidden" id="accountMenu"></div>
+          </div>
+        </div>
+        
+        <div class="bottom-header">
+          <form class="search">
+            <input type="text" placeholder="Tìm kiếm sản phẩm...">
+            <button type="submit">Tìm</button>
+          </form>
+        </div>
+        
+
+        
+
+        
 
         <!-- Account Dropdown -->
-        <div class="account-dropdown">
-          <button class="account-toggle">
-            <i class="fas fa-user"></i> Tài khoản <span class="arrow">▼</span>
-          </button>
-          <div class="account-menu hidden" id="accountMenu"></div>
-        </div>
+        
       </header>
     `;
 
