@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5000";
+const BASE_URL = "https://t5-market.onrender.com";
 
 export const apiCall = async (endpoint, method = "GET", data = null) => {
   try {
