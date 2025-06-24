@@ -1,0 +1,187 @@
+/* Reset & body */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f4f4;
+}
+
+.container {
+  width: 90%;
+  max-width: 960px;
+  height: 600px;
+  display: flex;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.left,
+.right {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.left {
+  background-color: #262626;
+  color: white;
+  text-align: center;
+}
+
+.left .logo {
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+.left h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.left p {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.right h2 {
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #222;
+}
+
+form {
+  width: 100%;
+  max-width: 320px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.login-btn {
+  width: 100%;
+  background-color: #262626;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #4a4a4a;
+}
+
+.social-login {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.social-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.facebook {
+  background-color: #1877f2;
+}
+
+.gmail {
+  background-color: #1877f2;
+}
+
+/*Google*/
+
+/*Google*/
+
+.register-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.register-text a {
+  color: #28a745;
+  text-decoration: none;
+}
+
+.register-text a:hover {
+  text-decoration: underline;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.remember-me input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.remember-me label {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .left,
+  .right {
+    padding: 30px 20px;
+  }
+
+  .left {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 10px;
+  }
+
+  .right {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 10px;
+  }
+
+  form {
+    max-width: 100%;
+  }
+}

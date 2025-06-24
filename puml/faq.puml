@@ -1,0 +1,10 @@
+@startuml FAQ
+class FAQ {
+  +_id: ObjectId
+  +title: String
+  +description: String
+  +created_by: ObjectId {ref: 'User'}
+  +createdAt: Date
+  +updatedAt: Date
+}
+@enduml

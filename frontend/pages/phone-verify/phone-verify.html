@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xác thực số điện thoại - SVDH</title>
+    <link rel="stylesheet" href="../../styles/stylelogin.css" />
+  </head>
+  <body class="login-page">
+    <div class="container">
+      <div class="left">
+        <img
+          src="../../assests/images/38c2a730fa86c864c80fec8c6b975da2.png"
+          alt="SVDH Logo"
+          class="logo"
+        />
+        <p>
+          Nền tảng thương mại điện tử yêu thích ở <br />Đông Nam Á & Đài Loan
+        </p>
+      </div>
+      <div class="right">
+        <form id="phoneForm">
+          <h2>Xác thực số điện thoại</h2>
+          <p class="info-text">
+            Vui lòng nhập số điện thoại của bạn để hoàn tất đăng ký
+          </p>
+          <input
+            type="tel"
+            id="phone"
+            placeholder="Nhập số điện thoại"
+            pattern="[0-9]{10}"
+            required
+          />
+          <div id="errorMessage" class="error-message"></div>
+          <button class="login-btn">Xác nhận</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="phone-verify.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+@startuml Combo
+class Combo {
+  +_id: ObjectId
+  +name: String
+  +description: String
+  +originalPrice: Number
+  +discountPrice: Number
+  +percentDiscount: Number
+  +imageUrl: String
+  +created_by: ObjectId {ref: 'User'}
+  +createdAt: Date
+  +updatedAt: Date
+}
+@enduml

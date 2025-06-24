@@ -1,0 +1,37 @@
+@startuml order
+
+class Order {
+  +_id: ObjectId
+  +orderCode: String {unique}
+  +shippingInfo: ShippingInfo
+  +orderDetail: OrderDetail
+  +deliveryTime: String {enum: ['now', 'later']}
+  +deliveryDate: Date
+  +deliveryHour: String
+  +paymentMethod: String {enum: ['COD', 'momo', 'bank', 'credit']}
+  +status: String {enum: ['pending', 'confirmed', 'delivering', 'completed', 'cancelled']}
+  +userId: ObjectId {ref: 'User'}
+  +createdAt: Date
+  +cancelReason: String
+  +updatedAt: Date
+}
+
+class ShippingInfo {
+  +fullName: String
+  +phoneNumber: String
+  +fullAddress: String
+  +note: String
+}
+
+class OrderDetail {
+  +items: Array
+  +subTotal: Number
+  +shippingFee: Number
+  +discount: Number
+  +totalAmount: Number
+}
+
+Order --> ShippingInfo
+Order --> OrderDetail
+
+@enduml
