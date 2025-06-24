@@ -13,8 +13,9 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
-const hostname = "127.0.0.1";
-const port = 5000;
+const port = process.env.PORT || 5000;
+const hostname = "0.0.0.0";
+
 
 // Middleware
 app.use(cors(corsOptions));
