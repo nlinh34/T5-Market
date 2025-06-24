@@ -1,5 +1,5 @@
 const corsOptions = {
-  origin: ["http://localhost:5500", "http://127.0.0.1:5500"],
+  origin: ["http://localhost:5500", "http://127.0.0.1:5500", "https://t5-market.vercel.app/"],
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
