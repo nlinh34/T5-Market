@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Origin: "http://127.0.0.1:5500",
         },
         mode: "cors",
         credentials: "include",
