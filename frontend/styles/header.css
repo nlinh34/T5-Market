@@ -6,6 +6,12 @@ header{
   background-color: #262626;
 }
 
+.top-header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .logo {
   display: flex;
   flex-direction: row;
