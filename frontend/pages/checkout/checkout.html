@@ -55,26 +55,29 @@
       <!-- Bảng hiển thị đơn hàng -->
       <div style="flex: 1 1 45%;">
         <section id="order-preview">
-          <h2>🛒 Đơn hàng của bạn</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Hình ảnh</th>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Giá</th>
-                <th>Thành tiền</th>
-              </tr>
-            </thead>
-            <tbody id="order-items"></tbody>
-            <tfoot>
-              <tr>
-                <td colspan="4"><strong>Tổng cộng:</strong></td>
-                <td id="order-total"><strong>0đ</strong></td>
-              </tr>
-            </tfoot>
-          </table>
-        </section>
+  <h2>🛒 Đơn hàng của bạn</h2>
+  <div id="order-items" class="order-list"></div>
+
+  <hr />
+<div class="discount-row">
+  <label for="discount-code">Mã giảm giá</label>
+  <input type="text" id="discount-code" placeholder="Nhập mã giảm giá" />
+  <button class="apply-discount">Áp dụng</button>
+</div>
+
+
+  <hr />
+  <div class="summary-row">
+    <span>Tạm tính</span>
+    <span id="subtotal">0đ</span>
+  </div>
+  <hr />
+  <div class="summary-row total">
+    <strong>Tổng tiền</strong>
+    <strong id="order-total">0đ</strong>
+  </div>
+</section>
+
       </div>
     </main>
 

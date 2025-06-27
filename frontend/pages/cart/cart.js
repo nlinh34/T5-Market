@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.cartIsEmpty = true;
 
   async function fetchCart() {
-    const res = await fetch("https://t5-market.onrender.com/cart/get-current", {
+    const res = await fetch("http://127.0.0.1:5000/cart/get-current", {
       headers: { Authorization: `Bearer ${token}` }
     });
     const result = await res.json();
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function updateQuantity(productId, newQuantity) {
     if (newQuantity < 1) return;
-    await fetch("https://t5-market.onrender.com/cart/update", {
+    await fetch("http://127.0.0.1:5000/cart/update", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function deleteItem(productId) {
-    await fetch(`https://t5-market.onrender.com/cart/delete/${productId}`, {
+    await fetch(`http://127.0.0.1:5000/cart/delete/${productId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -46,36 +46,69 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.cartIsEmpty = cartItems.length === 0;
 
     cartItems.forEach(item => {
-      const { name, price, _id } = item.product_id;
+      const {
+        name,
+        price,
+        image_url: rawImage,
+        _id,
+        description
+      } = item.product_id;
+
+      let image;
+      if (!rawImage) {
+        image = "https://via.placeholder.com/100?text=No+Image";
+      } else if (rawImage.startsWith("http")) {
+        image = rawImage;
+      } else {
+        image = `http://127.0.0.1:5000/uploads/${rawImage}`;
+      }
+
       const quantity = item.quantity;
       const total = price * quantity;
       subtotal += total;
 
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${name}</td>
-        <td>${price.toLocaleString()}đ</td>
-        <td>
-          <button class="decrease-btn" data-id="${_id}">-</button>
-          <span class="quantity">${quantity}</span>
-          <button class="increase-btn" data-id="${_id}">+</button>
-        </td>
-        <td>${total.toLocaleString()}đ</td>
-        <td><button class="delete-btn" data-id="${_id}">Xoá</button></td>
-      `;
+  const row = document.createElement("tr");
+row.innerHTML = `
+  <td colspan="5">
+    <div class="cart-product-box">
+      <div class="cart-image-wrapper">
+        <img src="${image}" alt="${name}" class="cart-product-image" />
+      </div>
+      <button class="cart-delete-btn" data-id="${_id}">&times;</button>
+      <div class="cart-product-body">
+        <div class="cart-product-header">
+          <div class="cart-product-left">
+            <div class="cart-product-name">${name}</div>
+            ${description ? `<div class="cart-product-desc">${description}</div>` : ''}
+          </div>
+          <div class="cart-product-right">
+            <div class="cart-product-price"><strong>${price.toLocaleString()}₫</strong></div>
+            <div class="cart-product-actions">
+              <button class="decrease-btn" data-id="${_id}">−</button>
+              <span class="quantity">${quantity}</span>
+              <button class="increase-btn" data-id="${_id}">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </td>
+`;
+
+
+
       tbody.appendChild(row);
     });
 
     const tax = subtotal * 0.05;
     const finalTotal = subtotal + tax - discount;
 
-    subtotalEl.textContent = subtotal.toLocaleString() + "đ";
-    discountEl.textContent = discount.toLocaleString() + "đ";
-    taxEl.textContent = tax.toLocaleString() + "đ";
-    totalEl.textContent = finalTotal.toLocaleString() + "đ";
+    subtotalEl.textContent = subtotal.toLocaleString() + "₫";
+    discountEl.textContent = discount.toLocaleString() + "₫";
+    taxEl.textContent = tax.toLocaleString() + "₫";
+    totalEl.textContent = finalTotal.toLocaleString() + "₫";
 
-    // Gắn sự kiện
-    document.querySelectorAll(".delete-btn").forEach(btn => {
+    document.querySelectorAll(".cart-delete-btn").forEach(btn => {
       btn.addEventListener("click", () => deleteItem(btn.dataset.id));
     });
 
