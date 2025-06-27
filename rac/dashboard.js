@@ -1,10 +1,8 @@
 // frontend/pages/admin/dashboard.js
 import { ProductList } from "./js/products/productList.js";
 import { CategoryList } from "./js/categories/categoryList.js";
-import { VoucherList } from "./js/vouchers/voucherList.js";
 import { BlogList } from "./js/blogs/blogList.js";
 import { UsersList } from "./js/users/usersList.js";
-import { OrderList } from "./js/orders/OrderList.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   // Kiểm tra đăng nhập
