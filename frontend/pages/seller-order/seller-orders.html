@@ -9,6 +9,7 @@
       <link rel="stylesheet" href="../../styles/header.css" />
   <link rel="stylesheet" href="../../styles/styleorders.css">
   <link rel="stylesheet" href="../../styles/seller-orders.css">
+  <link rel="stylesheet" href="../../styles/product-management.css">
   <script src="../../components/header/header.js" type="module"></script>
   <script src="seller-orders.js" type="module"></script>
 </head>
@@ -19,6 +20,7 @@
 
     <!-- Main Banner -->
     <section class="main-banner">
+        
         <div class="container">
             <div class="banner-content">
                 <h1 class="banner-title">Thương mại thông minh, giải pháp toàn diện</h1>
@@ -30,25 +32,35 @@
         </div>
     </section>
 
-  <main class="orders-container">
-    <h1>📦 Quản lý đơn hàng</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Thời gian</th>
-          <th>Người nhận</th>
-          <th>Địa chỉ</th>
-          <th>Sản phẩm</th>
-          <th>Thanh toán</th>
-          <th>Tổng tiền</th>
-        </tr>
-      </thead>
-      <tbody id="orders-body">
-        <tr><td colspan="6">Đang tải đơn hàng...</td></tr>
-      </tbody>
-    </table>
-  </main>
+ <div class="page-wrapper">
+    <!-- Section Thông tin người dùng (optional nếu có) -->
 
+    <!-- Khối nội dung chính -->
+     <h1 class="order-title">📦 Quản lý đơn hàng</h1>
+    <div class="management-container">
+      <!-- Sidebar Tab -->
+      <div class="sidebar">
+        <div class="sidebar-menu">
+          <button class="sidebar-btn active" data-tab="all"><i class="fas fa-list"></i> Tất cả</button>
+          <button class="sidebar-btn" data-tab="pending"><i class="fas fa-hourglass-half"></i> Đơn chờ duyệt</button>
+          <button class="sidebar-btn" data-tab="packing"><i class="fas fa-box"></i> Đang chuẩn bị</button>
+          <button class="sidebar-btn" data-tab="shipping"><i class="fas fa-truck"></i> Đang giao</button>
+          <button class="sidebar-btn" data-tab="delivered"><i class="fas fa-check-circle"></i> Đã giao</button>
+          <button class="sidebar-btn" data-tab="cancelled"><i class="fas fa-times-circle"></i> Đã huỷ</button>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        <div class="tab-content active" id="tab-all"></div>
+        <div class="tab-content" id="tab-pending"></div>
+        <div class="tab-content" id="tab-packing"></div>
+        <div class="tab-content" id="tab-shipping"></div>
+        <div class="tab-content" id="tab-delivered"></div>
+        <div class="tab-content" id="tab-cancelled"></div>
+      </div>
+    </div>
+  </div>
 <!-- Footer -->
  <footer class="main-footer">
         <div class="container">
