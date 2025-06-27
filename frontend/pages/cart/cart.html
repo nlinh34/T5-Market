@@ -34,7 +34,7 @@
 <main class="cart-container">
     <section class="cart-table-section">
       <table>
-        <thead>
+        <!-- <thead>
           <tr>
             <th>Sản phẩm</th>
             <th>Giá tiền</th>
@@ -42,18 +42,29 @@
             <th>Tổng tiền</th>
             <th>Xoá</th>
           </tr>
-        </thead>
+        </thead> -->
         <tbody id="cart-items"></tbody>
       </table>
     </section>
     <aside class="cart-summary">
-      <h3>Thanh toán</h3>
+      <h3>Thông tin đơn hàng</h3>
       <p>Tạm tính: <span id="subtotal">0đ</span></p>
       <p>Giảm giá: <span id="discount">0đ</span></p>
       <p>Thuế: <span id="tax">0đ</span></p>
       <p><strong>Tổng cộng: <span id="total">0đ</span></strong></p>
-      <a href="#" class="btn primary" id="checkout-btn">Tiến hành thanh toán</a>
+      
+      <hr/>
+     <div class="summary-action">
+  <ul>
+    <li>Phí vận chuyển sẽ được tính ở trang thanh toán.</li>
+    <li>Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.</li>
+    <li>Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.</li>
+  </ul>
+</div>
 
+      <hr/>
+      <a href="#" class="btn primary" id="checkout-btn">Tiến hành thanh toán</a>
+     
     </aside>
   </main>
 
@@ -133,5 +144,5 @@
       </div>
     </footer>
 </body>
-<script src="check-cart-before-checkout.js" type="module"></script>
+<!-- <script src="check-cart-before-checkout.js" type="module"></script> -->
 </html>

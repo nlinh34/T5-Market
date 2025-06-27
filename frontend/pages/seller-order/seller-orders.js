@@ -1,143 +1,219 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const ordersBody = document.getElementById("orders-body");
-  const filterSelect = document.createElement("select");
-  filterSelect.innerHTML = `
-    <option value="all">Tất cả</option>
-    <option value="confirmed">Đã xác nhận</option>
-    <option value="packing">Đang đóng gói</option>
-    <option value="shipping">Đang giao</option>
-    <option value="delivered">Đã nhận hàng</option>
-    <option value="cancelled">Đã huỷ</option>
-  `;
-  filterSelect.style.marginBottom = "1rem";
-  ordersBody.parentElement.parentElement.insertBefore(filterSelect, ordersBody.parentElement);
+  const tabButtons = document.querySelectorAll(".sidebar-btn");
+  const tabContents = document.querySelectorAll(".tab-content");
 
   let orders = JSON.parse(localStorage.getItem("userOrders")) || [];
+  let currentAllPage = 1;
+  const itemsPerPage = 10;
+  let searchCode = "";
+  let searchName = "";
+  let debounceTimer;
 
-  if (orders.length === 0) {
-    ordersBody.innerHTML = '<tr><td colspan="7">Chưa có đơn hàng nào.</td></tr>';
-    return;
-  }
-
-  const renderOrders = (filter = "all") => {
-    ordersBody.innerHTML = "";
-
-    const filteredOrders = orders.filter(order => {
-      if (filter === "confirmed") return order.status === "confirmed";
-      if (filter === "packing") return order.status === "packing";
-      if (filter === "shipping") return order.status === "shipping";
-      if (filter === "delivered") return order.status === "delivered";
-      if (filter === "cancelled") return order.status === "cancelled";
-      if (filter === "unconfirmed") return !order.status || order.status === "unconfirmed";
-      return true;
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabButtons.forEach(b => b.classList.remove("active"));
+      tabContents.forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      const selectedTab = btn.dataset.tab;
+      document.getElementById(`tab-${selectedTab}`).classList.add("active");
+      if (selectedTab === "all") renderAllTabWithPagination();
     });
-
-    if (filteredOrders.length === 0) {
-      ordersBody.innerHTML = '<tr><td colspan="7">Không có đơn hàng phù hợp.</td></tr>';
-      return;
-    }
-
-    filteredOrders.forEach((order, index) => {
-      const { shippingInfo, paymentMethod, order: orderData, createdAt, status } = order;
-      const { fullName, fullAddress } = shippingInfo;
-      const productList = orderData.items.map(item => `${item.name} (x${item.quantity})`).join("<br>");
-
-      let actionCell = "";
-      if (status === "delivered") {
-        actionCell = '<span style="color: green; font-weight: bold;">✅ Đã nhận hàng</span>';
-      } else if (status === "shipping") {
-        actionCell = `
-          <button data-index="${index}" class="mark-delivered-btn">Đã nhận hàng</button>
-          <button data-index="${index}" class="cancel-btn">Huỷ</button>
-        `;
-      } else if (status === "packing") {
-        actionCell = `
-          <button data-index="${index}" class="mark-shipping-btn">Đang giao hàng</button>
-          <button data-index="${index}" class="cancel-btn">Huỷ</button>
-        `;
-      } else if (status === "confirmed") {
-        actionCell = `
-          <button data-index="${index}" class="mark-packing-btn">Đang đóng gói</button>
-          <button data-index="${index}" class="cancel-btn">Huỷ</button>
-        `;
-      } else if (status === "cancelled") {
-        actionCell = '<span style="color: red; font-weight: bold;">❌ Đã huỷ</span>';
-      } else {
-        actionCell = `<button data-index="${index}" class="confirm-btn">Xác nhận</button>
-                       <button data-index="${index}" class="cancel-btn">Huỷ</button>`;
-      }
-
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${new Date(createdAt).toLocaleString()}</td>
-        <td>${fullName}</td>
-        <td>${fullAddress}</td>
-        <td>${productList}</td>
-        <td>${paymentMethod}</td>
-        <td>${orderData.totalAmount.toLocaleString()}đ</td>
-        <td>${actionCell}</td>
-      `;
-
-      ordersBody.appendChild(row);
-    });
-
-    document.querySelectorAll(".confirm-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const index = btn.dataset.index;
-        orders[index].status = "confirmed";
-        orders[index].statusMessage = "Đơn hàng của bạn đã được xác nhận.";
-        localStorage.setItem("userOrders", JSON.stringify(orders));
-        renderOrders(filterSelect.value);
-      });
-    });
-
-    document.querySelectorAll(".mark-packing-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const index = btn.dataset.index;
-        orders[index].status = "packing";
-        orders[index].statusMessage = "Đơn hàng của bạn đang được đóng gói.";
-        localStorage.setItem("userOrders", JSON.stringify(orders));
-        renderOrders(filterSelect.value);
-      });
-    });
-
-    document.querySelectorAll(".mark-shipping-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const index = btn.dataset.index;
-        orders[index].status = "shipping";
-        orders[index].statusMessage = "Đơn hàng đang được giao đến bạn.";
-        localStorage.setItem("userOrders", JSON.stringify(orders));
-        renderOrders(filterSelect.value);
-      });
-    });
-
-    document.querySelectorAll(".mark-delivered-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const index = btn.dataset.index;
-        orders[index].status = "delivered";
-        orders[index].statusMessage = "Bạn đã nhận hàng. Cảm ơn đã mua sắm tại T5Market!";
-        localStorage.setItem("userOrders", JSON.stringify(orders));
-        renderOrders(filterSelect.value);
-      });
-    });
-
-    document.querySelectorAll(".cancel-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const index = btn.dataset.index;
-        const confirmCancel = confirm("Bạn có chắc muốn huỷ đơn hàng này?");
-        if (confirmCancel) {
-          orders[index].status = "cancelled";
-          orders[index].statusMessage = "Đơn hàng đã bị huỷ.";
-          localStorage.setItem("userOrders", JSON.stringify(orders));
-          renderOrders(filterSelect.value);
-        }
-      });
-    });
-  };
-
-  filterSelect.addEventListener("change", () => {
-    renderOrders(filterSelect.value);
   });
 
-  renderOrders();
+  function renderTable(type, page = 1) {
+    let html = "";
+
+    if (type === "all") {
+      html += `
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+        <input type="text" id="search-code" placeholder="Tìm mã đơn...">
+        <input type="text" id="search-name" placeholder="Tìm tên khách hàng...">
+      </div>`;
+    }
+
+    html += `<table class="order-table">
+      <thead><tr>`;
+
+    if (type === "cancelled") {
+      html += `<th>Mã đơn</th><th>Thời gian</th><th>Tên KH</th><th>Thanh toán</th><th>Lý do</th><th>Trạng thái</th>`;
+    } else if (type === "all") {
+      html += `<th>Mã đơn</th><th>Thời gian</th><th>Tên KH</th><th>Thanh toán</th><th>Trạng thái</th>`;
+    } else {
+      html += `<th>Mã đơn</th><th>Thời gian</th><th>Tên KH</th><th>Thanh toán</th><th>Trạng thái</th><th>Hành động</th>`;
+    }
+
+    html += `</tr></thead><tbody>`;
+
+    let filtered = orders.map((o, i) => ({ ...o, _index: i }))
+      .filter(order => {
+        const status = order.status || "pending";
+        const isMatchTab =
+          type === "all"
+          || (type === "pending" && status === "pending")
+          || (type === "packing" && status === "packing")
+          || (type === "shipping" && status === "shipping")
+          || (type === "delivered" && status === "delivered")
+          || (type === "cancelled" && status === "cancelled");
+
+        if (!isMatchTab) return false;
+
+        if (type === "all") {
+          const code = (order.code || order._index + 1).toString().toLowerCase();
+          const name = (order.shippingInfo?.fullName || "").toLowerCase();
+          return code.includes(searchCode.toLowerCase()) && name.includes(searchName.toLowerCase());
+        }
+
+        return true;
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    const start = (page - 1) * itemsPerPage;
+    const paginated = type === "all" ? filtered.slice(start, start + itemsPerPage) : filtered;
+
+    if (paginated.length === 0) {
+      html += `<tr><td colspan="6">Không có đơn hàng</td></tr>`;
+    } else {
+      paginated.forEach(order => {
+        const realIndex = order._index;
+        const status = order.status || "pending";
+        const date = new Date(order.createdAt).toLocaleString();
+        const fullName = order?.shippingInfo?.fullName || "";
+        const method = order.paymentMethod || "";
+        const statusLabel = `<span class='status-label status-${status}'>${getStatusLabel(status)}</span>`;
+
+        let actions = "";
+        if (type === "pending" && status === "pending") {
+          actions = `<button class='action-btn action-confirm' data-action='toPacking' data-index='${realIndex}'>Xác nhận</button>
+                     <button class='action-btn action-cancel' data-action='cancel' data-index='${realIndex}'>Huỷ</button>`;
+        } else if (type === "packing" && status === "packing") {
+          actions = `<button class='action-btn action-confirm' data-action='toShipping' data-index='${realIndex}'>Xác nhận giao</button>`;
+        } else if (type === "shipping" && status === "shipping") {
+          actions = `<button class='action-btn action-confirm' data-action='toDelivered' data-index='${realIndex}'>Xác nhận đã giao</button>`;
+        }
+
+        html += `<tr>
+          <td>#${order.code || realIndex + 1}</td>
+          <td>${date}</td>
+          <td>${fullName}</td>
+          <td>${method}</td>`;
+
+        if (type === "cancelled") {
+          html += `<td>${order.cancelReason || "-"}</td>`;
+        }
+
+        html += `<td>${statusLabel}</td>`;
+
+        if (type !== "cancelled" && type !== "all") {
+          html += `<td>${actions}</td>`;
+        }
+
+        html += `</tr>`;
+      });
+    }
+
+    html += `</tbody></table>`;
+
+    if (type === "all") {
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      if (totalPages > 1) {
+        html += `<div class="pagination">`;
+        if (page > 1) {
+          html += `<button class="page-btn" data-page="${page - 1}">←</button>`;
+        }
+        html += `<span>Trang ${page} / ${totalPages}</span>`;
+        if (page < totalPages) {
+          html += `<button class="page-btn" data-page="${page + 1}">→</button>`;
+        }
+        html += `</div>`;
+      }
+    }
+
+    return html;
+  }
+
+  function getStatusLabel(status) {
+    const map = {
+      pending: "Chờ duyệt",
+      packing: "Đang chuẩn bị",
+      shipping: "Đang giao",
+      delivered: "Đã giao",
+      cancelled: "Đã hủy"
+    };
+    return map[status] || "Chưa rõ";
+  }
+
+  function renderAllTabs() {
+    const tabs = ["pending", "packing", "shipping", "delivered", "cancelled"];
+    tabs.forEach(tab => {
+      const tabDiv = document.getElementById(`tab-${tab}`);
+      tabDiv.innerHTML = renderTable(tab);
+    });
+    renderAllTabWithPagination();
+  }
+
+  function renderAllTabWithPagination() {
+    const tabAll = document.getElementById("tab-all");
+    tabAll.innerHTML = renderTable("all", currentAllPage);
+    attachEventListeners();
+
+    const codeInput = document.getElementById("search-code");
+    const nameInput = document.getElementById("search-name");
+
+    if (codeInput && nameInput) {
+      codeInput.value = searchCode;
+      nameInput.value = searchName;
+
+      codeInput.addEventListener("input", handleSearchInput);
+      nameInput.addEventListener("input", handleSearchInput);
+    }
+
+    function handleSearchInput() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        searchCode = codeInput.value.trim();
+        searchName = nameInput.value.trim();
+        currentAllPage = 1;
+        renderAllTabWithPagination();
+      }, 400);
+    }
+
+    document.querySelectorAll(".page-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentAllPage = parseInt(btn.dataset.page);
+        renderAllTabWithPagination();
+      });
+    });
+  }
+
+  function attachEventListeners() {
+    document.querySelectorAll("[data-action]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const action = btn.dataset.action;
+        const index = parseInt(btn.dataset.index);
+
+        switch (action) {
+          case "toPacking":
+            orders[index].status = "packing";
+            break;
+          case "toShipping":
+            orders[index].status = "shipping";
+            break;
+          case "toDelivered":
+            orders[index].status = "delivered";
+            break;
+          case "cancel":
+            const reason = prompt("Lý do hủy đơn hàng:");
+            if (!reason) return;
+            orders[index].status = "cancelled";
+            orders[index].cancelReason = reason;
+            break;
+        }
+
+        localStorage.setItem("userOrders", JSON.stringify(orders));
+        renderAllTabs();
+      });
+    });
+  }
+
+  renderAllTabs();
 });

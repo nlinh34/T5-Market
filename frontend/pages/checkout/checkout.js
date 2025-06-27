@@ -14,7 +14,7 @@ document.getElementById("checkout-form").addEventListener("submit", async functi
   const note = formData.get("note");
   const paymentMethod = formData.get("paymentMethod");
 
-  const cartRes = await fetch("https://t5-market.onrender.com/cart/get-current", {
+  const cartRes = await fetch("http://127.0.0.1:5000/cart/get-current", {
     headers: { Authorization: `Bearer ${token}` }
   });
   const cartData = await cartRes.json();
@@ -41,7 +41,7 @@ document.getElementById("checkout-form").addEventListener("submit", async functi
     paymentMethod
   };
 
-  const res = await fetch("https://t5-market.onrender.com/order/create", {
+  const res = await fetch("http://127.0.0.1:5000/order/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -57,7 +57,7 @@ document.getElementById("checkout-form").addEventListener("submit", async functi
       shippingInfo: payload.shippingInfo,
       paymentMethod: payload.paymentMethod,
       createdAt: new Date().toISOString(),
-      status: "unconfirmed",
+      status: "pending",
       statusMessage: "Đơn hàng của bạn đã được ghi nhận và đang chờ xử lý."
     };
 
@@ -73,19 +73,19 @@ document.getElementById("checkout-form").addEventListener("submit", async functi
   }
 });
 
-const token = localStorage.getItem("token");
-
 document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("token");
   const orderItems = document.getElementById("order-items");
   const orderTotal = document.getElementById("order-total");
+  const subtotalField = document.getElementById("subtotal");
 
-  const cartRes = await fetch("https://t5-market.onrender.com/cart/get-current", {
+  const cartRes = await fetch("http://127.0.0.1:5000/cart/get-current", {
     headers: { Authorization: `Bearer ${token}` }
   });
 
   const cartData = await cartRes.json();
   if (!cartData.success || cartData.data.length === 0) {
-    orderItems.innerHTML = `<tr><td colspan="5">Giỏ hàng trống</td></tr>`;
+    orderItems.innerHTML = `<p>Giỏ hàng trống.</p>`;
     window.cartIsEmpty = true;
     return;
   }
@@ -100,16 +100,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const itemTotal = price * quantity;
     total += itemTotal;
 
-    const row = document.createElement("tr");
+    const row = document.createElement("div");
+    row.className = "order-item";
     row.innerHTML = `
-      <td><img src="${image}" alt="${name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;" /></td>
-      <td>${name}</td>
-      <td>${quantity}</td>
-      <td>${price.toLocaleString()}đ</td>
-      <td>${itemTotal.toLocaleString()}đ</td>
+      <div class="item-image">
+        <img src="${image}" alt="${name}" />
+        <span class="quantity-badge">${quantity}</span>
+      </div>
+      <div class="item-info">
+        <div class="item-name">${name}</div>
+        <div class="item-total">${itemTotal.toLocaleString()}đ</div>
+      </div>
     `;
     orderItems.appendChild(row);
   });
 
+  subtotalField.innerText = `${total.toLocaleString()}đ`;
   orderTotal.innerHTML = `<strong>${total.toLocaleString()}đ</strong>`;
 });
