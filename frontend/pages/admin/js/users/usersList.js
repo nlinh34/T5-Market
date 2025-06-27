@@ -74,11 +74,14 @@ export class UsersList {
         <table class="data-table">
           <thead>
             <tr>
-              <th>STT</th>
-              <th>Tên</th>
-              <th>Số điện thoại</th>
+              <th>ID</th>
+              <th>Tên tài khoản</th>
               <th>Email</th>
               <th>Vai trò</th>
+              <th>Thời gian đăng ký</th>
+              <th>Tình trạng</th>
+              <th>Trạng thái tài khoản</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -103,12 +106,21 @@ export class UsersList {
       <tr>
         <td>${index}</td>
         <td>${user.fullName || "Chưa cập nhật"}</td>
-        <td>${user.phone || "Chưa cập nhật"}</td>
         <td>${user.email || "Chưa cập nhật"}</td>
-        <td>${user.role}</td>
+        <td>${user.role || "Chưa cập nhật"}</td>
+        <td>${
+  user.createdAt && user.createdAt instanceof Date
+    ? user.createdAt.toLocaleString("vi-VN")
+    : user.createdAt
+      ? new Date(user.createdAt).toLocaleString("vi-VN")
+      : "Không có"
+}
+        </td>
       </tr>
     `;
   }
+
+  
 
   addEventListeners() {
     // Search functionality

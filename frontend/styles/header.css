@@ -3,13 +3,7 @@ header{
   flex-direction: row;
   justify-content: center;
   gap: 35px;
-  background-color: #262626;
-}
-
-.top-header{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  background-color: #282828;
 }
 
 .logo {
@@ -23,6 +17,25 @@ header{
 .logo-img{
   width: 50px;
 }
+
+.category {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.category:hover{
+  color: #dddddd;
+  border-radius: 5px;
+}
+
 
 .search {
   display: flex;

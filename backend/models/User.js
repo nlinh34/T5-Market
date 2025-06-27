@@ -26,8 +26,23 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "user"],
-      default: "user",
+      enum: ["admin", "manager", "mod", "seller", "staff", "customer"], //Admin, quản lý, mod, người bán, nhân viên, khách hàng
+      default: "customer", // Mặc định là customer khi đăng ký
+    },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"], // Chờ xác thực - Đã xác thực - Từ chối
+      default: "pending", // Mới đăng ký, đang chờ duyệt
+    },
+    accountStatus: {
+      type: String,
+      enum: ["green", "yellow", "orange", "red"], // Trạng thái cảnh báo tài khoản: An toàn - Hạn chế - Cảnh báo - Đã khóa
+      default: "green", // Mặc định là tài khoản không vi phạm (an toàn)
+    },
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // Lưu ID người duyệt tài khoản
+      required: false, // Có thể không có trong giai đoạn chờ duyệt
     },
     isGoogleUser: {
       type: Boolean,

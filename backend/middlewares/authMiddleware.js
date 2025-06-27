@@ -28,7 +28,7 @@ const protect = async (req, res, next) => {
       fullName: user.fullName,
       email: user.email,
       phone: user.phone,
-      role: decoded.role, // ✅ Gán role từ token
+      role: user.role, // ✅ Gán role từ token
     };
 
     next();

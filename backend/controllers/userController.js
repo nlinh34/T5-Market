@@ -147,10 +147,11 @@ const getAllUsers = async (req, res) => {
 
     // Lấy danh sách user có role là "user"
     const users = await User.find()
-      .select("fullName email phone role")
+      .select("fullName email phone role createdAt")
       .sort({ createdAt: -1 })
       .lean();
 
+console.log(">>> Users trả về từ DB:", users);
     res.status(httpStatusCodes.OK).json({
       success: true,
       data: users,

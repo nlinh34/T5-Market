@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Chuyển hướng đến trang chủ
-      window.location.href = "../home/index.html";
+      window.location.href = "/frontend/index.html";
     } catch (error) {
       errorMessage.textContent = error.message;
       console.error("Error:", error);
