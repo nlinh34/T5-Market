@@ -1,10 +1,10 @@
+// menu.js - ĐÃ SỬA HOÀN CHỈNH
 import { ProductAPI } from "../../APIs/productAPI.js";
 import { CategoryAPI } from "../../APIs/categoryAPI.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".product-grid");
 
-  // ==== Mobile menu toggle ====
   const mobileMenuBtn = document.getElementById("mobileMenuBtn");
   const navLinks = document.getElementById("navLinks");
 
@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ==== Render sản phẩm ====
   function renderProducts(products) {
     if (!products || products.length === 0) {
       container.innerHTML = "<p>Không có sản phẩm nào.</p>";
@@ -41,11 +40,11 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="button-group">
             <button class="btn">
-              <a href="../detail-product/product.html?id=${product._id}" style="color:white;">Mua ngay</a>
+              <a href="../detail-product/product.html?id=${product._id}" style="color:white;"> <i class="fa-solid fa-eye"></i></a>
             </button>
             <button class="buton">
               <a href="../cart/cart.html?id=${product._id}" style="color:white;">
-                Giỏ hàng <i class="fa-solid fa-cart-shopping"></i>
+               <i class="fa-solid fa-cart-shopping"></i>
               </a>
             </button>
           </div>
@@ -55,11 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = html;
 
-    // ✅ GẮN SỰ KIỆN TRÁI TIM SAU KHI RENDER
     document.querySelectorAll(".like-btn").forEach(button => {
       button.addEventListener("click", () => {
         const id = button.getAttribute("data-id");
-
         let liked = JSON.parse(localStorage.getItem("favorites")) || [];
         if (!liked.includes(id)) {
           liked.push(id);
@@ -72,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ==== Lọc theo danh mục ====
   async function handleFilter() {
     const checked = document.querySelectorAll(".category-filter:checked");
     const selectedIds = [...checked].map(cb => cb.value);
@@ -87,57 +83,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const res = await fetch(url);
       const result = await res.json();
-      const products = result.data;
-
-      renderProducts(products);
+      renderProducts(result.data);
     } catch (err) {
       container.innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
       console.error("Lỗi lọc sản phẩm:", err);
     }
   }
 
-  // ==== Tải danh mục ====
   async function loadCategorySidebar() {
     try {
       const result = await CategoryAPI.getAllCategories();
       const categories = result.data;
+      const categoryList = document.querySelector(".category-filter-list");
 
-      const categoryList = document.querySelector(".sidebar ul");
       if (!categoryList || !categories) return;
 
       const html = categories.map(c => `
         <li>
           <label>
-            <input type="checkbox" class="category-filter" value="${c._id}" />
-            ${c.name}
+            <input type="checkbox" class="category-filter" value="${c._id}" /> ${c.name}
           </label>
         </li>
       `).join("");
 
       categoryList.innerHTML = html;
 
-      // Gắn sự kiện lọc sau khi render
-      document.querySelectorAll(".category-filter").forEach(cb => {
-        cb.addEventListener("change", handleFilter);
-      });
+     document.querySelectorAll(".category-filter").forEach(cb => {
+  cb.addEventListener("change", handleFilter);
+});
     } catch (err) {
-      console.error("Lỗi khi tải danh mục sidebar:", err);
+      console.error("Lỗi khi tải danh mục:", err);
     }
   }
 
-  // ==== Tải toàn bộ sản phẩm lúc đầu ====
   function loadAllProducts() {
     container.innerHTML = "Đang tải sản phẩm...";
     ProductAPI.getAllProducts().then(res => {
-      const products = res.data;
-      renderProducts(products);
+      renderProducts(res.data);
     }).catch(err => {
       container.innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
       console.error("Lỗi lấy sản phẩm:", err);
     });
   }
 
-  // ==== Bắt đầu ====
   loadCategorySidebar();
   loadAllProducts();
 });
