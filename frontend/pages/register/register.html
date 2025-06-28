@@ -5,40 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng ký - SVDH</title>
     <link rel="stylesheet" href="../../styles/stylelogin.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   </head>
   <body class="login-page">
     <div class="container">
       <div class="left">
-        <img
-          src="../../assests/images/38c2a730fa86c864c80fec8c6b975da2.png"
-          alt="SVDH Logo"
-          class="logo"
-        />
-        <!-- <h1>SVDH</h1> -->
+        <div class="logo">
+          <img src="../../assests/images/logo.png" alt="T5MARKET Logo" class="logo-img" />
+          <h1>T5MARKET</h1>
+        </div>
         <p>
-          Nền tảng thương mại điện tử yêu thích ở <br />Đông Nam Á & Đài Loan
+          Nền tảng thương mại điện tử yêu thích ở <br />Đông Nam Á 
         </p>
       </div>
       <div class="right">
         <form id="registerForm">
           <h2>Đăng ký</h2>
+          <div class="input-group">
+            <i class="fas fa-user"></i>
           <input type="text" id="fullName" placeholder="Họ và tên" required />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
           <input type="email" id="email" placeholder="Email" required />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-phone"></i>
           <input type="text" id="phone" placeholder="Số điện thoại" required />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
           <input
             type="password"
             id="password"
             placeholder="Mật khẩu"
             required
           />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
           <input
             type="password"
             id="confirmPassword"
             placeholder="Nhập lại mật khẩu"
             required
           />
+          </div>
           <button type="submit" class="login-btn">Đăng ký</button>
-          <p id="errorMessage" style="color: red; margin-top: 10px;"></p>
+          <p id="errorMessage"></p>
+          <div class="separator">
+            <span>Hoặc đăng nhập bằng</span>
+          </div>
+
+          <div class="social-login">
+            <button class="social-btn facebook">
+              <img src="../../assests/icons/facebook-icon.svg" alt="Facebook icon" /> Facebook
+            </button>
+            <button id="googleSignIn" class="social-btn gmail">
+              <img src="../../assests/icons/google-icon.svg" alt="Google icon" /> Google
+            </button>
+          </div>
+
           <p class="register-text">
             Đã có tài khoản? <a href="../login/login.html">Đăng nhập</a>
           </p>
@@ -46,6 +73,7 @@
       </div>
     </div>
 
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="register.js"></script>
   </body>
 </html>

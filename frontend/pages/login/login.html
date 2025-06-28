@@ -10,29 +10,41 @@
 <body>
   <div class="container">
     <div class="left">
-      <img src="../../assests/images/logo.png" alt="SVDH Logo" class="logo" />
-      <!-- <h1>SVDH</h1> -->
-      <p>Nền tảng thương mại điện tử yêu thích ở <br>Đông Nam Á & Đài Loan</p>
+      <div class="logo">
+        <img src="../../assests/images/logo.png" alt="T5MARKET Logo" class="logo-img" />
+        <h1>T5MARKET</h1>
+      </div>
+      <p>Nền tảng thương mại điện tử yêu thích ở <br>Đông Nam Á </p>
     </div>
     <div class="right">
       <form id="loginForm">
         <h2>Đăng nhập</h2>
-        <input type="text" id="userIdentifier" placeholder="Email/Số điện thoại" required />
-        <input type="password" id="password" placeholder="Mật khẩu" required />
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="userIdentifier" placeholder="Email/Số điện thoại" required />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Mật khẩu" required />
+        </div>
         <div id="errorMessage" class="error-message"></div>
         <button type="submit" class="login-btn">Đăng nhập</button>
 
         <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 8px;">
-          <a href="../forgot/forgot.html">Quên mật khẩu</a>
-          <a href="#">Đăng nhập bằng SMS</a>
+          <a href="../forgot/forgot.html">Quên mật khẩu?</a>
+        </div>
+
+        <div class="separator">
+          <span>Hoặc đăng nhập bằng</span>
         </div>
 
         <div class="social-login">
           <button class="social-btn facebook">
-            <img src="https://img.icons8.com/ios-filled/20/ffffff/facebook.png" alt="Facebook icon" /> Facebook
+            <img src="../../assests/icons/facebook-icon.svg" alt="Facebook icon" /> Facebook
           </button>
-          <!-- Thay thế nút Gmail cũ bằng div của Google -->
-          <button id="googleSignIn" class="social-btn gmail"></button>
+          <button id="googleSignIn" class="social-btn gmail">
+            <img src="../../assests/icons/google-icon.svg" alt="Google icon" /> Google
+          </button>
         </div>
 
         <p class="register-text">Bạn chưa có tài khoản? <a href="../register/register.html">Đăng ký</a></p>
