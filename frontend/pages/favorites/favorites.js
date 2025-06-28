@@ -1,3 +1,5 @@
+import { CategoryAPI } from "../../APIs/categoryAPI.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const favoritesGrid = document.getElementById("favorites-grid");
   const emptyState = document.getElementById("empty-state");
@@ -8,6 +10,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let allFavorites = [];
 
+  // Load danh mục từ DB
+  await loadCategories();
+
+  // Lấy ID yêu thích từ localStorage
   const favoriteIds = JSON.parse(localStorage.getItem("favorites")) || [];
 
   if (favoriteIds.length === 0) {
@@ -46,6 +52,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderFavorites(allFavorites);
   });
 
+  // ========== Danh mục thật ==========
+  async function loadCategories() {
+    categorySelect.innerHTML = `<option value="all">Tất cả danh mục</option>`;
+    try {
+      const res = await CategoryAPI.getAllCategories();
+      const categories = res.data;
+
+      categories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat._id;
+        option.textContent = cat.name;
+        categorySelect.appendChild(option);
+      });
+    } catch (err) {
+      console.error("Lỗi khi tải danh mục:", err);
+    }
+  }
+
   // ========== Render ==========
   function renderFavorites(products) {
     if (!products || products.length === 0) {
@@ -64,10 +88,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="favorite-price">${formatPrice(p.price)}</div>
           <div class="favorite-actions">
             <button class="action-btn add-to-cart-btn" data-id="${p._id}">
-              <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+              <i class="fas fa-cart-plus"></i> 
             </button>
             <button class="action-btn remove-favorite-btn" data-id="${p._id}">
-              <i class="fas fa-heart"></i> Bỏ thích
+              <i class="fas fa-heart"></i> 
             </button>
           </div>
         </div>
@@ -76,7 +100,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     favoritesGrid.innerHTML = html;
 
-    // Gắn sự kiện
     document.querySelectorAll(".remove-favorite-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.dataset.id;
@@ -92,12 +115,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // ========== Xử lý lọc & sắp xếp ==========
   function sortFavorites(data, type) {
     const sorted = [...data];
     switch (type) {
       case "newest":
-        return sorted.reverse(); // giả định thứ tự là mới nhất đầu mảng
+        return sorted.reverse();
       case "oldest":
         return sorted;
       case "price-asc":
@@ -114,7 +136,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data.filter(p => p.category === category);
   }
 
-  // ========== Format giá ==========
   function formatPrice(price) {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -122,17 +143,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }).format(price).replace("₫", "đ");
   }
 
-  // ========== Xử lý yêu thích ==========
   function removeFromFavorites(id) {
     if (!confirm("Bạn có chắc muốn bỏ yêu thích sản phẩm này không?")) return;
     let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
     favorites = favorites.filter(item => item !== id);
     localStorage.setItem("favorites", JSON.stringify(favorites));
-    window.location.reload(); // đơn giản và nhanh
+    window.location.reload();
   }
 
   function addToCart(id) {
-    // Mở rộng sau: thêm vào localStorage hoặc gọi API giỏ hàng
     alert("Đã thêm sản phẩm vào giỏ hàng!");
   }
 });
