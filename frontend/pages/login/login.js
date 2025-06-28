@@ -11,12 +11,13 @@ document
     try {
       const isEmail = userIdentifier.includes("@");
 
-      const response = await fetch("https://t5-market.onrender.com/auth/sign-in", {
+      const response = await fetch("http://127.0.0.1:5000/auth/sign-in", {
         // Sửa lại endpoint
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Origin: "http://127.0.0.1:5500",
         },
         mode: "cors",
         credentials: "include",
@@ -51,28 +52,20 @@ function initializeGoogleSignIn() {
     client_id:
       "217304877915-ttuusm6c4fl8866mukanr82iuu3sitev.apps.googleusercontent.com", // Thay bằng client ID của bạn
     callback: handleGoogleSignIn,
-  });
-
-  google.accounts.id.renderButton(document.getElementById("googleSignIn"), {
-    type: "icon", // standard hoặc icon
-    longtitle: true,
-    theme: "filled_blue", // filled_blue hoặc outline
-    size: "large", // large hoặc medium
-    text: "", // "signin_with" hoặc "continue_with"
-    shape: "rectangular", // rectangular hoặc pill
-    logo_alignment: "left", // left hoặc center
-    locale: "vi",
+    auto_select: false, // Ngăn không cho tự động hiển thị popup
+    cancel_on_tap_outside: true,
   });
 }
 
 // Xử lý đăng nhập Google
 async function handleGoogleSignIn(response) {
   try {
-    const result = await fetch("https://t5-market.onrender.com/auth/google", {
+    const result = await fetch("http://127.0.0.1:5000/auth/google", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Origin: "http://127.0.0.1:5500",
       },
       mode: "cors",
       credentials: "include",
@@ -115,6 +108,13 @@ async function handleGoogleSignIn(response) {
     console.error("Google Sign-In Error:", error);
   }
 }
+
+// Xử lý nút Google tùy chỉnh
+document.getElementById("googleSignIn").addEventListener("click", function (e) {
+  e.preventDefault();
+  // Kích hoạt flow đăng nhập Google khi nút tùy chỉnh được nhấp
+  google.accounts.id.prompt();
+});
 
 // Xử lý nút Facebook
 document.querySelector(".facebook").addEventListener("click", function (e) {

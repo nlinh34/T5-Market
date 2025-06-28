@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { connectDatabase } = require("./config/database");
 const corsOptions = require("./config/cors");
+const path = require("path");
 
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -20,6 +21,7 @@ const hostname = "0.0.0.0";
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 
 // Connect to Database
 connectDatabase()

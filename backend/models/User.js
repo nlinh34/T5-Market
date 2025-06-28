@@ -25,9 +25,17 @@ const UserSchema = new mongoose.Schema(
       required: false,
     },
     role: {
+      type: Number,
+      enum: Object.values(Role), //Admin, quản lý, mod, người bán, nhân viên, khách hàng
+      default: Role.CUSTOMER, // Mặc định là customer khi đăng ký
+    },
+    gender: {
       type: String,
-      enum: ["admin", "manager", "mod", "seller", "staff", "customer"], //Admin, quản lý, mod, người bán, nhân viên, khách hàng
-      default: "customer", // Mặc định là customer khi đăng ký
+      required: false
+    },
+    dateofbirth: {
+      type: String,
+      required: false
     },
     status: {
       type: String,
