@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt tài khoản - T5MARKET</title>
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/header.css">
+    <link rel="stylesheet" href="../../styles/account-settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header-component></header-component>
+
+    <div class="account-settings-container">
+
+        <h1>Cài đặt tài khoản</h1>
+
+        <div class="settings-content">
+            <aside class="settings-sidebar">
+                <ul>
+                    <li><a href="#" data-section="personal-info" class="active">Thông tin cá nhân</a></li>
+                    <li><a href="#" data-section="change-password">Cập nhật mật khẩu</a></li>
+                </ul>
+            </aside>
+            <main class="settings-main-content">
+                <section id="personal-info-section" class="settings-section active">
+                    <h2>Thông tin cá nhân</h2>
+                    <form id="personalInfoForm">
+                        <div class="form-group">
+                            <label for="fullName">Họ và tên</label>
+                            <input type="text" id="fullName" name="fullName">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="text" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Giới tính</label>
+                            <select id="gender" name="gender">
+                                <option value="">Chọn giới tính</option>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Ngày sinh</label>
+                            <input type="date" id="dob" name="dob">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Địa chỉ</label>
+                            <input type="text" id="address" name="address">
+                        </div>
+                        <div class="form-group">
+                            <label for="avatar">Ảnh đại diện</label>
+                            <input type="file" id="avatar" name="avatar" accept="image/*">
+                            <div id="avatarPreview" class="avatar-preview">
+                                <!-- Current avatar will be displayed here -->
+                            </div>
+                        </div>
+                        <button type="submit" class="save-button">Lưu thay đổi</button>
+                    </form>
+                </section>
+
+
+                <section id="change-password-section" class="settings-section change-password-section hidden">
+                    <h2>Thay đổi mật khẩu</h2>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Mật khẩu hiện tại <span class="required">*</span></label>
+                            <input type="password" id="currentPassword" name="currentPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Mật khẩu mới <span class="required">*</span></label>
+                            <input type="password" id="newPassword" name="newPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmNewPassword">Xác nhận mật khẩu mới <span class="required">*</span></label>
+                            <input type="password" id="confirmNewPassword" name="confirmNewPassword">
+                        </div>
+                        <button type="submit" class="save-button">ĐỔI MẬT KHẨU</button>
+                    </form>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../components/header/header.js"></script>
+    <script type="module" src="./account-settings.js"></script>
+</body>
+</html> 
