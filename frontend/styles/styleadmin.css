@@ -976,3 +976,22 @@ body {
   vertical-align: top;
   white-space: pre-line;
 }
+
+.view-user{
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.view-user {
+  background-color: #33a25c;
+  color: white;
+}
+
+.view-user:hover {
+  background-color: #e0a800;
+}

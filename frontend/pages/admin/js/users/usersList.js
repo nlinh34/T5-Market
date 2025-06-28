@@ -74,11 +74,10 @@ export class UsersList {
         <table class="data-table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Thời gian đăng ký</th>
               <th>Tên tài khoản</th>
               <th>Email</th>
               <th>Vai trò</th>
-              <th>Thời gian đăng ký</th>
               <th>Tình trạng</th>
               <th>Trạng thái tài khoản</th>
               <th>Thao tác</th>
@@ -104,17 +103,21 @@ export class UsersList {
   renderUserRow(user, index) {
     return `
       <tr>
-        <td>${index}</td>
+        <td>${
+            user.createdAt && user.createdAt instanceof Date
+              ? user.createdAt.toLocaleString("vi-VN")
+              : user.createdAt
+                ? new Date(user.createdAt).toLocaleString("vi-VN")
+                : "Không có"
+          }
+        </td>
         <td>${user.fullName || "Chưa cập nhật"}</td>
         <td>${user.email || "Chưa cập nhật"}</td>
         <td>${user.role || "Chưa cập nhật"}</td>
-        <td>${
-  user.createdAt && user.createdAt instanceof Date
-    ? user.createdAt.toLocaleString("vi-VN")
-    : user.createdAt
-      ? new Date(user.createdAt).toLocaleString("vi-VN")
-      : "Không có"
-}
+        <td>${user.status}</td>
+        <td>${user.accountStatus}</td>
+        <td>
+          <button class="view-user"><i class="fa fa-eye"></i></button>
         </td>
       </tr>
     `;
