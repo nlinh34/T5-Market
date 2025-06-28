@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm - T5 Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../styles/header.css">
+    <link rel="stylesheet" href="../../styles/product-management.css">
+    <script src="../../components/header/header.js" type="module"></script>
+    <script src="./product-management.js" type="module"></script>
+</head>
+
+<style>
+    body {
+        padding-top: 50px;
+    }
+    
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    
+    .page-wrapper {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .management-container {
+        display: flex;
+        flex-direction: row;
+        /* trở lại layout bình thường */
+        flex: 0;
+        max-width: 100%;
+        /* full chiều rộng */
+        margin: 0;
+        /* bỏ khoảng cách giữa */
+        padding: 0 40px;
+        /* bạn có thể tùy chỉnh số này nếu muốn 2 bên có chút khoảng cách */
+        gap: 20px;
+    }
+</style>
+
+<body>
+    <!-- Header -->
+    <header-component></header-component>
+
+    <div class="page-wrapper">
+        <section class="user-info-section">
+            <div class="container">
+                <div class="user-info-grid">
+                    <div class="user-info-card user-profile-card">
+                        <div class="user-avatar">
+                            <img id="user-avatar" src="../../assests/images/laptop.jpg" alt="Avatar" />
+                        </div>
+                        <div class="user-details">
+                            <h2 id="user-fullname"><i class="fas fa-user"></i> Tên: Nguyễn Văn A</h2>
+                            <p id="user-address"><i class="fas fa-map-marker-alt"></i> Địa chỉ: Chưa cập nhật</p>
+                            <p id="user-status"><i class="fas fa-user-check"></i> Trạng thái: Đang hoạt động</p>
+                            <p id="user-verified"><i class="fas fa-shield-alt"></i> Xác thực: Chưa xác thực</p>
+                            <p id="user-product-count"><i class="fas fa-box"></i> Số sản phẩm đã đăng: 0</p>
+                        </div>
+                    </div>
+                    <div class="user-info-card">
+                        <h2><i class="fas fa-box"></i> Sản phẩm đã đăng: <span id="product-count">15</span></h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="management-container">
+            <div class="sidebar">
+                <div class="sidebar-menu">
+                    <button class="sidebar-btn active" data-tab="pending-products">
+                        <i class="fas fa-hourglass-half"></i> Sản phẩm chờ duyệt
+                    </button>
+                    <button class="sidebar-btn" data-tab="approved-products">
+                        <i class="fas fa-check-circle"></i> Sản phẩm đã đăng
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <!-- Pending Products Tab -->
+                <div class="tab-content active" id="pending-products">
+                    <h2 class="tab-title">Sản phẩm đang chờ duyệt</h2>
+                    <div class="product-grid" id="pending-products-grid">
+                        <!-- Sản phẩm chờ duyệt tĩnh -->
+                        <div class="product-card">
+                            <img src="../../assests/images/phone.jpg" alt="iPhone 15 Pro Max" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-name">iPhone 15 Pro Max</h3>
+                                <div class="product-price">29.990.000₫</div>
+                                <span class="product-status status-pending">Chờ duyệt</span>
+                                <div class="product-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Sửa</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <img src="../../assests/images/laptop.jpg" alt="MacBook Pro M3" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-name">MacBook Pro M3</h3>
+                                <div class="product-price">45.990.000₫</div>
+                                <span class="product-status status-pending">Chờ duyệt</span>
+                                <div class="product-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Sửa</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approved Products Tab -->
+                <div class="tab-content" id="approved-products">
+                    <h2 class="tab-title">Sản phẩm đã được duyệt</h2>
+                    <div class="product-grid" id="approved-products-grid">
+                        <!-- Sản phẩm đã duyệt tĩnh -->
+                        <div class="product-card">
+                            <img src="../../assests/images/pad.jpg" alt="iPad Pro 12.9" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-name">iPad Pro 12.9 inch</h3>
+                                <div class="product-price">32.990.000₫</div>
+                                <span class="product-status status-approved">Đã duyệt</span>
+                                <div class="product-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Sửa</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <img src="../../assests/images/camera.webp" alt="Sony WH-1000XM5" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-name">Sony WH-1000XM5</h3>
+                                <div class="product-price">8.990.000₫</div>
+                                <span class="product-status status-approved">Đã duyệt</span>
+                                <div class="product-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Sửa</button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column footer-about">
+                    <h3>Về T5Market</h3>
+                    <p>
+                        T5Market là chợ điện tử uy tính và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Liên kết nhanh</h3>
+                    <ul>
+                        <li><a href="../home/index.html">Trang chủ</a></li>
+                        <li><a href="../menu/menu.html">Danh mục sản phẩm</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Thông tin</h3>
+                    <ul>
+                        <li><a href="../about/about.html">Về chúng tôi</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Liên hệ</h3>
+                    <ul>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1, TP.HCM
+                        </li>
+                        <li><i class="fas fa-phone"></i> 1900 1234</li>
+                        <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
+                        <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
+                <div class="payment-methods">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png" alt="Mastercard" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png" alt="Amex" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png" alt="Momo" />
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

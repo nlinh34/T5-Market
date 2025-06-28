@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký - SVDH</title>
+    <link rel="stylesheet" href="../../styles/stylelogin.css" />
+  </head>
+  <body class="login-page">
+    <div class="container">
+      <div class="left">
+        <img
+          src="../../assests/images/38c2a730fa86c864c80fec8c6b975da2.png"
+          alt="SVDH Logo"
+          class="logo"
+        />
+        <!-- <h1>SVDH</h1> -->
+        <p>
+          Nền tảng thương mại điện tử yêu thích ở <br />Đông Nam Á & Đài Loan
+        </p>
+      </div>
+      <div class="right">
+        <form id="registerForm">
+          <h2>Đăng ký</h2>
+          <input type="text" id="fullName" placeholder="Họ và tên" required />
+          <input type="email" id="email" placeholder="Email" required />
+          <input type="text" id="phone" placeholder="Số điện thoại" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Mật khẩu"
+            required
+          />
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Nhập lại mật khẩu"
+            required
+          />
+          <button type="submit" class="login-btn">Đăng ký</button>
+          <p id="errorMessage" style="color: red; margin-top: 10px;"></p>
+          <p class="register-text">
+            Đã có tài khoản? <a href="../login/login.html">Đăng nhập</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <script src="register.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+@startuml Voucher
+class Voucher {
+  +_id: ObjectId
+  +label: String
+  +name: String
+  +description: String
+  +code: String {unique}
+  +discountType: String {enum: ['percentage', 'fixed', 'shipping']}
+  +discountValue: Number
+  +expirationDate: Date
+  +quantity: Number
+  +imageUrl: String
+  +created_by: ObjectId {ref: 'User'}
+  +createdAt: Date
+  +updatedAt: Date
+}
+@enduml

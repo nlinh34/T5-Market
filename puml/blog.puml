@@ -1,0 +1,11 @@
+@startuml Blog
+class Blog {
+  +_id: ObjectId
+  +name: String
+  +content: String
+  +imageUrl: String
+  +created_by: ObjectId {ref: 'User'}
+  +createdAt: Date
+  +updatedAt: Date
+}
+@enduml

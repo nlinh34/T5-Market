@@ -1,0 +1,125 @@
+@startuml Relations
+!theme plain
+skinparam linetype ortho
+
+class User {
+  +_id: ObjectId
+  +fullName: String
+  +email: String
+  +password: String
+  +phone: String
+  +address: String
+  +role: String
+  +googleId: String
+}
+
+class Product {
+  +_id: ObjectId
+  +name: String
+  +description: String
+  +price: Number
+  +imageUrl: String
+  +category: String
+  +created_by: ObjectId
+}
+
+class Combo {
+  +_id: ObjectId
+  +name: String
+  +description: String
+  +originalPrice: Number
+  +discountPrice: Number
+  +percentDiscount: Number
+  +imageUrl: String
+  +created_by: ObjectId
+}
+
+class ComboProduct {
+  +_id: ObjectId
+  +combo: ObjectId
+  +product: ObjectId
+  +quantity: Number
+}
+
+class Blog {
+  +_id: ObjectId
+  +name: String
+  +content: String
+  +imageUrl: String
+  +created_by: ObjectId
+}
+
+class FAQ {
+  +_id: ObjectId
+  +title: String
+  +description: String
+  +created_by: ObjectId
+}
+
+class Voucher {
+  +_id: ObjectId
+  +label: String
+  +name: String
+  +description: String
+  +code: String
+  +discountType: String
+  +discountValue: Number
+  +expirationDate: Date
+  +quantity: Number
+  +imageUrl: String
+  +created_by: ObjectId
+}
+
+class Cart {
+  +_id: ObjectId
+  +user_id: ObjectId
+  +voucher_id: ObjectId
+  +subtotal: Number
+  +shipping_fee: Number
+  +discount_amount: Number
+  +total_amount: Number
+}
+
+class CartItem {
+  +_id: ObjectId
+  +cart_id: ObjectId
+  +product_id: ObjectId
+  +item_type: String
+  +product_name: String
+  +quantity: Number
+  +unit_price: Number
+  +total_price: Number
+  +combo_items: Array
+}
+
+class Order {
+  +_id: ObjectId
+  +orderCode: String
+  +shippingInfo: Object
+  +order: Object
+  +deliveryTime: String
+  +paymentMethod: String
+  +status: String
+  +userId: ObjectId
+  +createdAt: Date
+  +cancelReason: String
+}
+
+User "1" -- "*" Product : creates
+User "1" -- "*" Combo : creates
+User "1" -- "*" Blog : creates
+User "1" -- "*" FAQ : creates
+User "1" -- "*" Voucher : creates
+User "1" -- "1" Cart : has
+User "1" -- "*" Order : places
+
+Combo "1" -- "*" ComboProduct : contains
+Product "1" -- "*" ComboProduct : included in
+
+Cart "1" -- "*" CartItem : contains
+Voucher "1" -- "*" Cart : applied to
+
+Product "1" -- "*" CartItem : referenced as
+Combo "1" -- "*" CartItem : referenced as
+
+@enduml

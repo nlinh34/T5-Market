@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng nhập - SVDH</title>
+  <link rel="stylesheet" href="../../styles/stylelogin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <img src="../../assests/images/logo.png" alt="SVDH Logo" class="logo" />
+      <!-- <h1>SVDH</h1> -->
+      <p>Nền tảng thương mại điện tử yêu thích ở <br>Đông Nam Á & Đài Loan</p>
+    </div>
+    <div class="right">
+      <form id="loginForm">
+        <h2>Đăng nhập</h2>
+        <input type="text" id="userIdentifier" placeholder="Email/Số điện thoại" required />
+        <input type="password" id="password" placeholder="Mật khẩu" required />
+        <div id="errorMessage" class="error-message"></div>
+        <button type="submit" class="login-btn">Đăng nhập</button>
+
+        <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 8px;">
+          <a href="../forgot/forgot.html">Quên mật khẩu</a>
+          <a href="#">Đăng nhập bằng SMS</a>
+        </div>
+
+        <div class="social-login">
+          <button class="social-btn facebook">
+            <img src="https://img.icons8.com/ios-filled/20/ffffff/facebook.png" alt="Facebook icon" /> Facebook
+          </button>
+          <!-- Thay thế nút Gmail cũ bằng div của Google -->
+          <button id="googleSignIn" class="social-btn gmail"></button>
+        </div>
+
+        <p class="register-text">Bạn chưa có tài khoản? <a href="../register/register.html">Đăng ký</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="login.js"></script>
+</body>
+</html>

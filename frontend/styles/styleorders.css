@@ -1,0 +1,78 @@
+/* Container */
+.orders-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.orders-container h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Table */
+.orders-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.orders-container th,
+.orders-container td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+}
+
+.orders-container thead {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #444;
+}
+
+.orders-container tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.orders-container td {
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .orders-container table,
+  .orders-container thead,
+  .orders-container tbody,
+  .orders-container th,
+  .orders-container td,
+  .orders-container tr {
+    display: block;
+  }
+
+  .orders-container thead tr {
+    display: none;
+  }
+
+  .orders-container td {
+    padding: 12px;
+    text-align: left;
+    position: relative;
+  }
+
+  .orders-container td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #777;
+  }
+}
