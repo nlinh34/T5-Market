@@ -138,22 +138,31 @@ const handleSignUp = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     // Kiểm tra quyền admin
-    if (req.user.role !== "admin") {
+    if (req.user.role !== 0) {
       return res.status(httpStatusCodes.FORBIDDEN).json({
         success: false,
         error: "Không có quyền truy cập",
       });
     }
 
-    // Lấy danh sách user có role là "user"
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalUsers = await User.countDocuments();
+
     const users = await User.find()
-      .select("fullName email phone role createdAt")
+      .select("fullName email phone role status accountStatus createdAt")
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean();
 
-console.log(">>> Users trả về từ DB:", users);
     res.status(httpStatusCodes.OK).json({
       success: true,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit), // 👈 CÁI NÀY ĐANG BỊ THIẾU
+      totalUsers,
       data: users,
     });
   } catch (error) {
@@ -164,6 +173,7 @@ console.log(">>> Users trả về từ DB:", users);
     });
   }
 };
+
 
 // Thêm hàm để lấy thông tin user hiện tại
 const getCurrentUser = async (req, res) => {

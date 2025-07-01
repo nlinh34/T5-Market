@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
+const { Role } = require("../constants/roleEnum");
 
 // Định nghĩa schema User
 const UserSchema = new mongoose.Schema(

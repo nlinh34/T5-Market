@@ -7,7 +7,7 @@ dotenv.config();
 
 // Kết nối MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -77,11 +77,11 @@ async function createDefaultUsers() {
       }
 
       const newUser = new User({
-        ...userData,
         phone: "0123456789",
         status: "pending",
         accountStatus: "green",
         isGoogleUser: false,
+        ...userData,
       });
 
       await newUser.save();
