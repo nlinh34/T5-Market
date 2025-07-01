@@ -15,7 +15,6 @@ const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 const port = process.env.PORT || 5000;
-const hostname = "0.0.0.0";
 
 
 // Middleware
@@ -45,9 +44,10 @@ connectDatabase()
       res.status(500).json({ error: "Internal Server Error" });
     });
 
-    app.listen(port, hostname, () => {
-      console.log(`Server running at http://${hostname}:${port}`);
-    });
+    app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+  });
+
   })
   .catch((error) => {
     console.error("Failed to start server:", error);
