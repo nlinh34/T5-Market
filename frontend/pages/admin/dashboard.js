@@ -1,9 +1,10 @@
 // frontend/pages/admin/dashboard.js
 import { ProductList } from "./js/products/productList.js";
 import { CategoryList } from "./js/categories/categoryList.js";
-import { VoucherList } from "./js/vouchers/voucherList.js";
 import { BlogList } from "./js/blogs/blogList.js";
 import { UsersList } from "./js/users/usersList.js";
+import { Role } from "../../APIs/utils/roleEnum.js";
+
 
 document.addEventListener("DOMContentLoaded", function () {
   // Kiểm tra đăng nhập
@@ -19,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
 function checkAdminAuth() {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-
-  if (!token || !user || user.role !== "admin") {
+  console.log("ROLE CHECK:", user.role, Role.ADMIN);
+  if (!token || !user || Number(user.role) !== Role.ADMIN) {
     window.location.href = "../login/login.html";
   }
 }

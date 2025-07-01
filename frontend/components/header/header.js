@@ -1,3 +1,5 @@
+import { Role } from "/frontend/APIs/utils/roleEnum.js";
+
 class Header extends HTMLElement {
   constructor() {
     super();
@@ -76,7 +78,7 @@ class Header extends HTMLElement {
         <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
       `;
 
-      if (user.role === "admin" && "manager" && "mod") {
+      if ([Role.ADMIN, Role.MANAGER, Role.MOD].includes(user.role)) {
         html += `<a href="/frontend/pages/admin/dashboard.html" target="_blank" class="dashboard-btn"><i class="fa fa-tachometer"></i>Trang quản trị</a>`;
       }
 
