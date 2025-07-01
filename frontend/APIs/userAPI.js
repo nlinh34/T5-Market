@@ -1,12 +1,13 @@
 import { apiCall } from "./utils/api.js";
 
 export const UserAPI = {
-  getAllUsers: async () => {
+  getAllUsers: async (page = 1, limit = 10) => {
     try {
-      return await apiCall("/auth/all-users");
+      const result = await apiCall(`/auth/all-users?page=${page}&limit=${limit}`);
+      return result;
     } catch (error) {
-      console.error("Error in getAllUsers:", error);
-      throw error;
+      throw new Error("Lỗi phân quyền hoặc không thể load dữ liệu.");
     }
   },
 };
+

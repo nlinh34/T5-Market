@@ -1,33 +1,53 @@
 // frontend/pages/admin/js/users/userList.js
 import { UserAPI } from "../../../../APIs/userAPI.js";
 
+const roleDisplayVN = {
+  0: "Quản trị viên",
+  1: "Quản lý",
+  2: "MOD kiểm duyệt",
+  3: "Chủ cửa hàng",
+  4: "Nhân viên",
+  5: "Khách hàng",
+};
+
+const statusDisplayVN = {
+  pending: "Chờ duyệt",
+  approved: "Đã duyệt",
+  rejected: "Từ chối",
+};
+
+const accountStatusDisplayVN = {
+  green: "An toàn",
+  yellow: "Hạn chế",
+  orange: "Cảnh báo",
+  red: "Bị khóa",
+};
+
 export class UsersList {
+
   constructor(containerId) {
-    this.container = document.getElementById(containerId);
-    this.initUsersList();
-  }
+  this.container = document.getElementById(containerId);
+  this.currentPage = 1;
+  this.limit = 10;
+  this.initUsersList();
+}
 
-  async initUsersList() {
-    try {
-      this.renderLoading();
-      const users = await this.fetchUsers();
-      this.renderUsersList(users);
-      console.log(users);
-    } catch (error) {
-      console.error("Error initializing users list:", error);
-      this.renderError("Không thể tải danh sách người dùng!");
-    }
-  }
+async initUsersList() {
+  try {
+    this.renderLoading();
+    const result = await UserAPI.getAllUsers(this.currentPage, this.limit);
+    console.log("API trả về:", result);
+    const users = result.data || [];
+    this.totalPages = result.totalPages || 1;
 
-  async fetchUsers() {
-    try {
-      const result = await UserAPI.getAllUsers();
-      return result.data || [];
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      throw error;
-    }
+    this.renderUsersList(users);
+    this.renderPagination(); // ➕ Thêm phân trang
+  } catch (error) {
+    console.error("Error initializing users list:", error);
+    this.renderError("Không thể tải danh sách người dùng!");
   }
+}
+
 
   renderLoading() {
     this.container.innerHTML = `
@@ -100,6 +120,36 @@ export class UsersList {
     this.addEventListeners();
   }
 
+  renderPagination() {
+  const paginationHTML = `
+    <div class="pagination">
+      <button id="prevPage" ${this.currentPage === 1 ? "disabled" : ""}>◀</button>
+      <span>Trang ${this.currentPage} / ${this.totalPages}</span>
+      <button id="nextPage" ${this.currentPage === this.totalPages ? "disabled" : ""}>▶</button>
+    </div>
+  `;
+
+  // Thêm phân trang vào cuối danh sách
+  this.container.insertAdjacentHTML("beforeend", paginationHTML);
+
+  document.getElementById("prevPage").addEventListener("click", () => {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.initUsersList();
+    }
+  });
+
+  document.getElementById("nextPage").addEventListener("click", () => {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.initUsersList();
+    }
+  });
+}
+
+
+  
+
   renderUserRow(user, index) {
     return `
       <tr>
@@ -113,12 +163,19 @@ export class UsersList {
         </td>
         <td>${user.fullName || "Chưa cập nhật"}</td>
         <td>${user.email || "Chưa cập nhật"}</td>
-        <td>${user.role || "Chưa cập nhật"}</td>
-        <td>${user.status}</td>
-        <td>${user.accountStatus}</td>
-        <td>
-          <button class="view-user"><i class="fa fa-eye"></i></button>
-        </td>
+        <td>${roleDisplayVN[user.role] || "Chưa cập nhật"}</td>
+        <td>${statusDisplayVN[user.status] || "Chưa cập nhật"}</td>
+        <td>${accountStatusDisplayVN[user.accountStatus] || "Chưa cập nhật"}</td>
+        <td class="action-buttons">
+                    <button class="edit-btn" data-category='${JSON.stringify(
+                      user
+                    )}'>
+                        <i class="fas fa-edit"></i> Sửa
+                    </button>
+                    <button class="delete-btn" data-id="${user._id}">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
+                </td>
       </tr>
     `;
   }
