@@ -32,6 +32,25 @@ export class UsersList {
   this.initUsersList();
 }
 
+showDeleteModal(userId) {
+  const modal = document.getElementById("deleteUserModal");
+  modal.classList.add("active");
+
+  // Gán userId vào nút xác nhận
+  const confirmBtn = document.getElementById("confirmDeleteBtn");
+  confirmBtn.onclick = async () => {
+    try {
+      await UserAPI.deleteUser(userId);
+      modal.classList.remove("active");
+      this.initUsersList(); // Refresh danh sách
+    } catch (error) {
+      console.error("Xóa người dùng thất bại:", error);
+      alert("Không thể xóa người dùng. Vui lòng thử lại.");
+    }
+  };
+}
+
+
 async initUsersList() {
   try {
     this.renderLoading();
@@ -98,8 +117,8 @@ async initUsersList() {
               <th>Tên tài khoản</th>
               <th>Email</th>
               <th>Vai trò</th>
-              <th>Tình trạng</th>
-              <th>Trạng thái tài khoản</th>
+              <th>Xác thực</th>
+              <th>Trạng thái</th>
               <th>Thao tác</th>
             </tr>
           </thead>
@@ -147,9 +166,6 @@ async initUsersList() {
   });
 }
 
-
-  
-
   renderUserRow(user, index) {
     return `
       <tr>
@@ -161,8 +177,8 @@ async initUsersList() {
                 : "Không có"
           }
         </td>
-        <td>${user.fullName || "Chưa cập nhật"}</td>
-        <td>${user.email || "Chưa cập nhật"}</td>
+        <td class="ellipsis">${user.fullName || "Chưa cập nhật"}</td>
+        <td class="ellipsis">${user.email || "Chưa cập nhật"}</td>
         <td>${roleDisplayVN[user.role] || "Chưa cập nhật"}</td>
         <td>${statusDisplayVN[user.status] || "Chưa cập nhật"}</td>
         <td>${accountStatusDisplayVN[user.accountStatus] || "Chưa cập nhật"}</td>
@@ -175,7 +191,7 @@ async initUsersList() {
                     <button class="delete-btn" data-id="${user._id}">
                         <i class="fas fa-trash"></i> Xóa
                     </button>
-                </td>
+        </td>
       </tr>
     `;
   }
@@ -207,5 +223,14 @@ async initUsersList() {
         });
       });
     }
+    this.container.querySelectorAll(".delete-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const userId = e.currentTarget.dataset.id;
+        this.showDeleteModal(userId);
+      });
+    });
+
   }
+
+  
 }

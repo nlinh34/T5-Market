@@ -192,9 +192,47 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+const deleteUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Kiểm tra quyền admin
+    const { Role } = require("../constants/roleEnum");
+    if (req.user.role !== Role.ADMIN) {
+      return res.status(httpStatusCodes.FORBIDDEN).json({
+        success: false,
+        error: "Không có quyền xóa người dùng",
+      });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({
+        success: false,
+        error: "Không tìm thấy người dùng để xóa",
+      });
+    }
+
+    res.status(httpStatusCodes.OK).json({
+      success: true,
+      message: "Xóa người dùng thành công",
+    });
+  } catch (error) {
+    console.error("Lỗi khi xóa người dùng:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: "Lỗi server khi xóa người dùng",
+    });
+  }
+};
+``
+
+
 module.exports = {
   handleSignIn,
   handleSignUp,
   getCurrentUser,
   getAllUsers,
+  deleteUserById
 };
