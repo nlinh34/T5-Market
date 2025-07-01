@@ -101,8 +101,8 @@ class Header extends HTMLElement {
       });
     } else {
       menu.innerHTML = `
-        <a href="./pages/login/login.html">Đăng nhập</a>
-        <a href="./pages/register/register.html">Đăng ký</a>
+        <a href="/pages/login/login.html">Đăng nhập</a>
+        <a href="/pages/register/register.html">Đăng ký</a>
       `;
     }
   }
