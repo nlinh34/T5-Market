@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../../config";
+const API_BASE_URL = "https://t5-market.onrender.com"; // <- URL backend chính xác của bạn
 
 // Xử lý đăng nhập thông thường
 document
