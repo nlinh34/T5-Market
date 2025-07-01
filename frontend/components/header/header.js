@@ -1,4 +1,4 @@
-import { Role } from "/frontend/APIs/utils/roleEnum.js";
+import { Role } from "/APIs/utils/roleEnum.js";
 
 class Header extends HTMLElement {
   constructor() {
@@ -23,12 +23,12 @@ class Header extends HTMLElement {
         </form>
 
         <div class="menu">
-          <a href="/frontend/index.html">Trang Chủ</a>
-          <a href="/frontend/pages/menu/menu.html">Sản Phẩm</a>
-          <a href="/frontend/pages/contact/contact.html">Liên Hệ</a>
+          <a href="/index.html">Trang Chủ</a>
+          <a href="/pages/menu/menu.html">Sản Phẩm</a>
+          <a href="/pages/contact/contact.html">Liên Hệ</a>
         </div>
 
-        <a href="/frontend/pages/cart/cart.html" class="cart">
+        <a href="/pages/cart/cart.html" class="cart">
           <div class="cart-icon">
             <i class="fa fa-shopping-cart"></i>
             <span class="cart-count">0</span>
@@ -70,23 +70,23 @@ class Header extends HTMLElement {
     if (token && user) {
       let html = `
         
-        <a href="/frontend/pages/favorites/favorites.html"><i class="fa fa-heart"></i>Mục yêu thích</a>
-        <a href="/frontend/pages/products/post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
-        <a href="/frontend/pages/manager/product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
-        <a href="/frontend/pages/seller-order/seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
-        <a href="/frontend/pages/account-settings/account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
+        <a href="/pages/favorites/favorites.html"><i class="fa fa-heart"></i>Mục yêu thích</a>
+        <a href="/pages/products/post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
+        <a href="/pages/manager/product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
+        <a href="/pages/seller-order/seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
+        <a href="/pages/account-settings/account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
         <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
       `;
 
       if ([Role.ADMIN, Role.MANAGER, Role.MOD].includes(user.role)) {
-        html += `<a href="/frontend/pages/admin/dashboard.html" target="_blank" class="dashboard-btn"><i class="fa fa-tachometer"></i>Trang quản trị</a>`;
+        html += `<a href="/pages/admin/dashboard.html" target="_blank" class="dashboard-btn"><i class="fa fa-tachometer"></i>Trang quản trị</a>`;
       }
 
       if(user.role === "seller" && "staff") {
         html += `
-        <a href="/frontend/pages/products/post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
-        <a href="/frontend/pages/manager/product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
-        <a href="/frontend/pages/seller-order/seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
+        <a href="/pages/products/post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
+        <a href="/pages/manager/product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
+        <a href="/pages/seller-order/seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
         `
       }
 
@@ -102,8 +102,8 @@ class Header extends HTMLElement {
       });
     } else {
       menu.innerHTML = `
-        <a href="/frontend/pages/login/login.html">Đăng nhập</a>
-        <a href="/frontend/pages/register/register.html">Đăng ký</a>
+        <a href="/pages/login/login.html">Đăng nhập</a>
+        <a href="/pages/register/register.html">Đăng ký</a>
       `;
     }
   }
