@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "../../config";
+
 // Xử lý đăng nhập thông thường
 document
   .getElementById("loginForm")
@@ -11,13 +13,12 @@ document
     try {
       const isEmail = userIdentifier.includes("@");
 
-      const response = await fetch("http://127.0.0.1:5000/auth/sign-in", {
+      const response = await fetch(`${API_BASE_URL}/auth/sign-in`, {
         // Sửa lại endpoint
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Origin: "http://127.0.0.1:5500",
         },
         mode: "cors",
         credentials: "include",
@@ -39,7 +40,7 @@ document
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Chuyển hướng đến trang chủ
-      window.location.href = "/frontend/index.html";
+      window.location.href = "/index.html";
     } catch (error) {
       errorMessage.textContent = error.message;
       console.error("Error:", error);
@@ -60,12 +61,11 @@ function initializeGoogleSignIn() {
 // Xử lý đăng nhập Google
 async function handleGoogleSignIn(response) {
   try {
-    const result = await fetch("http://127.0.0.1:5000/auth/google", {
+    const result = await fetch(`${API_BASE_URL}/auth/google`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Origin: "http://127.0.0.1:5500",
       },
       mode: "cors",
       credentials: "include",
@@ -102,7 +102,7 @@ async function handleGoogleSignIn(response) {
     localStorage.setItem("user", JSON.stringify(data.user));
 
     // Chuyển hướng đến trang chủ
-    window.location.href = "/frontend/index.html";
+    window.location.href = "/index.html";
   } catch (error) {
     document.getElementById("errorMessage").textContent = error.message;
     console.error("Google Sign-In Error:", error);
