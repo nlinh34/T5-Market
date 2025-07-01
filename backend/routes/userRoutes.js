@@ -5,6 +5,7 @@ const {
   handleSignUp,
   getAllUsers,
   deleteUserById,
+  updateUserStatus,
 } = require("../controllers/userController");
 const {
   handleGoogleSignIn,
@@ -18,5 +19,7 @@ router.get("/all-users", protect, getAllUsers);
 router.post("/google", handleGoogleSignIn);
 router.post("/update-phone", updatePhone);
 router.delete("/user/:id", protect, deleteUserById)
+router.patch("/user/:id/status", protect, updateUserStatus);
+
 
 module.exports = router;

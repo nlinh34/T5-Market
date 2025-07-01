@@ -226,7 +226,64 @@ const deleteUserById = async (req, res) => {
     });
   }
 };
-``
+
+const updateUserStatus = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { status } = req.body; // 'approve' hoặc 'reject'
+
+    const { Role } = require("../constants/roleEnum");
+    if (req.user.role !== Role.ADMIN) {
+      return res.status(httpStatusCodes.FORBIDDEN).json({
+        success: false,
+        error: "Không có quyền cập nhật trạng thái người dùng",
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({
+        success: false,
+        error: "Không tìm thấy người dùng",
+      });
+    }
+
+    // Xác định status mới
+    let newStatus;
+    if (status === "approve") {
+      newStatus = "approved";
+    } else if (status === "reject") {
+      newStatus = "rejected";
+    } else {
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        success: false,
+        error: "Hành động không hợp lệ. Chỉ chấp nhận 'approve' hoặc 'reject'.",
+      });
+    }
+
+    // Cập nhật trạng thái
+    user.status = newStatus;
+    user.approvedBy = req.user.userId;
+    await user.save();
+
+    res.status(httpStatusCodes.OK).json({
+      success: true,
+      message: `Người dùng đã được ${newStatus === "approved" ? "duyệt" : "từ chối"}`,
+      data: {
+        userId: user._id,
+        status: user.status,
+        approvedBy: user.approvedBy,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái người dùng:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: "Lỗi server khi cập nhật trạng thái người dùng",
+    });
+  }
+};
+
 
 
 module.exports = {
@@ -234,5 +291,6 @@ module.exports = {
   handleSignUp,
   getCurrentUser,
   getAllUsers,
-  deleteUserById
+  deleteUserById,
+  updateUserStatus
 };
