@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../../config";
+import { API_BASE_URL } from "../../../config.js";
 
 // Xử lý đăng nhập thông thường
 document
