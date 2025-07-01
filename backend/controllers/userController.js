@@ -49,7 +49,7 @@ const handleSignIn = async (req, res) => {
     const userToken = jwt.sign(
       {
         userId: user._id,
-        role: user.role, // Thêm role vào token
+        role: Number(user.role),  // Thêm role vào token
       },
       process.env.SECRET_KEY,
       tokenOptions
@@ -61,7 +61,7 @@ const handleSignIn = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
-        role: user.role,
+        role: Number(user.role), 
         cartCount: cartItemCount,
       },
       message: "Đăng nhập thành công",
@@ -138,7 +138,8 @@ const handleSignUp = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     // Kiểm tra quyền admin
-    if (req.user.role !== 0) {
+    const { Role } = require("../constants/roleEnum");
+    if (req.user.role !== Role.ADMIN) {
       return res.status(httpStatusCodes.FORBIDDEN).json({
         success: false,
         error: "Không có quyền truy cập",
