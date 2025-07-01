@@ -996,3 +996,9 @@ body {
 .view-user:hover {
   background-color: #e0a800;
 }
+
+.ellipsis {
+  white-space: nowrap;        /* Không xuống dòng */
+  overflow: hidden;           /* Ẩn phần vượt ra ngoài */
+  text-overflow: ellipsis;    /* Thay phần bị ẩn bằng dấu ... */
+}

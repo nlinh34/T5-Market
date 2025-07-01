@@ -106,54 +106,23 @@
 
     <script type="module" src="dashboard.js"></script>
   </body>
-<!-- User Modal -->
-  <div id="userModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modalTitle">Thêm Người Dùng Mới</h2>
-        <span class="close">&times;</span>
-      </div>
-      <div class="modal-body">
-        <form id="userForm">
-          <input type="hidden" id="userId" />
-          <div class="form-group">
-            <label for="fullName">Họ và tên:</label>
-            <input type="text" id="fullName" required />
-          </div>
-          <div class="form-group">
-            <label for="productPrice">Giá:</label>
-            <input type="number" id="productPrice" min="0" required />
-          </div>
-          <div class="form-group">
-            <label for="productCategory">Danh mục:</label>
-            <select id="productCategory" required>
-              <option value="">Chọn danh mục</option>
-              <option value="main course">Món chính</option>
-              <option value="side dish">Món phụ</option>
-              <option value="drink">Đồ uống</option>
-              <option value="dessert">Tráng miệng</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="productDescription">Mô tả:</label>
-            <textarea id="productDescription" rows="4" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="productImage">URL hình ảnh:</label>
-            <input type="url" id="productImage" required />
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" id="isPopular" />
-              Sản phẩm phổ biến
-            </label>
-          </div>
+  <!-- User Modal -->
+    <!-- Modal xác nhận xóa -->
+    <div id="deleteUserModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Xác nhận xóa người dùng</h2>
+          <span class="close" onclick="document.getElementById('deleteUserModal').classList.remove('active')">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p>Bạn có chắc chắn muốn xóa người dùng này?</p>
           <div class="form-actions">
-            <button type="submit" class="btn-submit">Lưu</button>
-            <button type="button" class="btn-cancel">Hủy</button>
+            <button id="confirmDeleteBtn" class="btn-submit">Xóa</button>
+            <button onclick="document.getElementById('deleteUserModal').classList.remove('active')" class="btn-cancel">Hủy</button>
           </div>
-        </form>
+        </div>
       </div>
+
     </div>
   </div>
   <!-- Product Modal -->
