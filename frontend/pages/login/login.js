@@ -32,7 +32,7 @@ document
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Đăng nhập thất bại");
+        throw new Error(data.error?.message || data.message || "Đăng nhập thất bại");
       }
 
       // Lưu token và thông tin user
