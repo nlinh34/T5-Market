@@ -195,9 +195,6 @@ async initUsersList() {
       </tr>
     `;
   }
-
-  
-
   addEventListeners() {
     // Search functionality
     const searchInput = document.getElementById("userSearch");

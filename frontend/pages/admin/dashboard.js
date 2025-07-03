@@ -1,8 +1,8 @@
 // frontend/pages/admin/dashboard.js
 import { ProductList } from "./js/products/productList.js";
 import { CategoryList } from "./js/categories/categoryList.js";
-import { BlogList } from "./js/blogs/blogList.js";
 import { UsersList } from "./js/users/usersList.js";
+import { ApproveUserList } from "./js/users/approveUser.js";
 import { Role } from "../../APIs/utils/roleEnum.js";
 
 
@@ -65,18 +65,29 @@ function loadPage(page) {
           <div id="userListContainer"></div>
       `;
       new UsersList("userListContainer");
-      breadcrumb.textContent = "Quản lý người dùng";
+      breadcrumb.textContent = "Quản Lý Người Dùng";
       break;
 
-    case "products":
+    case "upgrade-sellers":
+      contentDiv.innerHTML =`
+          <div class="page-header">
+            <h3>Nâng Cấp Cửa Hàng</h3>
+          </div>
+          <div id="upgradeSellersContainer"></div>
+      `;
+      new UsersList("upgradeSellersContainer");
+      breadcrumb.textContent = "Quản Lý Người Dùng";
+      break;
+
+    case "all-products":
       contentDiv.innerHTML = `
                 <div class="page-header">
-                    <h3>Kiểm duyệt sản phẩm</h3>
+                    <h3>Tất cả bài đăng</h3>
                 </div>
                 <div id="productListContainer"></div>
             `;
       new ProductList("productListContainer");
-      breadcrumb.textContent = "Quản lý Sản phẩm";
+      breadcrumb.textContent = "Quản Lý Bài Đăng";
       break;
 
     case "categories":
@@ -90,21 +101,18 @@ function loadPage(page) {
                 <div id="categoriesListContainer"></div>
             `;
       new CategoryList("categoriesListContainer");
-      breadcrumb.textContent = "Quản lý Danh mục";
+      breadcrumb.textContent = "Quản Lý Bài Đăng";
       break;
 
-    case "blog-posts":
+    case "approve-user":
       contentDiv.innerHTML = `
-    <div class="page-header">
-      <h3>Bài viết</h3>
-      <button class="add-btn" id="addBlogBtn">
-        <i class="fas fa-plus"></i> Thêm bài viết
-      </button>
-    </div>
-    <div id="blogListContainer"></div>
-  `;
-      new BlogList("blogListContainer");
-      breadcrumb.textContent = "Quản lý Blog";
+                <div class="page-header">
+                    <h3>Kiểm duyệt tài khoản</h3>
+                </div>
+                <div id="approveUserListContainer"></div>
+            `;
+      new ApproveUserList("approveUserListContainer");
+      breadcrumb.textContent = "Quản lý kiểm duyệt";
       break;
 
 
