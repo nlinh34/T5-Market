@@ -1,3 +1,5 @@
+const API_BASE_URL = "https://t5-market.onrender.com"; 
+
 document
   .getElementById("registerForm")
   .addEventListener("submit", async function (e) {
@@ -18,7 +20,7 @@ document
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/auth/sign-up", {
+      const response = await fetch(`${API_BASE_URL}/auth/sign-up`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

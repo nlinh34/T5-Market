@@ -4,7 +4,10 @@ export const CategoryAPI = {
   // Lấy tất cả danh mục
   getAllCategories: async () => {
     try {
-      return await apiCall("/categories/get-all", "GET"); // ✅ đã sửa
+      return await apiCall({
+        endpoint: "/categories/get-all",
+        method: "GET" 
+      }); 
     } catch (error) {
       console.error("Error in getAllCategories:", error);
       throw error;

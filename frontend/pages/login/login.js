@@ -1,6 +1,5 @@
-const API_BASE_URL = "https://t5-market.onrender.com"; // <- URL backend chính xác của bạn
+const API_BASE_URL = "https://t5-market.onrender.com"; 
 
-// Xử lý đăng nhập thông thường
 document
   .getElementById("loginForm")
   .addEventListener("submit", async function (e) {

@@ -59,12 +59,12 @@
 
         <!-- Quản lý Blog -->
         <div class="menu-section">
-          <h2 data-section="blog-management">
+          <h2 data-section="management">
             <i class="fas fa-blog"></i> QUẢN LÝ KIỂM DUYỆT
           </h2>
           <ul class="submenu">
             <li>
-              <a href="#" data-page="blog-posts"
+              <a href="#" data-page="approve-user"
                 ><i class="fas fa-newspaper"></i> Kiểm duyệt tài khoản</a
               >
             </li>
@@ -73,6 +73,14 @@
                 ><i class="fas fa-newspaper"></i> Kiểm duyệt bài đăng</a
               >
             </li>
+          </ul>
+        </div>
+
+        <div class="menu-section">
+          <h2 data-section="management">
+            <i class="fas fa-blog"></i> QUẢN LÝ VI PHẠM
+          </h2>
+          <ul class="submenu">
             <li>
               <a href="#" data-page="blog-posts"
                 ><i class="fas fa-newspaper"></i> Sản phẩm vi phạm</a
@@ -117,7 +125,7 @@
         <div class="modal-body">
           <p>Bạn có chắc chắn muốn xóa người dùng này?</p>
           <div class="form-actions">
-            <button id="confirmDeleteBtn" class="btn-submit">Xóa</button>
+            <button id="confirmDeleteBtn" class="delete-btn">Xóa</button>
             <button onclick="document.getElementById('deleteUserModal').classList.remove('active')" class="btn-cancel">Hủy</button>
           </div>
         </div>
