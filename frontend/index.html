@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/header.css" />
     <link rel="stylesheet" href="./styles/product.css" />
+    <link rel="icon" href="assests/images/logo.png" type="image/png" />
 
     <script src="./components/header/header.js" type="module"></script>
     <script src="./pages/home/index.js" type="module"></script>
@@ -23,11 +24,41 @@
     <section class="main-banner">
         <div class="container">
             <div class="banner-content">
-                <h1 class="banner-title">Thương mại thông minh, giải pháp toàn diện</h1>
+                <h1 class="banner-title">Mua - Bán Thiết Bị<br>Điện Tử Cũ Uy Tín,<br>Nhanh Chóng</h1>
                 <p class="banner-text">
-                    Chợ công nghệ, kết nối giá trị, hỗ trợ khách hàng 24/24
+                    Laptop, điện thoại, tai nghe... từ người<br>bán thật - giá siêu tốt!
                 </p>
-                <a href="#" class="banner-btn">Khám phá ngay</a>
+                <a href="./pages/menu/menu.html" class="banner-btn">Khám phá ngay</a>
+            </div>
+            <div class="banner-image-discount">
+                <img src="./assests/images/banner_img.png" alt="Laptop" class="banner-img" />
+                <div class="discount-overlay">
+                    <span class="discount-text">GIẢM GIÁ</span>
+                    <span class="discount-percentage">50%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <div class="steps-grid">
+                <div class="step-item">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Tìm sản phẩm bạn cần</h3>
+                    <p>So sánh giá từ nhiều người bán</p>
+                </div>
+                <div class="step-item">
+                    <i class="fas fa-arrows-rotate"></i>
+                    <h3>Liên hệ hoặc đặt hàng</h3>
+                    <p>Trò chuyện trực tiếp với người bán</p>
+                </div>
+                <div class="step-item">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Mua bán an toàn - đơn giản</h3>
+                    <p>Được hỗ trợ tận tình từ T5Market</p>
+                </div>
             </div>
         </div>
     </section>
@@ -42,15 +73,59 @@
         </div>
     </section>
 
-    <!-- Popular Foods -->
-    <section class="products">
-        <div class="container">
-            <h2 class="section-title">Tất Cả Sản Phẩm</h2>
-            <div class="products-grid">
-                <!-- Sản phẩm phổ biến sẽ được thêm vào đây bằng JavaScript -->
+    <!-- Main Content Grid -->
+    <section class="main-content-grid container">
+        <!-- Popular Products Section -->
+        <section class="products">
+            <div class="container">
+                <h2 class="section-title">Sản phẩm mới</h2>
+                <div class="products-grid">
+                    <!-- Sản phẩm phổ biến sẽ được thêm vào đây bằng JavaScript -->
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Featured Sellers Section -->
+        <section class="featured-sellers">
+            <div class="container">
+                <h2 class="section-title">Cửa hàng nổi bật</h2>
+                <div class="sellers-grid">
+                    <!-- Static Featured Sellers -->
+                    <div class="seller-card">
+                        <img src="./assests/images/shop2.png" alt="Cửa hàng A" class="seller-avatar" />
+                        <div class="seller-details-group">
+                            <div class="seller-name-row">
+                                <h3 class="seller-name">Cửa hàng A</h3>
+                                <span class="seller-status-circle active"></span>
+                            </div>
+                            <p class="seller-rating"><i class="fas fa-star"></i> <span>5 sao (120 đánh giá)</span></p>
+                        </div>
+                    </div>
+                    <div class="seller-card">
+                        <img src="./assests/images/shop1.png" alt="Cửa hàng B" class="seller-avatar" />
+                        <div class="seller-details-group">
+                            <div class="seller-name-row">
+                                <h3 class="seller-name">Cửa hàng B</h3>
+                                <span class="seller-status-circle active"></span>
+                            </div>
+                            <p class="seller-rating"><i class="fas fa-star"></i> <span>4.8 sao (95 đánh giá)</span></p>
+                        </div>
+                    </div>
+                    <div class="seller-card">
+                        <img src="./assests/images/shop3.jpg" alt="Cửa hàng C" class="seller-avatar" />
+                        <div class="seller-details-group">
+                            <div class="seller-name-row">
+                                <h3 class="seller-name">Cửa hàng C</h3>
+                                <span class="seller-status-circle inactive"></span>
+                            </div>
+                            <p class="seller-rating"><i class="fas fa-star"></i> <span>4.5 sao (200 đánh giá)</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </section>
+
     <!-- Featured Products -->
     <section class="products featured">
         <div class="container">
@@ -69,8 +144,12 @@
                     <h2 class="article-title">T5Market - Điểm Đến Lý Tưởng Cho Công Nghệ</h2>
                     <p class="article-subtitle">Khám phá thế giới công nghệ với những sản phẩm chất lượng cao</p>
                     <div class="article-description">
-                        <p>T5Market tự hào là nền tảng thương mại điện tử hàng đầu chuyên về các sản phẩm công nghệ. Chúng tôi cung cấp đa dạng các mặt hàng từ điện thoại, laptop, tablet đến các phụ kiện công nghệ với chất lượng đảm bảo và giá cả cạnh tranh.</p>
-                        <p>Với đội ngũ chuyên gia công nghệ giàu kinh nghiệm, chúng tôi cam kết mang đến cho khách hàng những sản phẩm chính hãng, bảo hành uy tín và dịch vụ hỗ trợ 24/7. T5Market không chỉ là nơi mua sắm mà còn là cộng đồng chia sẻ kiến
+                        <p>T5Market tự hào là nền tảng thương mại điện tử hàng đầu chuyên về các sản phẩm công nghệ.
+                            Chúng tôi cung cấp đa dạng các mặt hàng từ điện thoại, laptop, tablet đến các phụ kiện công
+                            nghệ với chất lượng đảm bảo và giá cả cạnh tranh.</p>
+                        <p>Với đội ngũ chuyên gia công nghệ giàu kinh nghiệm, chúng tôi cam kết mang đến cho khách hàng
+                            những sản phẩm chính hãng, bảo hành uy tín và dịch vụ hỗ trợ 24/7. T5Market không chỉ là nơi
+                            mua sắm mà còn là cộng đồng chia sẻ kiến
                             thức và trải nghiệm công nghệ.</p>
                     </div>
                     <div class="article-features">
@@ -97,7 +176,7 @@
                     </div>
                 </div>
                 <div class="article-image">
-                    <img src="./assests/images/laptop.jpg" alt="T5Market Technology Shop" />
+                    <img src="./assests/images/banner_img.png" alt="T5Market Technology Shop" />
                 </div>
             </div>
         </div>
@@ -110,7 +189,8 @@
                 <div class="footer-column footer-about">
                     <h3>Về T5Market</h3>
                     <p>
-                        T5Market là chợ điện tử uy tính và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+                        T5Market là chợ điện tử uy tính và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản
+                        phẩm tại đây.
                     </p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -123,9 +203,9 @@
                 <div class="footer-column">
                     <h3>Liên kết nhanh</h3>
                     <ul>
-                        <li><a href="../home/index.html">Trang chủ</a></li>
-                        <li><a href="../menu/menu.html">Danh mục sản phẩm</a></li>
-                        <li><a href="../contact/contact.html">Liên hệ</a></li>
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="./pages/menu/menu.html">Danh mục sản phẩm</a></li>
+                        <li><a href="./pages/contact/contact.html">Liên hệ</a></li>
                     </ul>
                 </div>
 
@@ -157,10 +237,14 @@
             <div class="container">
                 <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
                 <div class="payment-methods">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png" alt="Mastercard" />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png" alt="Amex" />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png" alt="Momo" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
+                        alt="Mastercard" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
+                        alt="Visa" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
+                        alt="Amex" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
+                        alt="Momo" />
                 </div>
             </div>
         </div>
