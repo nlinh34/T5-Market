@@ -2,7 +2,8 @@ const httpMethods = {
     GET: 'GET',
     POST: 'POST',
     DELETE: 'DELETE',
-    PUT: 'PUT'
+    PUT: 'PUT',
+    PATCH: 'PATCH'
 }
 
 const httpStatusCodes = {

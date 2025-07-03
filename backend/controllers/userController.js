@@ -4,6 +4,7 @@ const User = require("../models/User");
 const Cart = require("../models/Cart");
 const CartItem = require("../models/CartItem");
 const jwt = require("jsonwebtoken");
+const {Role} = require('../constants/roleEnum')
 
 const handleSignIn = async (req, res) => {
   try {
@@ -102,8 +103,7 @@ const handleSignUp = async (req, res) => {
       fullName,
       email,
       phone,
-      password,
-      role: "user", // Mặc định role là user
+      password,// Mặc định role là user
     });
 
     await newUser.save();
@@ -128,10 +128,9 @@ const handleSignUp = async (req, res) => {
       message: "Đăng ký thành công",
     });
   } catch (error) {
-    console.error("Lỗi trong quá trình đăng ký:", error);
-    res
-      .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Lỗi server" });
+    console.error("Lỗi trong quá trình đăng ký:", error.message, error.stack);
+res.status(500).json({ error: error.message });
+
   }
 };
 
