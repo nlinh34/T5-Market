@@ -1,5 +1,6 @@
 // frontend/pages/home/index.js
 import { CategoryAPI } from "../APIs/categoryAPI.js";
+import { formatDate } from "../APIs/utils/formatter.js"
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM loaded, starting to load categories...");
