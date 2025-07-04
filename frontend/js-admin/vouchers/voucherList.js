@@ -1,4 +1,4 @@
-import { VoucherAPI } from "../../../../APIs/voucherAPI.js";
+import { VoucherAPI } from "../../APIs/voucherAPI.js";
 import { VoucherForm } from "./voucherForm.js";
 
 export class VoucherList {

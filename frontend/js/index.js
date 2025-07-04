@@ -1,6 +1,10 @@
 // frontend/pages/home/index.js
+<<<<<<< HEAD:frontend/js/index.js
+import { CategoryAPI } from "../APIs/categoryAPI.js";
+=======
 import { CategoryAPI } from "../../APIs/categoryAPI.js";
 import { formatDate } from "../../APIs/utils/formatter.js";
+>>>>>>> b63fba99bd5275ef962d532f10f1a47b63edae03:frontend/pages/home/index.js
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM loaded, starting to load categories...");

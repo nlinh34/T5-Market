@@ -1,4 +1,4 @@
-import { CategoryAPI } from "../../../../APIs/categoryAPI.js";
+import { CategoryAPI } from "../../APIs/categoryAPI.js";
 
 export class CategoryForm {
   constructor() {

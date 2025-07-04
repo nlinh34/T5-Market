@@ -1,5 +1,5 @@
 // frontend/pages/admin/js/blogs/blogForm.js
-import { BlogAPI } from "../../../../APIs/blogAPI.js";
+import { BlogAPI } from "../../APIs/blogAPI.js";
 
 export class BlogForm {
   constructor() {

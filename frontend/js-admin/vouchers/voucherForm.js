@@ -1,5 +1,5 @@
 // frontend/pages/admin/js/vouchers/voucherForm.js
-import { VoucherAPI } from "../../../../APIs/voucherAPI.js";
+import { VoucherAPI } from "../../APIs/voucherAPI.js";
 
 export class VoucherForm {
   constructor() {

@@ -1,5 +1,5 @@
 // frontend/pages/admin/js/blogs/blogList.js
-import { BlogAPI } from "../../../../APIs/blogAPI.js";
+import { BlogAPI } from "../../APIs/blogAPI.js";
 import { BlogForm } from "./blogForm.js";
 
 export class BlogList {

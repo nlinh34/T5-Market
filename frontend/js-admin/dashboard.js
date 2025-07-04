@@ -3,7 +3,7 @@ import { ProductList } from "./js/products/productList.js";
 import { CategoryList } from "./js/categories/categoryList.js";
 import { UsersList } from "./js/users/usersList.js";
 import { ApproveUserList } from "./js/users/approveUser.js";
-import { Role } from "../../APIs/utils/roleEnum.js";
+import { Role } from "../APIs/utils/roleEnum.js";
 
 
 document.addEventListener("DOMContentLoaded", function () {

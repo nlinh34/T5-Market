@@ -39,7 +39,7 @@ document
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Chuyển hướng đến trang chủ
-      window.location.href = "/index.html";
+      window.location.href = "../../index.html";
     } catch (error) {
       errorMessage.textContent = error.message;
       console.error("Error:", error);
@@ -101,7 +101,7 @@ async function handleGoogleSignIn(response) {
     localStorage.setItem("user", JSON.stringify(data.user));
 
     // Chuyển hướng đến trang chủ
-    window.location.href = "/index.html";
+    window.location.href = "./index.html";
   } catch (error) {
     document.getElementById("errorMessage").textContent = error.message;
     console.error("Google Sign-In Error:", error);
