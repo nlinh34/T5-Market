@@ -13,4 +13,4 @@ router.get("/:shopId/details-with-products", getShopWithProducts);
 router.post("/request-upgrade-seller", protect, requestUpgradeToSeller);
 router.put("/approve-shop/:id", protect, isAdmin, approveShop);
 
-
+module.exports = router;
