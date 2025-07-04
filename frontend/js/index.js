@@ -1,7 +1,12 @@
 // frontend/pages/home/index.js
+<<<<<<< HEAD:frontend/js/index.js
 import { CategoryAPI } from "../APIs/categoryAPI.js";
+=======
+import { CategoryAPI } from "../../APIs/categoryAPI.js";
+import { formatDate } from "../../APIs/utils/formatter.js";
+>>>>>>> b63fba99bd5275ef962d532f10f1a47b63edae03:frontend/pages/home/index.js
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     console.log("DOM loaded, starting to load categories...");
 
     async function addToCart(productId) {
@@ -67,10 +72,65 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function getValidImageURL(imageURL) {
-        if (!imageURL || typeof imageURL !== "string" || imageURL.trim() === "" || imageURL === "null" || imageURL === "undefined") {
-            return "../../assests/images/phukien.png";
+        console.log("getValidImageURL - Input imageURL:", imageURL);
+        // Check for specific problematic external image sources and replace with fallback
+        if (imageURL && (imageURL.includes("bing.com/images") || imageURL.includes("via.placeholder.com"))) {
+            console.log("getValidImageURL - Replacing problematic external URL with fallback.");
+            return "/assests/images/phukien.png";
         }
+
+        if (!imageURL || typeof imageURL !== "string" || imageURL.trim() === "" || imageURL === "null" || imageURL === "undefined" || !isValidImageUrl(imageURL)) {
+            console.log("getValidImageURL - Returning fallback image (invalid or empty URL detected). Type: " + (typeof imageURL) + ", Value: " + imageURL);
+            return "/assests/images/phukien.png";
+        }
+        console.log("getValidImageURL - Returning valid image URL:", imageURL);
         return imageURL;
+    }
+
+    // Helper function to validate image URLs (including data URIs)
+    function isValidImageUrl(url) {
+        if (!url || typeof url !== "string" || url.trim() === "") {
+            return false; // Handle empty or non-string URLs upfront
+        }
+
+        if (url.startsWith("data:")) {
+            const commaIndex = url.indexOf(',');
+            if (commaIndex === -1) return false; // Must have a comma
+
+            const mimeTypePart = url.substring(5, commaIndex);
+            const dataPart = url.substring(commaIndex + 1);
+
+            if (!mimeTypePart.startsWith('image/')) {
+                return false;
+            }
+
+            if (mimeTypePart.includes('base64')) {
+                if (dataPart.length === 0) return false;
+                const base64ContentRegex = /^[A-Za-z0-9+/=]*$/;
+                if (!base64ContentRegex.test(dataPart)) {
+                    return false;
+                }
+                if (dataPart.length % 4 !== 0) {
+                    return false;
+                }
+            } else {
+                if (dataPart.length === 0) return false;
+            }
+            return true; // Valid data URL
+        }
+
+        // For non-data URLs, check if it's a valid standard URL or an internal path
+        try {
+            new URL(url);
+            return true; // It's a valid standard URL (http, https, etc.) or a valid relative URL for URL constructor if base is implicitly set
+        } catch (e) {
+            // The URL constructor might fail for relative paths without a base URL,
+            // or for malformed absolute URLs. We consider internal relative/absolute paths valid.
+            if (url.startsWith('/') || url.startsWith('./') || url.startsWith('../')) {
+                return true; // Assume internal relative/absolute paths are valid
+            }
+            return false; // Otherwise, it's a truly invalid URL (e.g., malformed http/https, or some other broken string)
+        }
     }
 
     function renderCategories(categories) {
@@ -90,14 +150,14 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const category of categories) {
             const validImg = getValidImageURL(category.imageURL);
             if (!seenImages.has(validImg)) {
-                uniqueCategories.push({...category, imageURL: validImg });
+                uniqueCategories.push({ ...category, imageURL: validImg });
                 seenImages.add(validImg);
             }
         }
 
         const categoriesHTML = uniqueCategories.map(category => `
             <div class="category-card">
-                <img src="${category.imageURL}" alt="${category.name}" class="category-img" onerror="this.onerror=null;this.src='../../assests/images/phukien.png';"/>
+                <img src="${category.imageURL}" alt="${category.name}" class="category-img"/>
                 <h3 class="category-name">${category.name}</h3>
             </div>
         `).join("");
@@ -139,37 +199,33 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const product of products) {
             const img = getValidImageURL(product.image_url);
             if (!seenImages.has(img)) {
-                uniqueProducts.push({...product, image_url: img });
+                uniqueProducts.push({ ...product, image_url: img });
                 seenImages.add(img);
             }
         }
 
         const html = uniqueProducts.map(product => `
-            <div class="product-card">
-                <img src="${product.image_url}" alt="${product.name}" class="product-img" onerror="this.onerror=null;this.src='../../assests/images/phukien.png';" />
+            <div class="product-card" data-id="${product._id}">
+                <img src="${getValidImageURL(product.image_url)}" alt="${product.name}" class="product-img" loading="lazy"/>
                 <h3 class="product-name">${product.name}</h3>
                 <p class="product-price">${product.price.toLocaleString()} VND</p>
-                <p class="product-desc">${product.description}</p>
-                <div class="product-actions">
-                    <button class="view-btn" data-id="${product._id}">Xem chi tiết</button>
-                    <button class="add-cart-btn" data-id="${product._id}"><i class="fa fa-cart-plus"></i></button>
+                <p class="product-posted-date">Ngày đăng: ${formatDate(product.createdAt)}</p>
+                <div class="product-seller-info">
+                    <span class="seller-name-display"><i class="fas fa-user"></i> ${product.seller.fullName || 'N/A'}</span>
+                    <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
                 </div>
             </div>
         `).join("");
 
         grid.innerHTML = html;
 
-        document.querySelectorAll(".add-cart-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const id = e.target.dataset.id || e.target.closest('.add-cart-btn').dataset.id;
-                addToCart(id);
-            });
-        });
-
-        document.querySelectorAll(".view-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const id = e.target.dataset.id || e.target.closest('.view-btn').dataset.id;
-                window.location.href = `/pages/detail-product/product.html?id=${id}`;
+        document.querySelectorAll(".product-card").forEach((card) => {
+            card.addEventListener("click", (e) => {
+                // Ensure the click isn't from a nested interactive element if any were re-added
+                const id = card.dataset.id;
+                if (id) {
+                    window.location.href = `/pages/detail-product/product.html?id=${id}`;
+                }
             });
         });
     }
@@ -224,45 +280,36 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const product of products) {
             const img = getValidImageURL(product.image_url);
             if (!seenImages.has(img)) {
-                uniqueProducts.push({...product, image_url: img });
+                uniqueProducts.push({ ...product, image_url: img });
                 seenImages.add(img);
             }
         }
 
         const html = uniqueProducts.map(product => `
-            <div class="featured-product-card">
+            <div class="featured-product-card" data-id="${product._id}">
                 <div class="featured-badge">
                     <i class="fas fa-star"></i> Nổi bật
                 </div>
-                <img src="${product.image_url}" alt="${product.name}" class="featured-product-img" onerror="this.onerror=null;this.src='../../assests/images/phukien.png';" />
+                <img src="${getValidImageURL(product.image_url)}" alt="${product.name}" class="featured-product-img" loading="lazy"/>
                 <div class="featured-product-info">
                     <h3 class="featured-product-name">${product.name}</h3>
                     <p class="featured-product-price">${product.price.toLocaleString()} VND</p>
-                    <p class="featured-product-desc">${product.description}</p>
-                    <div class="featured-product-actions">
-                        <button class="featured-view-btn" data-id="${product._id}">Xem chi tiết</button>
-                        <button class="featured-add-cart-btn" data-id="${product._id}"><i class="fa fa-cart-plus"></i></button>
+                    <p class="featured-product-posted-date">Ngày đăng: ${formatDate(product.createdAt)}</p>
+                    <div class="featured-product-seller-info">
+                        <span class="seller-name-display"><i class="fas fa-user"></i> ${product.seller.fullName || 'N/A'}</span>
+                        <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
                     </div>
                 </div>
             </div>
         `).join("");
 
         featuredGrid.innerHTML = html;
-        attachFeaturedProductEvents();
-    }
-
-    function attachFeaturedProductEvents() {
-        document.querySelectorAll(".featured-view-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const id = e.target.dataset.id || e.target.closest('.featured-view-btn').dataset.id;
-                window.location.href = `/pages/detail-product/product.html?id=${id}`;
-            });
-        });
-
-        document.querySelectorAll(".featured-add-cart-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const id = e.target.dataset.id || e.target.closest('.featured-add-cart-btn').dataset.id;
-                addToCart(id);
+        document.querySelectorAll(".featured-product-card").forEach((card) => {
+            card.addEventListener("click", (e) => {
+                const id = card.dataset.id;
+                if (id) {
+                    window.location.href = `/pages/detail-product/product.html?id=${id}`;
+                }
             });
         });
     }
