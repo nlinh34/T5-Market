@@ -6,11 +6,12 @@ const {
     getPendingShops,
     getShopWithProducts
 } = require("../controllers/shopController");
+const { protect, authorize } = require("../middlewares/authMiddleware");
 
 router.get("/get-pending-shops", protect, getPendingShops);
 router.get("/:shopId/details-with-products", getShopWithProducts);
 
-router.post("/request-upgrade-seller", requestUpgradeToSeller);
-router.put("/approve-shop/:id", protect, isAdmin, approveShop);
+router.post("/request-upgrade-seller", protect, requestUpgradeToSeller);
+router.put("/approve-shop/:id", protect, approveShop);
 
 module.exports = router;

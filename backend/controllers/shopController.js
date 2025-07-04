@@ -30,6 +30,7 @@ const approveShop = async (req, res) => {
 
 const requestUpgradeToSeller = async (req, res) => {
   try {
+    console.log("User in req:", req.user);
     const userId = req.user.userId;
     const { name, address, phone, description, logoUrl } = req.body;
 
@@ -58,6 +59,8 @@ const requestUpgradeToSeller = async (req, res) => {
     res.status(500).json({ error: "Lỗi khi gửi yêu cầu nâng cấp seller" });
   }
 };
+
+
 
 
 const getPendingShops = async (req, res) => {

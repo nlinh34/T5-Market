@@ -23,6 +23,9 @@ const protect = async (req, res, next) => {
         .json({ error: "Người dùng không tồn tại" });
     }
 
+        console.log("Decoded JWT:", decoded);
+    console.log("User found:", user);
+
     req.user = {
       userId: user._id,
       fullName: user.fullName,
