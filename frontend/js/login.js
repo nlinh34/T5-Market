@@ -39,7 +39,7 @@ document
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Chuyển hướng đến trang chủ
-      window.location.href = "../../index.html";
+      window.location.href = "./index.html";
     } catch (error) {
       errorMessage.textContent = error.message;
       console.error("Error:", error);
@@ -92,7 +92,7 @@ async function handleGoogleSignIn(response) {
       );
 
       // Chuyển đến trang xác thực số điện thoại
-      window.location.href = "../phone-verify/phone-verify.html";
+      window.location.href = "./phone-verify.html";
       return;
     }
 

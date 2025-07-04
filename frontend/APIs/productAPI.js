@@ -1,73 +1,46 @@
 import { apiCall } from "./utils/api.js";
 
 export const ProductAPI = {
-  // ✅ Lấy danh sách sản phẩm ĐÃ duyệt
   getAllProducts: async () => {
-    try {
-      return await apiCall("products/approved");
-    } catch (error) {
-      console.error("Error in getAllProducts:", error);
-      throw error;
-    }
+    return await apiCall({ endpoint: "/products/approved" });
   },
 
-  // ✅ Lấy danh sách sản phẩm CHƯA duyệt (status: false)
   getPendingProducts: async () => {
-    try {
-      return await apiCall("products/pending");
-    } catch (error) {
-      console.error("Error in getPendingProducts:", error);
-      throw error;
-    }
+    return await apiCall({ endpoint: "/products/pending" });
   },
 
-  // ✅ Duyệt sản phẩm (cập nhật status thành true)
   updateStatus: async (id) => {
-    try {
-      return await apiCall(`products/${id}/status`, "PATCH", { isApproved: true }, true);
-    } catch (error) {
-      console.error("Error in approveProduct:", error);
-      throw error;
-    }
+    return await apiCall({
+      endpoint: `/products/${id}/status`,
+      method: "PATCH",
+      data: { isApproved: true },
+    });
   },
 
-  // ✅ Lấy chi tiết 1 sản phẩm
   getProduct: async (id) => {
-    try {
-      return await apiCall(`products/${id}`);
-    } catch (error) {
-      console.error("Error in getProduct:", error);
-      throw error;
-    }
+    return await apiCall({ endpoint: `/products/${id}` });
   },
 
-  // ✅ Tạo sản phẩm mới
   createProduct: async (data) => {
-    try {
-      return await apiCall("products/", "POST", data);
-    } catch (error) {
-      console.error("Error in createProduct:", error);
-      throw error;
-    }
+    return await apiCall({
+      endpoint: "/products",
+      method: "POST",
+      data,
+    });
   },
 
-  // ✅ Cập nhật sản phẩm
   updateProduct: async (id, data) => {
-    try {
-      return await apiCall(`products/update/${id}`, "PUT", data);
-    } catch (error) {
-      console.error("Error in updateProduct:", error);
-      throw error;
-    }
+    return await apiCall({
+      endpoint: `/products/update/${id}`,
+      method: "PUT",
+      data,
+    });
   },
 
-  // ✅ Xoá sản phẩm
   deleteProduct: async (id) => {
-    try {
-      return await apiCall(`products/delete/${id}`, "DELETE");
-    } catch (error) {
-      console.error("Error in deleteProduct:", error);
-      throw error;
-    }
+    return await apiCall({
+      endpoint: `/products/delete/${id}`,
+      method: "DELETE",
+    });
   },
 };

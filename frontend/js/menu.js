@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="button-group">
             <button class="btn">
-              <a href="../detail-product/product.html?id=${product._id}" style="color:white;"> <i class="fa-solid fa-eye"></i></a>
+              <a href="product.html?id=${product._id}" style="color:white;"> <i class="fa-solid fa-eye"></i></a>
             </button>
             <button class="buton">
               <a href="../cart/cart.html?id=${product._id}" style="color:white;">
