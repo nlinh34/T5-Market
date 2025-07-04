@@ -1,4 +1,4 @@
-import { CategoryAPI } from "../../APIs/categoryAPI.js";
+import { CategoryAPI } from "../APIs/categoryAPI.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const favoritesGrid = document.getElementById("favorites-grid");

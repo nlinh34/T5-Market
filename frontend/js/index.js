@@ -1,5 +1,5 @@
 // frontend/pages/home/index.js
-import { CategoryAPI } from "../../APIs/categoryAPI.js";
+import { CategoryAPI } from "../APIs/categoryAPI.js";
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOM loaded, starting to load categories...");

@@ -1,4 +1,4 @@
-import { ProductAPI } from "../../../../APIs/productAPI.js";
+import { ProductAPI } from "../../APIs/productAPI.js";
 
 export class ProductForm {
   constructor() {

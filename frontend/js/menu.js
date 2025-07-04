@@ -1,6 +1,6 @@
 // menu.js - ĐÃ SỬA HOÀN CHỈNH
-import { ProductAPI } from "../../APIs/productAPI.js";
-import { CategoryAPI } from "../../APIs/categoryAPI.js";
+import { ProductAPI } from "../APIs/productAPI.js";
+import { CategoryAPI } from "../APIs/categoryAPI.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".product-grid");

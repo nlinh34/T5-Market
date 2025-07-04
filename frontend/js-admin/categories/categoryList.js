@@ -1,4 +1,4 @@
-import { CategoryAPI } from "../../../../APIs/categoryAPI.js";
+import { CategoryAPI } from "../../APIs/categoryAPI.js";
 import { CategoryForm } from "./caterogyForm.js";
 
 export class CategoryList {

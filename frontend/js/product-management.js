@@ -1,4 +1,4 @@
-import { ProductAPI } from "../../APIs/productAPI.js";
+import { ProductAPI } from "../APIs/productAPI.js";
 
 document.addEventListener('DOMContentLoaded', function() {
     // Lấy thông tin người dùng từ localStorage
