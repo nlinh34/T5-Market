@@ -10,7 +10,7 @@ const {
 router.get("/get-pending-shops", protect, getPendingShops);
 router.get("/:shopId/details-with-products", getShopWithProducts);
 
-router.post("/request-upgrade-seller", protect, requestUpgradeToSeller);
+router.post("/request-upgrade-seller", requestUpgradeToSeller);
 router.put("/approve-shop/:id", protect, isAdmin, approveShop);
 
 module.exports = router;
