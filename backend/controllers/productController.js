@@ -263,6 +263,8 @@ const updateFeaturedStatus = async(req, res) => {
     }
 };
 
+
+
 module.exports = {
     createProduct,
     getPendingProducts,
