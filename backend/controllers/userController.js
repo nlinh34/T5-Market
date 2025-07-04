@@ -1,9 +1,7 @@
 require("dotenv").config();
 const { httpStatusCodes } = require("../utils/constants");
 const User = require("../models/User");
-const Cart = require("../models/Cart");
 const jwt = require("jsonwebtoken");
-const {Role} = require('../constants/roleEnum')
 
 const handleSignIn = async (req, res) => {
   try {
@@ -31,19 +29,6 @@ const handleSignIn = async (req, res) => {
         .json({ error: "Thông tin đăng nhập không hợp lệ" });
     }
 
-    // Lấy thông tin giỏ hàng của user
-    const cart = await Cart.findOne({ user_id: user._id });
-    let cartItemCount = 0;
-
-    if (cart) {
-      // Lấy tất cả items trong giỏ hàng
-      const cartItems = await CartItem.find({ cart_id: cart._id });
-      // Tính tổng số lượng sản phẩm
-      cartItemCount = cartItems.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-    }
 
     const tokenOptions = rememberMe ? { expiresIn: "7d" } : { expiresIn: "1h" };
     const userToken = jwt.sign(
@@ -61,8 +46,7 @@ const handleSignIn = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
-        role: Number(user.role), 
-        cartCount: cartItemCount,
+        role: Number(user.role),
       },
       message: "Đăng nhập thành công",
     });

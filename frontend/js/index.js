@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Ensure the click isn't from a nested interactive element if any were re-added
                 const id = card.dataset.id;
                 if (id) {
-                    window.location.href = `/pages/detail-product/product.html?id=${id}`;
+                    window.location.href = `product.html?id=${id}`;
                 }
             });
         });
