@@ -1,4 +1,4 @@
-import { ProductAPI } from "../../../../APIs/productAPI.js";
+import { ProductAPI } from "../../APIs/productAPI";
 
 export class ProductList {
   constructor(containerId) {
@@ -65,18 +65,6 @@ export class ProductList {
                 }
               };
             });
-
-    // Thêm event listeners cho các nút
-    // this.container.querySelectorAll(".edit-btn").forEach((button) => {
-    //   button.onclick = (e) => {
-    //     const productData = JSON.parse(e.target.dataset.product);
-    //     this.productForm.openModal(productData, () => this.loadProducts());
-    //   };
-    // });
-
-    // this.container.querySelectorAll(".delete-btn").forEach((button) => {
-    //   button.onclick = (e) => this.handleDelete(e.target.dataset.id);
-    // });
   }
 
   renderProductRow(product) {
