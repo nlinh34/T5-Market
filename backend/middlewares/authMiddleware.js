@@ -24,7 +24,7 @@ const protect = async (req, res, next) => {
     }
 
     req.user = {
-      _id: user._id,
+      userId: user._id,
       fullName: user.fullName,
       email: user.email,
       phone: user.phone,

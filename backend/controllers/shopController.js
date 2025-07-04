@@ -30,7 +30,7 @@ const approveShop = async (req, res) => {
 
 const requestUpgradeToSeller = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
     const { name, address, phone, description, logoUrl } = req.body;
 
     // Kiểm tra đã có shop chưa
