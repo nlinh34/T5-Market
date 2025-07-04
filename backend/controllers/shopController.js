@@ -31,22 +31,30 @@ const approveShop = async (req, res) => {
 const requestUpgradeToSeller = async (req, res) => {
   try {
     const userId = req.user.userId;
+    const { name, address, phone, description, logoUrl } = req.body;
 
+    // Kiểm tra đã có shop chưa
     const existingShop = await Shop.findOne({ owner: userId });
     if (existingShop) {
       return res.status(400).json({ error: "Bạn đã gửi yêu cầu hoặc đã có shop." });
     }
 
+    // Tạo shop mới
     const newShop = new Shop({
       owner: userId,
+      name,
+      address,
+      phone,
+      description,
+      logoUrl,
       status: "pending",
-      createdAt: new Date(),
     });
 
     await newShop.save();
 
     res.status(200).json({ message: "Yêu cầu mở shop đã được gửi, vui lòng chờ admin duyệt." });
   } catch (error) {
+    console.error("Error in requestUpgradeToSeller:", error);
     res.status(500).json({ error: "Lỗi khi gửi yêu cầu nâng cấp seller" });
   }
 };
