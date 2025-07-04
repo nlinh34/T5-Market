@@ -10,6 +10,7 @@ const {
     deleteProduct,
     updateStatus, //  Thêm controller mới
     updateFeaturedStatus,
+    getProductsByShop
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
@@ -40,5 +41,9 @@ router.get("/approved", getApprovedProducts);
 
 // Hiển thị sản phẩm nổi bật
 router.get("/featured", getFeaturedProducts);
+
+// routes/productRoutes.js
+router.get("/by-shop/:shopId", getProductsByShop);
+
 
 module.exports = router;

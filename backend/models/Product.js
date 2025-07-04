@@ -39,6 +39,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    shop: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Shop",
+        required: true,
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Product", productSchema);
