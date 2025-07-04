@@ -1,4 +1,5 @@
 /* Reset and Base Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -71,8 +72,6 @@ a:hover {
     color: rgb(255, 255, 255);
 }
 
-
-
 .buton:hover {
     background-color: rgb(128, 0, 0);
     transform: translateY(-2px);
@@ -109,7 +108,9 @@ section {
     margin: 0 auto 3rem;
 }
 
+
 /* Header Styles */
+
 header {
     background-color: #2e8b57;
     color: white;
@@ -246,7 +247,9 @@ nav ul li a.active {
     gap: 15px;
 }
 
+
 /* Product Grid Styles */
+
 .container-flex {
     display: flex;
     gap: 30px;
@@ -305,7 +308,9 @@ nav ul li a.active {
     gap: 20px;
 }
 
+
 /* Product Card Styles */
+
 .product-card {
     background-color: #fff;
     border-radius: 10px;
@@ -316,7 +321,7 @@ nav ul li a.active {
     height: 100%;
     position: relative;
     transition: all 0.3s ease;
-     padding-bottom: 5px;
+    padding-bottom: 5px;
 }
 
 .product-card:hover {
@@ -325,14 +330,19 @@ nav ul li a.active {
 }
 
 .product-card img {
-   width: 100%;
-    aspect-ratio: 1/1; /* Tỉ lệ 1:1 hình vuông */
-    object-fit: cover; /* Hoặc 'contain' tùy nhu cầu */
+    width: 100%;
+    aspect-ratio: 1/1;
+    /* Tỉ lệ 1:1 hình vuông */
+    object-fit: cover;
+    /* Hoặc 'contain' tùy nhu cầu */
     background-color: white;
-    border-radius: 20px; /* Bo góc đẹp */
+    border-radius: 20px;
+    /* Bo góc đẹp */
     padding: 10px;
-    border: 1px solid #f0f0f0; /* Viền nhẹ */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Đổ bóng nhẹ */
+    border: 1px solid #f0f0f0;
+    /* Viền nhẹ */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    /* Đổ bóng nhẹ */
     margin-bottom: 10px;
     transition: all 0.3s ease;
 }
@@ -348,7 +358,7 @@ nav ul li a.active {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.03);
+    background-color: rgba(0, 0, 0, 0.03);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 1;
@@ -390,7 +400,9 @@ nav ul li a.active {
     margin-bottom: 10px;
 }
 
+
 /* Updated Button Styles */
+
 .product-info .button-group {
     position: absolute;
     top: 30%;
@@ -423,13 +435,13 @@ nav ul li a.active {
     align-items: center;
     gap: 5px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .product-info .btn:hover {
     background-color: #3aa76d;
     transform: translateX(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .product-info .buton {
@@ -443,16 +455,18 @@ nav ul li a.active {
     align-items: center;
     gap: 5px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .product-info .buton:hover {
     background-color: #ff9500;
     transform: translateX(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+
 /* Like Button Styles */
+
 .like-btn {
     position: absolute;
     top: 15px;
@@ -464,7 +478,7 @@ nav ul li a.active {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 3;
     border: none;
     cursor: pointer;
@@ -481,10 +495,11 @@ nav ul li a.active {
     color: #ff6b6b;
 }
 
+
 /* Main Banner */
+
 .main-banner {
-    background: linear-gradient(rgba(52, 68, 59, 0.8), rgba(46, 139, 87, 0.9)),
-    url("../assests/images/banner.png");
+    background: linear-gradient(rgba(52, 68, 59, 0.8), rgba(46, 139, 87, 0.9)), url("../assests/images/banner.png");
     background-size: cover;
     background-position: center;
     color: white;
@@ -532,7 +547,9 @@ nav ul li a.active {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
+
 /* Footer */
+
 .main-footer {
     background-color: #262626;
     color: white;
@@ -634,7 +651,9 @@ nav ul li a.active {
     opacity: 0.8;
 }
 
+
 /* Ad Banner Styles */
+
 .ad-banner {
     margin: 30px 0;
     padding: 25px;
@@ -769,54 +788,45 @@ nav ul li a.active {
     max-height: 150px;
 }
 
+
 /* Responsive Styles */
+
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
     }
-
     .logo {
         margin-bottom: 15px;
     }
-
     nav ul {
         flex-wrap: wrap;
         justify-content: center;
     }
-
     nav ul li {
         margin: 0 10px 10px 10px;
     }
-
     .footer-bottom .container {
         flex-direction: column;
     }
-
     .footer-bottom p {
         margin-bottom: 10px;
     }
-
     .container-flex {
         flex-direction: column;
     }
-
     .sidebar {
         width: 100%;
         margin-bottom: 20px;
     }
-
     .ad-grid {
         grid-template-columns: 1fr;
     }
-    
     .ad-banner {
         padding: 20px;
     }
-    
     .ad-banner h3 {
         font-size: 1.3rem;
     }
-    
     .sidebar .ad-banner {
         margin: 20px 0;
     }
@@ -826,19 +836,15 @@ nav ul li a.active {
     .product-grid {
         grid-template-columns: 1fr;
     }
-    
     .product-card img {
         height: 150px;
     }
-
     .ad-banner {
         padding: 15px;
     }
-    
     .ad-banner h3 {
         font-size: 1.2rem;
     }
-    
     .ad-banner .ad-link {
         padding: 8px 20px;
     }
