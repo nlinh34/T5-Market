@@ -1,35 +1,53 @@
 const Product = require("../models/Product");
+const Shop = require("../models/Shop");
 const { httpStatusCodes } = require("../utils/constants");
 
 // Người bán đăng sản phẩm
-const createProduct = async(req, res) => {
-    try {
-        const { name, price, description, image_url, category } = req.body;
-        const product = new Product({
-            name,
-            price,
-            description,
-            image_url,
-            category,
-            seller: req.user._id,
-            status: "pending"
-        });
+const createProduct = async (req, res) => {
+  try {
+    const { name, price, description, image_url, category } = req.body;
+    const userId = req.user.userId;
 
-        console.log(req.body)
+    // Tìm shop mà user là chủ hoặc nhân viên
+    const shop = await Shop.findOne({
+      $or: [
+        { owner: userId },
+        { staff: userId } // giả sử bạn có mảng staff trong Shop
+      ],
+      status: "approved"
+    });
 
-        await product.save();
-
-        res.status(httpStatusCodes.CREATED).json({
-            success: true,
-            message: "Sản phẩm đã được gửi để chờ duyệt",
-            data: product,
-        });
-    } catch (error) {
-        res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            error: error.message,
-        });
+    if (!shop) {
+      return res.status(httpStatusCodes.FORBIDDEN).json({
+        success: false,
+        message: "Bạn không thuộc shop hợp lệ nào để đăng sản phẩm",
+      });
     }
+
+    const product = new Product({
+      name,
+      price,
+      description,
+      image_url,
+      category,
+      seller: userId,
+      shop: shop._id, // ✅ thêm vào đây
+      isApproved: false,
+    });
+
+    await product.save();
+
+    res.status(httpStatusCodes.CREATED).json({
+      success: true,
+      message: "Sản phẩm đã được gửi để chờ duyệt",
+      data: product,
+    });
+  } catch (error) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: error.message,
+    });
+  }
 };
 
 // Admin lấy danh sách sản phẩm chờ duyệt
@@ -263,6 +281,26 @@ const updateFeaturedStatus = async(req, res) => {
     }
 };
 
+const getProductsByShop = async (req, res) => {
+  try {
+    const { shopId } = req.params;
+
+    const products = await Product.find({ shop: shopId })
+      .populate("seller", "fullName email")
+      .populate("category", "name");
+
+    res.status(httpStatusCodes.OK).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
 
 
 module.exports = {
@@ -274,5 +312,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     updateStatus,
-    updateFeaturedStatus
+    updateFeaturedStatus,
+    getProductsByShop
 };

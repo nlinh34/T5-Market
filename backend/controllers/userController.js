@@ -2,7 +2,6 @@ require("dotenv").config();
 const { httpStatusCodes } = require("../utils/constants");
 const User = require("../models/User");
 const Cart = require("../models/Cart");
-const CartItem = require("../models/CartItem");
 const jwt = require("jsonwebtoken");
 const {Role} = require('../constants/roleEnum')
 
