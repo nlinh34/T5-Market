@@ -1,8 +1,8 @@
 // frontend/pages/admin/dashboard.js
-import { ProductList } from "./js/products/productList.js";
-import { CategoryList } from "./js/categories/categoryList.js";
-import { UsersList } from "./js/users/usersList.js";
-import { ApproveUserList } from "./js/users/approveUser.js";
+import { ProductList } from "./products/productList.js";
+import { CategoryList } from "./categories/categoryList.js";
+import { UsersList } from "./users/usersList.js";
+import { ApproveUserList } from "./users/approveUser.js";
 import { Role } from "../APIs/utils/roleEnum.js";
 
 
@@ -22,7 +22,7 @@ function checkAdminAuth() {
   const user = JSON.parse(localStorage.getItem("user"));
   console.log("ROLE CHECK:", user.role, Role.ADMIN);
   if (!token || !user || Number(user.role) !== Role.ADMIN) {
-    window.location.href = "../login/login.html";
+    window.location.href = "./login.html";
   }
 }
 
@@ -45,7 +45,7 @@ function initializeMenu() {
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "../login/login.html";
+    window.location.href = "./login.html";
   });
 }
 

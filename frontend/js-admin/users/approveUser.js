@@ -1,5 +1,5 @@
 // approveUserListContainer.js
-import { UserAPI } from "../../../../APIs/userAPI.js";
+import { UserAPI } from "../../APIs/userAPI.js";
 
 const roleDisplayVN = {
   0: "Quản trị viên",
