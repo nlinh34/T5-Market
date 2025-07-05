@@ -23,6 +23,7 @@ const protect = async (req, res, next) => {
         .json({ error: "Người dùng không tồn tại" });
     }
 
+    
     req.user = {
       userId: user._id,
       fullName: user.fullName,
@@ -30,7 +31,7 @@ const protect = async (req, res, next) => {
       phone: user.phone,
       role: user.role, // ✅ Gán role từ token
     };
-
+console.log("✅ User sau verify:", req.user);
     next();
   } catch (error) {
     return res

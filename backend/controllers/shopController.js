@@ -1,6 +1,11 @@
+const Shop = require("../models/Shop");
+const Product = require("../models/Product");
+const User = require("../models/User")
+const { httpStatusCodes } = require("../utils/constants");
+
 const approveShop = async (req, res) => {
   try {
-    const { id } = req.params; // id của shop
+    const { id } = req.params; // id của 
     const shop = await Shop.findById(id).populate("owner");
 
     if (!shop || shop.status !== "pending") {
@@ -20,8 +25,9 @@ const approveShop = async (req, res) => {
     user.approvedBy = req.user.userId;
     await user.save();
 
-    res.status(httpStatusCodes.OK).json({ message: "Đã duyệt cửa hàng và nâng cấp user thành seller" });
+    return res.status(httpStatusCodes.OK).json({ message: "Đã duyệt cửa hàng và nâng cấp user thành seller" });
   } catch (error) {
+    console.error("❌ Error in approveShop:", error); 
     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
       error: "Lỗi khi duyệt shop",
     });
@@ -30,6 +36,7 @@ const approveShop = async (req, res) => {
 
 const requestUpgradeToSeller = async (req, res) => {
   try {
+    console.log("User in req:", req.user);
     const userId = req.user.userId;
     const { name, address, phone, description, logoUrl } = req.body;
 
@@ -71,9 +78,6 @@ const getPendingShops = async (req, res) => {
   }
 };
 
-// controllers/shopController.js
-const Shop = require("../models/Shop");
-const Product = require("../models/Product");
 
 const getShopWithProducts = async (req, res) => {
   try {
