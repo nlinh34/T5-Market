@@ -34,6 +34,37 @@ const approveShop = async (req, res) => {
   }
 };
 
+const rejectShop = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const shop = await Shop.findById(id).populate("owner");
+    if (!shop || shop.status !== "pending") {
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        error: "Shop không tồn tại hoặc đã được xử lý.",
+      });
+    }
+
+    shop.status = "rejected";
+    shop.rejectedBy = req.user.userId;
+    await shop.save();
+
+    const user = await User.findById(shop.owner._id);
+    user.status = "rejected"; // Hoặc vẫn để là "pending" tùy bạn
+    await user.save();
+
+    return res.status(httpStatusCodes.OK).json({
+      success: true,
+      message: "❌ Đã từ chối yêu cầu mở cửa hàng.",
+    });
+  } catch (error) {
+    console.error("❌ Error in rejectShop:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Lỗi hệ thống khi từ chối cửa hàng.",
+    });
+  }
+};
+
 const requestUpgradeToSeller = async (req, res) => {
   try {
     console.log("User in req:", req.user);
@@ -118,3 +149,4 @@ module.exports = {
     getPendingShops,
     getShopWithProducts
 }
+
