@@ -3,6 +3,7 @@ import { ProductList } from "./products/productList.js";
 import { CategoryList } from "./categories/categoryList.js";
 import { UsersList } from "./users/usersList.js";
 import { ApproveUserList } from "./users/approveUser.js";
+import { ApproveShopList } from "./shops/upgradeShop.js"
 import { Role } from "../APIs/utils/roleEnum.js";
 
 
@@ -75,7 +76,7 @@ function loadPage(page) {
           </div>
           <div id="upgradeSellersContainer"></div>
       `;
-      new UsersList("upgradeSellersContainer");
+      new ApproveShopList("upgradeSellersContainer");
       breadcrumb.textContent = "Quản Lý Người Dùng";
       break;
 

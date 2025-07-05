@@ -7,22 +7,21 @@
     <title>Apple MusicBook Pro v4i - T5 Market</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./styles/product-detail.css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
     <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/header.css" />
     <script src="./components/header/header.js" type="module"></script>
     <script src="./js/index.js" type="module"></script>
 </head>
 <style>
-    body{
+    body {
         padding-top: 110px;
-        /* Đẩy nội dung xuống dưới header */
     }
 </style>
 
 <body>
     <!-- Header -->
- <header-component></header-component>
+    <header-component></header-component>
 
     <!-- Product Section -->
     <section class="product-detail">
@@ -30,86 +29,72 @@
             <div class="product-content">
                 <div class="product-gallery">
                     <div class="main-image">
-                        <img src="./assests/images/product/pd6-5.jpg" alt="Apple MusicBook Pro v4i" id="mainImage">
+                        <img src="./assests/images/laptop.jpg" alt="Apple MusicBook Pro v4i" id="mainImage">
                     </div>
-                    <div class="thumbnail-container">
+                    <!-- <div class="thumbnail-container">
                         <div class="thumbnail active" data-image="../img/pd6.jpg">
-                            <img src="./assests/images/product/pd6.jpg" alt="Thumbnail 1">
+                            <img src="../images/product/pd6.jpg" alt="Thumbnail 1">
                         </div>
                         <div class="thumbnail" data-image="../img/pd6-2.jpg">
-                            <img src="./assests/images/product/pd6-2.jpg" alt="Thumbnail 2">
+                            <img src="../images/product/pd6-2.jpg" alt="Thumbnail 2">
                         </div>
                         <div class="thumbnail" data-image="../img/pd6-3.jpg">
-                            <img src="./assests/images/product/pd6-3.jpg" alt="Thumbnail 3">
+                            <img src="../images/product/pd6-3.jpg" alt="Thumbnail 3">
                         </div>
                         <div class="thumbnail" data-image="../img/pd6-4.jpg">
-                            <img src="./assests/images/product/pd6-4.jpg" alt="Thumbnail 4">
+                            <img src="../images/product/pd6-4.jpg" alt="Thumbnail 4">
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="product-info">
+                    <div class="breadcrumb">
+                        <a href="#">Điện tử</a> &gt; <a href="#">Laptop</a> &gt; <a href="#">Apple</a>
+                    </div>
+                    
                     <h1>2020 Apple MusicBook Pro v4i Apple MI Chrp (13-inch, 8GB RAM, 256GB SSD Storage)</h1>
                     <div class="product-meta">
-                        <span class="rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span class="review-count">(42 đánh giá)</span>
-                        </span>
-                        <span class="sku">Mã sản phẩm: APMBP2020V4I</span>
-                        <span class="stock in-stock">Còn hàng</span>
-                    </div>
-
-                    <div class="price-container">
                         <span class="current-price">44.032.983 VND</span>
-                        <span class="old-price">49.990.000 VND</span>
-                        <span class="discount">-12%</span>
+                        <span class="stock in-stock"><i class="fas fa-check-circle"></i> Còn hàng</span>
                     </div>
-
-                    <div class="product-specs">
-                        <h3>Thông số kỹ thuật</h3>
-                        <ul>
-                            <li><strong>Màn hình:</strong> 13.3 inch Retina (2560 x 1600)</li>
-                            <li><strong>CPU:</strong> Apple M1 Chip 8-core</li>
-                            <li><strong>RAM:</strong> 8GB unified memory</li>
-                            <li><strong>Lưu trữ:</strong> 256GB SSD</li>
-                            <li><strong>Đồ họa:</strong> Apple 7-core GPU</li>
-                            <li><strong>Hệ điều hành:</strong> macOS</li>
-                            <li><strong>Pin:</strong> Lên đến 20 giờ</li>
-                            <li><strong>Trọng lượng:</strong> 1.4 kg</li>
-                            <li><button class="get" style="background:rgb(43, 255, 43);font-size:15px;color:black;">Mua hàng</button>
-                            </li>
-                        </ul>
+                    <div class="product-meta">
+                        <span class="location"><i class="fas fa-map-marker-alt"></i> Hà Nội</span>
                     </div>
-
-                    <div class="product-actions">
-                        <div class="quantity-selector">
-                            <button class="quantity-btn minus">-</button>
-                            <input type="number" value="1" min="1" class="quantity-input">
-                            <button class="quantity-btn plus">+</button>
+                    <div class="product-meta">
+                        <span class="time"><i class="fas fa-clock"></i> Đăng 2 ngày trước</span>
+                    </div>
+                    <button class="btn buy-now" style="width: 546px;">Thêm vào giỏ hàng</button>
+            
+                    <!-- Seller Info -->
+                    <div class="seller-info" style="margin-top:40px;">
+                        <div class="seller-header">
+                            <div class="seller-avatar">
+                                <img src="../images/avatar/default-avatar.jpg" alt="Nguyễn Văn A">
+                            </div>
+                            <div>
+                                <div class="seller-name">Nguyễn Văn A</div>
+                                <div class="seller-status verified">Đã xác thực</div>
+                            </div>
                         </div>
-                        <button class="btn add-to-cart"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</button>
-                        <button class="btn btn-outline buy-now">Mua ngay</button>
+                        <div class="seller-meta">
+                            <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
+                            <span><i class="fas fa-star"></i> 4.8 (56 đánh giá)</span>
+                            <span><i class="fas fa-clock"></i> Tham gia 1 năm trước</span>
+                        </div>
+                        <div class="seller-actions">
+                            <button class="btn btn-primary">Xem cửa hàng</button>
+                            <button class="btn btn-outline">Nhắn tin</button>
+                            <button class="btn-report">Báo cáo</button>
+                        </div>
                     </div>
 
-                    <div class="product-share">
-                        <span>Chia sẻ:</span>
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-pinterest"></i></a>
-                    </div>
+                    
                 </div>
             </div>
 
             <div class="product-tabs">
                 <ul class="tabs-header">
                     <li class="active" data-tab="description">Mô tả sản phẩm</li>
-                    <li data-tab="specs">Thông số kỹ thuật</li>
-                    <li data-tab="reviews">Đánh giá</li>
                 </ul>
                 <div class="tabs-content">
                     <div class="tab-pane active" id="description">
@@ -202,49 +187,91 @@
                                     <label for="review-comment">Bình luận</label>
                                     <textarea id="review-comment" rows="5" required></textarea>
                                 </div>
-                                <button type="submit" class="btn">Gửi đánh giá</button>
+                                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
                             </form>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                        <div class="review-list">
-                            <h3>Đánh giá của khách hàng</h3>
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <span class="review-author">Nguyễn Văn A</span>
-                                    <span class="review-date">15/06/2023</span>
-                                    <div class="review-rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                </div>
-                                <div class="review-body">
-                                    <p>Sản phẩm rất tốt, chạy mượt mà, pin trâu. Màn hình đẹp, màu sắc chân thực. Nhẹ và
-                                        mỏng dễ mang theo. Nhân viên tư vấn nhiệt tình.</p>
-                                </div>
-                            </div>
+    <!-- Seller Products -->
+    <section class="seller-products">
+        <div class="container">
+            <h2 class="section-title">Sản phẩm khác từ người bán</h2>
+            <p class="section-subtitle">Khám phá các sản phẩm khác từ Nguyễn Văn A</p>
 
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <span class="review-author">Trần Thị B</span>
-                                    <span class="review-date">02/05/2023</span>
-                                    <div class="review-rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </div>
-                                <div class="review-body">
-                                    <p>Máy chạy rất nhanh, không bị nóng khi sử dụng lâu. Tuy nhiên dung lượng 256GB hơi
-                                        ít với nhu cầu của mình. Nên nâng cấp lên 512GB nếu có điều kiện.</p>
-                                </div>
-                            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-badge">-10%</div>
+                    <div class="product-image">
+                        <img src="../images/product/pd7.jpg" alt="MacBook Pro 2019">
+                        <div class="product-actions">
+                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
                         </div>
                     </div>
+                    <div class="product-info">
+                        <h3 class="product-title">MacBook Pro 13" 2019 (i5, 8GB, 256GB)</h3>
+                        <div class="product-price">
+                            <span class="current-price">28.990.000 VND</span>
+                            <span class="old-price">32.990.000 VND</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/product/pd8.jpg" alt="MacBook Air 2020">
+                        <div class="product-actions">
+                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">MacBook Air 2020 (i3, 8GB, 256GB)</h3>
+                        <div class="product-price">
+                            <span class="current-price">22.990.000 VND</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-badge">Mới</div>
+                    <div class="product-image">
+                        <img src="../images/product/pd9.jpg" alt="iPad Pro 2021">
+                        <div class="product-actions">
+                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">iPad Pro 2021 11" (128GB, WiFi)</h3>
+                        <div class="product-price">
+                            <span class="current-price">18.990.000 VND</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/product/pd10.jpg" alt="Apple Watch Series 6">
+                        <div class="product-actions">
+                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Apple Watch Series 6 44mm GPS</h3>
+                        <div class="product-price">
+                            <span class="current-price">12.990.000 VND</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
                 </div>
             </div>
         </div>
@@ -260,7 +287,7 @@
                 <div class="product-card">
                     <div class="product-badge">-15%</div>
                     <div class="product-image">
-                        <img src="./assests/images/product/pd1.jpg" alt="MacBook Air M1">
+                        <img src="../images/product/pd1.jpg" alt="MacBook Air M1">
                         <div class="product-actions">
                             <button class="quick-view"><i class="fas fa-eye"></i></button>
                             <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
@@ -270,17 +297,16 @@
                         <h3 class="product-title">Apple MacBook Air M1 2020 13"</h3>
                         <div class="product-price">
                             <span class="current-price">32.990.000 VND</span>
-                            <!-- <span class="old-price">38.990.000 VND</span> -->
+                            <span class="old-price">38.990.000 VND</span>
                         </div>
-
                     </div>
-                    <button class="btn add-to-cart">Thêm vào giỏ</button>
+                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
                 </div>
 
                 <div class="product-card">
                     <div class="product-badge">Mới</div>
                     <div class="product-image">
-                        <img src="./assests/images/product/pd2.jpg" alt="MacBook Pro M2">
+                        <img src="../images/product/pd2.jpg" alt="MacBook Pro M2">
                         <div class="product-actions">
                             <button class="quick-view"><i class="fas fa-eye"></i></button>
                             <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
@@ -291,145 +317,222 @@
                         <div class="product-price">
                             <span class="current-price">49.990.000 VND</span>
                         </div>
-
                     </div>
-                    <button class="btn add-to-cart">Thêm vào giỏ</button>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="./assests/images/product/pd3.jpg" alt="Dell XPS 13">
-                        <div class="product-actions">
-                            <button class="quick-view"><i class="fas fa-eye"></i></button>
-                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">Dell XPS 13 9310 (i7, 16GB, 512GB)</h3>
-                        <div class="product-price">
-                            <span class="current-price">42.990.000 VND</span>
-                        </div>
-
-                    </div>
-                    <button class="btn add-to-cart">Thêm vào giỏ</button>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-badge">-10%</div>
-                    <div class="product-image">
-                        <img src="./assests/images/pd4.jpg" alt="HP Spectre x360">
-                        <div class="product-actions">
-                            <button class="quick-view"><i class="fas fa-eye"></i></button>
-                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">HP Spectre x360 (i5, 8GB, 512GB)</h3>
-                        <div class="product-price">
-                            <span class="current-price">36.990.000 VND</span>
-                            <!-- <span class="old-price">41.990.000 VND</span> -->
-                        </div>
-
-                    </div>
-                    <button class="btn add-to-cart">Thêm vào giỏ</button>
-                </div>
-                <!-- <div class="product-card">
-                    <div class="product-badge">-10%</div>
-                    <div class="product-image">
-                        <img src="../images/product/pd5.jpg" alt="HP Spectre x360">
-                        <div class="product-actions">
-                            <button class="quick-view"><i class="fas fa-eye"></i></button>
-                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">HP Spectre x360 (i5, 8GB, 512GB)</h3>
-                        <div class="product-price">
-                            <span class="current-price">36.990.000 VND</span>
-                        </div>
-
-                    </div>
-                    <button class="btn add-to-cart">Thêm vào giỏ</button>
-                </div> -->
+                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
+                                    </div>
             </div>
         </div>
     </section>
 
+    <!-- Detailed Reviews Section -->
+    <section class="detailed-reviews">
+        <div class="container">
+            <h2 class="section-title">Đánh giá chi tiết</h2>
+            <div class="reviews-summary">
+                <div class="overall-rating">
+                    <div class="rating-score">4.8<span>/5</span></div>
+                    <div class="rating-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <div class="total-reviews">56 đánh giá</div>
+                </div>
+                <div class="rating-bars">
+                    <div class="rating-bar">
+                        <span>5 sao</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 80%"></div>
+                        </div>
+                        <span>45</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>4 sao</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 15%"></div>
+                        </div>
+                        <span>8</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>3 sao</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 3%"></div>
+                        </div>
+                        <span>2</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>2 sao</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 1%"></div>
+                        </div>
+                        <span>1</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>1 sao</span>
+                        <div class="bar-container">
+                            <div class="bar" style="width: 1%"></div>
+                        </div>
+                        <span>0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-filters">
+                <button class="filter-btn active">Tất cả</button>
+                <button class="filter-btn">5 sao (45)</button>
+                <button class="filter-btn">4 sao (8)</button>
+                <button class="filter-btn">3 sao (2)</button>
+                <button class="filter-btn">2 sao (1)</button>
+                <button class="filter-btn">1 sao (0)</button>
+                <button class="filter-btn">Có hình ảnh (12)</button>
+            </div>
+
+            <div class="review-list">
+                <div class="review-item">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <img src="../images/avatar/user1.jpg" alt="Nguyễn Văn B">
+                            </div>
+                            <div class="reviewer-meta">
+                                <span class="review-author">Nguyễn Văn B</span>
+                                <span class="review-date">15/06/2023</span>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <h4 class="review-title">Sản phẩm tuyệt vời</h4>
+                        <p>Máy chạy rất mượt, pin trâu, thiết kế đẹp. Nhân viên tư vấn nhiệt tình, giao hàng nhanh. Đóng gói cẩn thận. Sẽ ủng hộ shop dài dài.</p>
+                        <div class="review-images">
+                            <img src="../images/reviews/review1-1.jpg" alt="Review image">
+                            <img src="../images/reviews/review1-2.jpg" alt="Review image">
+                        </div>
+                        <div class="review-helpful">
+                            <span>Đánh giá này hữu ích?</span>
+                            <button class="helpful-btn">Có (12)</button>
+                            <button class="helpful-btn">Không (0)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-item">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <img src="../images/avatar/user2.jpg" alt="Trần Thị C">
+                            </div>
+                            <div class="reviewer-meta">
+                                <span class="review-author">Trần Thị C</span>
+                                <span class="review-date">10/06/2023</span>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <h4 class="review-title">Tốt nhưng có điểm trừ</h4>
+                        <p>Máy chạy tốt, màn hình đẹp nhưng dung lượng 256GB hơi ít. Nên nâng cấp lên 512GB nếu có điều kiện. Shop giao hàng đúng hẹn, đóng gói cẩn thận.</p>
+                        <div class="review-helpful">
+                            <span>Đánh giá này hữu ích?</span>
+                            <button class="helpful-btn">Có (8)</button>
+                            <button class="helpful-btn">Không (1)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">4</button>
+                <button class="page-btn">5</button>
+                <button class="page-btn next">Tiếp <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    
+
     <!-- Footer -->
     <footer class="main-footer">
-      <div class="container">
-        <div class="footer-container">
-          <div class="footer-column footer-about">
-            <h3>Về T5Market</h3>
-            <p>
-              T5Market là chợ điện tử uy tính và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
-            </p>
-            <div class="social-links">
-              <a href="#"><i class="fab fa-facebook-f"></i></a>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-              <a href="#"><i class="fab fa-twitter"></i></a>
-              <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-          </div>
-
-          <div class="footer-column">
-            <h3>Liên kết nhanh</h3>
-            <ul>
-              <li><a hìnha href="../home/index.html">Trang chủ</a></li>
-              <li><a href="../menu/menu.html">Danh mục sản phẩm</a></li>
-            </ul>
-          </div>
-
-          <div class="footer-column">
-            <h3>Thông tin</h3>
-            <ul>
-              <li><a href="../about/about.html">Về chúng tôi</a></li>
-              <li><a href="#">Tuyển dụng</a></li>
-              <li><a href="#">Chính sách bảo mật</a></li>
-              <li><a href="#">Điều khoản sử dụng</a></li>
-            </ul>
-          </div>
-
-          <div class="footer-column">
-            <h3>Liên hệ</h3>
-            <ul>
-              <li>
-                <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1,
-                TP.HCM
-              </li>
-              <li><i class="fas fa-phone"></i> 1900 1234</li>
-              <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
-              <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
         <div class="container">
-          <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
-          <div class="payment-methods">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
-              alt="Mastercard"
-            />
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
-              alt="Visa"
-            />
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
-              alt="Amex"
-            />
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
-              alt="Momo"
-            />
-          </div>
-        </div>
-      </div>
-    </footer>
-    <script src="prodcut.js"></script>
-</body>
+            <div class="footer-container">
+                <div class="footer-column footer-about">
+                    <h3>Về T5Market</h3>
+                    <p>
+                        T5Market là chợ điện tử uy tín và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
 
+                <div class="footer-column">
+                    <h3>Liên kết nhanh</h3>
+                    <ul>
+                        <li><a href="../home/index.html">Trang chủ</a></li>
+                        <li><a href="../menu/menu.html">Danh mục sản phẩm</a></li>
+                        <li><a href="#">Sản phẩm mới</a></li>
+                        <li><a href="#">Sản phẩm bán chạy</a></li>
+                        <li><a href="#">Khuyến mãi</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Thông tin</h3>
+                    <ul>
+                        <li><a href="../about/about.html">Về chúng tôi</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Chính sách đổi trả</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Liên hệ</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1, TP.HCM</li>
+                        <li><i class="fas fa-phone"></i> 1900 1234</li>
+                        <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
+                        <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
+                <div class="payment-methods">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png" alt="Mastercard">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png" alt="Amex">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png" alt="Momo">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/product.js"></script>
+</body>
 </html>

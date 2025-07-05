@@ -12,62 +12,62 @@
     <link rel="stylesheet" href="./styles/header.css" />
     <link rel="stylesheet" href="./styles/cart.css">
     <script src="./components/header/header.js" type="module"></script>
-    <script src="cart.js" type="module"></script>
+    <script src="./js/cart.js" type="module"></script>
   </head>
 <body>
     <!-- Header -->
     <header-component></header-component>
 
-      <!-- Main Banner -->
-    <section class="main-banner">
-      <div class="container">
-        <div class="banner-content">
-          <h1 class="banner-title">Thương mại thông minh, giải pháp toàn diện</h1>
-          <p class="banner-text">
-            Chợ công nghệ, kết nối giá trị, hỗ trợ khách hàng 24/24
-          </p>
-          <a href="#" class="banner-btn">Khám phá ngay</a>
-        </div>
-      </div>
-    </section>
+    <main class="cart-container">
+    <!-- <h2 class="cart-title">GIỎ HÀNG</h2> -->
 
-<main class="cart-container">
     <section class="cart-table-section">
       <table>
-        <!-- <thead>
+        <thead>
           <tr>
-            <th>Sản phẩm</th>
-            <th>Giá tiền</th>
+        <th colspan="2">
+          <input type="checkbox" id="select-all" />
+          <span class="select-all-label">Tất cả (<span id="total-products">0</span>)</span>
+        </th>
+            <th>Đơn giá</th>
             <th>Số lượng</th>
-            <th>Tổng tiền</th>
-            <th>Xoá</th>
+            <th>Thành tiền</th>
+            <th></th>
           </tr>
-        </thead> -->
+        </thead>
         <tbody id="cart-items"></tbody>
       </table>
     </section>
-    <aside class="cart-summary">
-      <h3>Thông tin đơn hàng</h3>
-      <p>Tạm tính: <span id="subtotal">0đ</span></p>
-      <p>Giảm giá: <span id="discount">0đ</span></p>
-      <p>Thuế: <span id="tax">0đ</span></p>
-      <p><strong>Tổng cộng: <span id="total">0đ</span></strong></p>
-      
-      <hr/>
-     <div class="summary-action">
-  <ul>
-    <li>Phí vận chuyển sẽ được tính ở trang thanh toán.</li>
-    <li>Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.</li>
-    <li>Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.</li>
-  </ul>
-</div>
 
-      <hr/>
-      <a href="#" class="btn primary" id="checkout-btn">Tiến hành thanh toán</a>
-     
+    <aside class="cart-summary">
+      <h3 class="summary-title">CỘNG GIỎ HÀNG</h3>
+      <div class="summary-row">
+        <span>Tạm tính</span>
+        <span id="subtotal">0₫</span>
+      </div>
+      
+      <div class="summary-row">
+        <span>Giảm giá</span>
+        <span id="discount">0₫</span>
+      </div>
+
+      <div class="summary-row total">
+        <span>Tổng</span>
+        <span id="total">0₫</span>
+      </div>
+
+      <div class="coupon-section">
+        <label for="coupon-input"><i class="fas fa-tag"></i> Phiếu ưu đãi</label>
+        <input type="text" id="coupon-input" placeholder="Mã ưu đãi" />
+        <button id="apply-coupon">Áp dụng</button>
+      </div>
+
+      <button class="btn primary full-width" id="checkout-btn">
+        <i class="fas fa-money-check-alt"></i> Tiến hành thanh toán
+      </button>
     </aside>
   </main>
-
+  
       <!-- Footer -->
     <footer class="main-footer">
       <div class="container">
