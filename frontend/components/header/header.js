@@ -73,6 +73,7 @@ class Header extends HTMLElement {
         <a href="./post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
         <a href="./product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
         <a href="./seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
+        <a href="./order-detail.html"><i class="fa fa-tasks"></i>Lịch Sử Mua Hàng</a>
         <a href="./account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
         <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
       `;

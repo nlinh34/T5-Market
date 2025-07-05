@@ -182,3 +182,30 @@
   margin: 24px auto;
   color: #2e8b57;
 }
+.action-btn.action-detail {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.action-btn.action-detail:hover {
+  background-color: #0056b3;
+}
+#order-detail-content h3 {
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+}
+
+#order-detail-content h3 i {
+  color: #007bff;
+  font-size: 22px;
+}

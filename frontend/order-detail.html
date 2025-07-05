@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lịch sử mua hàng</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/order-detail.css">
+   <script src="./components/header/header.js" type="module"></script>
+    <script src="./js/order-detail.js" type="module"></script>
+</head>
+<body>
+
+         <!-- Header -->
+    <header-component></header-component>
+
+
+
+ <!-- <section class="main-banner">
+    <div class="container">
+      <div class="banner-content">
+        <h1 class="banner-title">Chi tiết đơn hàng</h1>
+      </div>
+    </div>
+  </section> -->
+
+  <div class="page-wrapper">
+    <h1 class="order-title">📦 Đơn hàng của tôi</h1>
+    <div class="management-container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-menu">
+          <button class="sidebar-btn active" data-tab="all"><i class="fas fa-list"></i> Tất cả</button>
+          <button class="sidebar-btn" data-tab="pending"><i class="fas fa-hourglass-half"></i> Chờ xác nhận</button>
+          <button class="sidebar-btn" data-tab="packing"><i class="fas fa-box"></i> Đang chuẩn bị</button>
+          <button class="sidebar-btn" data-tab="shipping"><i class="fas fa-truck"></i> Chờ giao hàng</button>
+          <button class="sidebar-btn" data-tab="delivered"><i class="fas fa-check-circle"></i> Đã giao</button>
+          <button class="sidebar-btn" data-tab="cancelled"><i class="fas fa-times-circle"></i> Đã hủy</button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content-area">
+        <div class="tab-content active" id="tab-all"></div>
+        <div class="tab-content" id="tab-pending"></div>
+        <div class="tab-content" id="tab-packing"></div>
+        <div class="tab-content" id="tab-shipping"></div>
+        <div class="tab-content" id="tab-delivered"></div>
+        <div class="tab-content" id="tab-cancelled"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal hủy đơn -->
+  <div id="cancel-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+      <h3>Lý do hủy đơn hàng</h3>
+      <textarea id="cancel-reason" rows="3" placeholder="Nhập lý do hủy..."></textarea>
+      <div class="modal-actions">
+        <button id="cancel-confirm">Xác nhận hủy</button>
+        <button id="cancel-close">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal xem chi tiết đơn hàng -->
+<div id="order-detail-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <span class="modal-close" style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;">&times;</span>
+    <div id="order-detail-content"></div>
+  </div>
+</div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column footer-about">
+                    <h3>Về T5Market</h3>
+                    <p>
+                        T5Market là chợ điện tử uy tính và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Liên kết nhanh</h3>
+                    <ul>
+                        <li><a href="./index.html">Trang chủ</a></li>
+                        <li><a href="./menu.html">Danh mục sản phẩm</a></li>
+                        <li><a href="./contact.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Thông tin</h3>
+                    <ul>
+                        <li><a href="./about.html">Về chúng tôi</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Liên hệ</h3>
+                    <ul>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1, TP.HCM
+                        </li>
+                        <li><i class="fas fa-phone"></i> 1900 1234</li>
+                        <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
+                        <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
+                <div class="payment-methods">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png" alt="Mastercard" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png" alt="Amex" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png" alt="Momo" />
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
