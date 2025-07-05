@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa hàng của bạn - T5Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./styles/shop.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/header.css">
+</head>
+<body>
+    <header-component></header-component>
+
+    <div class="shop-container">
+        <section id="hasShopSection" class="has-shop-section active">
+            <div class="shop-profile-header">
+                <div class="profile-main-info">
+                    <div class="profile-avatar">
+                        <img src="./assests/images/default-product.png" alt="Avatar"> <!-- Placeholder image -->
+                    </div>
+                    <div class="profile-details">
+                        <h2 class="shop-name">hung pham</h2>
+                        <span class="shop-status">Chưa hoạt động</span> <!-- Placeholder status -->
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn btn-settings"><i class="fas fa-cog"></i> Cài đặt cửa hàng</button>
+                    <button class="btn btn-edit-image"><i class="fas fa-camera"></i> Chỉnh sửa ảnh</button>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span>Sản phẩm:</span>
+                    <span class="stat-value" id="shopProductsCount">--</span>
+                </div>
+                <div class="stat-item">
+                    <span>Đã bán:</span>
+                    <span class="stat-value" id="shopSoldCount">--</span>
+                </div>
+                <div class="stat-item">
+                    <span>Phản hồi chat:</span>
+                    <span class="stat-value" id="shopChatFeedback">Chưa có thông tin</span>
+                </div>
+                <div class="stat-item">
+                    <span>Tham gia:</span>
+                    <span class="stat-value" id="shopJoinedDate">--</span>
+                </div>
+                <div class="stat-item">
+                    <span>Người theo dõi:</span>
+                    <span class="stat-value" id="shopFollowersCount">--</span>
+                </div>
+            </div>
+
+            <nav class="shop-nav-tabs">
+                <a href="#" class="shop-nav-tab active" data-tab="cuaHang">CỬA HÀNG</a>
+                <a href="#" class="shop-nav-tab" data-tab="hoatDong">HOẠT ĐỘNG</a>
+                <a href="#" class="shop-nav-tab" data-tab="danhGia">ĐÁNH GIÁ</a>
+            </nav>
+
+            <div class="shop-content-area">
+                <!-- Giới thiệu Section -->
+                <div class="shop-summary-card">
+                    <h3 class="section-title"><i class="fas fa-info-circle"></i> Giới thiệu</h3>
+                    <div class="summary-details-introduction">
+                        <div class="summary-item full-width">
+                            <span id="shopIntroDescription">công nghệ</span> <!-- Placeholder -->
+                        </div>
+                        <div class="summary-item">
+                            <strong><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong> <span id="shopIntroAddress">Huyện Long Thành, Việt Nam</span> <!-- Placeholder -->
+                        </div>
+                        <div class="summary-item">
+                            <strong><i class="fas fa-phone"></i> Số điện thoại:</strong>
+                            <span id="shopIntroPhoneMasked">09625****</span> <!-- Masked placeholder -->
+                            <a href="#" class="show-phone-number-link" data-full-phone="0962568279">Hiện số</a>
+                        </div>
+                    </div>
+                    <div class="form-actions-shop-info">
+                        <button type="button" class="btn btn-edit-info">Chỉnh sửa thông tin</button>
+                    </div>
+                </div>
+
+                <!-- Chính sách cửa hàng Section -->
+                <div class="shop-summary-card">
+                    <h3 class="section-title"><i class="fas fa-file-alt"></i> Chính sách cửa hàng</h3>
+                    <div class="summary-policies">
+                        <ul id="shopPoliciesList">
+                            <li><i class="fas fa-truck policy-icon"></i> Miễn phí vận chuyển nội thành</li> <!-- Placeholder -->
+                            <li><i class="fas fa-shield-alt policy-icon"></i> Bảo hành 6 tháng phần cứng</li> <!-- Placeholder -->
+                        </ul>
+                        <p class="no-policy-message hidden" id="noShopPolicyMessage">Chưa có chính sách nào được thêm.</p>
+                    </div>
+                    <div class="form-actions-shop-policy">
+                        <button type="button" class="btn btn-edit-policy">Chỉnh sửa chính sách</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The #noShopSection will be controlled by shop.js -->
+        <section id="noShopSection" class="no-shop-section hidden">
+            <div class="shop-dashboard-wrapper">
+                <div class="dashboard-header">
+                    <div class="user-profile-summary">
+                        <div class="avatar">H</div>
+                        <div class="user-info">
+                            <span class="user-name">Hùng Phạm</span>
+                        </div>
+                    </div>
+                    <div class="header-right-widgets">
+                        <div class="search-widget">
+                            <input type="text" placeholder="Tìm tin đăng của bạn...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <!-- <div class="balance-widget">
+                            <i class="fas fa-coins"></i> Số dư: <span>0</span> <i class="fas fa-plus-circle"></i>
+                        </div> -->
+                    </div>
+                </div>
+                <nav class="dashboard-nav-tabs">
+                    <a href="#" class="nav-tab active" data-tab="all">TẤT CẢ</a>
+                    <a href="#" class="nav-tab" data-tab="dangHienThi">ĐANG HIỂN THỊ</a>
+                    <a href="#" class="nav-tab" data-tab="choDuyet">CHỜ DUYỆT</a>
+                    <a href="#" class="nav-tab" data-tab="biTuChoi">BỊ TỪ CHỐI</a>
+                    <a href="#" class="nav-tab" data-tab="lichSuDangTin">LỊCH SỬ ĐĂNG TIN</a>
+                </nav>
+                <div class="dashboard-content">
+                    <div class="empty-listings">
+                        <h3>Không tìm thấy tin đăng</h3>
+                        <p>Bạn hiện tại không có tin đăng nào cho trạng thái này</p>
+                        <button id="postListingBtn" class="post-listing-btn" onclick="location.href='/frontend/pages/shop/shop-register.html'">Đăng tin</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+          <div class="footer-container">
+            <div class="footer-column footer-about">
+              <h3>Về T5Market</h3>
+              <p>
+                T5Market là chợ điện tử uy tín và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+              </p>
+              <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+              </div>
+            </div>
+
+            <div class="footer-column">
+              <h3>Liên kết nhanh</h3>
+              <ul>
+                <li><a hìnha href="../home/index.html">Trang chủ</a></li>
+                <li><a href="../menu/menu.html">Danh mục sản phẩm</a></li>
+              </ul>
+            </div>
+
+            <div class="footer-column">
+              <h3>Thông tin</h3>
+              <ul>
+                <li><a href="#">Về chúng tôi</a></li>
+                <li><a href="#">Tuyển dụng</a></li>
+                <li><a href="#">Chính sách bảo mật</a></li>
+                <li><a href="#">Điều khoản sử dụng</a></li>
+              </ul>
+            </div>
+
+            <div class="footer-column">
+              <h3>Liên hệ</h3>
+              <ul>
+                <li>
+                  <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1,
+                  TP.HCM
+                </li>
+                <li><i class="fas fa-phone"></i> 1900 1234</li>
+                <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
+                <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="container">
+            <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
+            <div class="payment-methods">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
+                alt="Mastercard"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
+                alt="Visa"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
+                alt="Amex"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
+                alt="Momo"
+              />
+            </div>
+          </div>
+        </div>
+      </footer>
+    <script src="./components/header/header.js" type="module"></script>
+    <script src="./js/shop.js" type="module"></script>
+</body>
+</html>

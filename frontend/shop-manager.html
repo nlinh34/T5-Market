@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý cửa hàng - T5Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./styles/shop-manager.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/footer.css">
+</head>
+<body>
+    <header-component></header-component>
+
+    <div class="container">
+        <!-- Shop Header -->
+        <div class="shop-header">
+            <div class="shop-header-top">
+                <div class="shop-info">
+                    <div class="shop-avatar" id="shopAvatar">
+                        NA
+                    </div>
+                    <div class="shop-details">
+                        <h1 id="shopName">Ngân Anh mobile</h1>
+                        <div class="shop-status" id="shopStatus">
+                            <i class="fas fa-circle"></i>
+                            Hoạt động 8 giờ trước
+                        </div>
+                        <div class="shop-rating">
+                            <div class="stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                            <span class="rating-text">(5 đánh giá)</span>
+                        </div>
+                        <div class="shop-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="shopAddress">1272 Đường Kha Vạn Cân, Phường Linh Tây, Thủ Đức, Hồ Chí Minh, Việt Nam</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shop-actions">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-user-plus"></i>
+                        Theo dõi
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-comments"></i>
+                        Hiển số điện thoại
+                    </button>
+                </div>
+            </div>
+
+            <div class="shop-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Sản phẩm</div>
+                    <div class="stat-value" id="shopProductsCount">30</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Đã bán</div>
+                    <div class="stat-value" id="shopSoldCount">4</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Người theo dõi</div>
+                    <div class="stat-value highlight" id="shopFollowersCount">157</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Phản hồi chat</div>
+                    <div class="stat-value" id="shopChatResponse">99%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Tham gia</div>
+                    <div class="stat-value" id="shopJoinedDate">4 năm</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <ul class="tab-list">
+                <li class="tab-item">
+                    <a href="#" class="tab-link active" data-tab="cuaHang">CỬA HÀNG</a>
+                </li>
+
+                <li class="tab-item">
+                    <a href="#" class="tab-link" data-tab="danhGia">ĐÁNH GIÁ</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Content Section -->
+        <div class="content-section">
+            <div class="main-content">
+                <!-- Shop Introduction -->
+                <div class="card" id="shopIntroCard">
+                    <h3 class="card-title">
+                        <i class="fas fa-info-circle"></i>
+                        Giới thiệu
+                    </h3>
+                    <div class="shop-intro" id="shopIntroDescription">
+                        Bảo dưỡng bảo trì máy zin chuẩn pin cao và hình thức cho khách hàng. 
+                        Bảo gia thành luôn luân tốt nhất và để mua nhất thị trường.
+                        <span class="phone-toggle">Xem thêm</span>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="shopFullAddress">1272 Đường Kha Vạn Cân, Phường Linh Tây, Thủ Đức, Hồ Chí Minh, Việt Nam</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span id="shopPhoneDisplay">09330***</span>
+                            <a href="#" class="phone-toggle" id="phoneToggle">Hiện số</a>
+                        </div>
+                    </div>
+                    <div class="edit-section">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-edit"></i>
+                            Chỉnh sửa thông tin
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products for Sale Section -->
+                <div class="card" id="productsForSaleCard">
+                    <h3 class="card-title">
+                        <i class="fas fa-box"></i>
+                        Sản phẩm đang bán
+                    </h3>
+                    <div class="products-grid" id="sellerProductsGrid">
+                        <!-- Products will be loaded here by JavaScript -->
+                        <div class="empty-state hidden" id="noProductsMessage">
+                            <i class="fas fa-box-open"></i>
+                            <h3>Chưa có sản phẩm nào được đăng</h3>
+                            <p>Bạn chưa đăng sản phẩm nào trong cửa hàng. Hãy bắt đầu đăng tin ngay!</p>
+                            <button class="post-listing-btn" onclick="location.href='/frontend/pages/products/post-products.html'">Đăng tin ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <!-- Shop Policies -->
+                <div class="card">
+                    <h3 class="card-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Chính sách cửa hàng
+                    </h3>
+                    <ul class="policy-list" id="shopPoliciesList">
+                        <li class="policy-item">
+                            <i class="fas fa-truck policy-icon"></i>
+                            Miễn phí vận chuyển nội thành
+                        </li>
+                        <li class="policy-item">
+                            <i class="fas fa-sync-alt policy-icon"></i>
+                            Đổi trả hàng 1 đổi 1 trong 7 ngày
+                        </li>
+                        <li class="policy-item">
+                            <i class="fas fa-credit-card policy-icon"></i>
+                            Trả trước 0 Đ nhận máy
+                        </li>
+                        <li class="policy-item">
+                            <i class="fas fa-tools policy-icon"></i>
+                            Trợ giá thu cũ lên đời máy
+                        </li>
+                    </ul>
+                    <div class="edit-section">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-edit"></i>
+                            Chỉnh sửa chính sách
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+          <div class="footer-container">
+            <div class="footer-column footer-about">
+              <h3>Về T5Market</h3>
+              <p>
+                T5Market là chợ điện tử uy tín và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+              </p>
+              <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+              </div>
+            </div>
+    
+            <div class="footer-column">
+              <h3>Liên kết nhanh</h3>
+              <ul>
+                <li><a hìnha href="../home/index.html">Trang chủ</a></li>
+                <li><a href="../menu/menu.html">Danh mục sản phẩm</a></li>
+              </ul>
+            </div>
+    
+            <div class="footer-column">
+              <h3>Thông tin</h3>
+              <ul>
+                <li><a href="#">Về chúng tôi</a></li>
+                <li><a href="#">Tuyển dụng</a></li>
+                <li><a href="#">Chính sách bảo mật</a></li>
+                <li><a href="#">Điều khoản sử dụng</a></li>
+              </ul>
+            </div>
+    
+            <div class="footer-column">
+              <h3>Liên hệ</h3>
+              <ul>
+                <li>
+                  <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1,
+                  TP.HCM
+                </li>
+                <li><i class="fas fa-phone"></i> 1900 1234</li>
+                <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
+                <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    
+        <div class="footer-bottom">
+          <div class="container">
+            <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
+            <div class="payment-methods">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
+                alt="Mastercard"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
+                alt="Visa"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
+                alt="Amex"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
+                alt="Momo"
+              />
+            </div>
+          </div>
+        </div>
+      </footer>
+    <script src="./components/header/header.js" type="module"></script>
+    <script src="./js/shop-manager.js" type="module"></script>
+</body>
+</html>

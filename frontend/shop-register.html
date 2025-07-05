@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký cửa hàng - T5Market</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./styles/shop.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/header.css">
+</head>
+<body>
+    <header-component></header-component>
+
+    <div class="shop-container">
+        <section id="shopCreationSection" class="shop-creation-section">
+            <div class="create-shop-header">
+                <h2>Tạo cửa hàng Điện tử</h2>
+
+            </div>
+            <div class="stepper">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-name">Giới thiệu</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-name">Thiết lập</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-name">Thanh toán</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-name">Kích hoạt & Chờ duyệt</div>
+                </div>
+            </div>
+
+            <form id="shopRegisterForm">
+                <!-- Step 1: Introduction -->
+                <div id="step1" class="form-step active">
+                    <div class="recommendation-section success-section">
+                        <p class="recommendation-title"><i class="fas fa-check-circle"></i> Khuyên dùng</p>
+                        <ul>
+                            <li>Điện thoại, Máy tính bảng, Laptop, Máy tính để bàn</li>
+                            <li>Tai, Âm thanh</li>
+                            <li>Máy ảnh, Máy quay</li>
+                            <li>Phụ kiện (Màn hình, Chuột, ...), Linh kiện (RAM, Card, ...)</li>
+                            <li>Thiết bị đeo thông minh</li>
+                        </ul>
+                        <div class="terms-checkbox">
+                            <input type="checkbox" id="acceptTerms">
+                            <label for="acceptTerms">Đồng ý việc chọn tại Cửa hàng, bạn đồng ý với <a href="#">Điều khoản sử dụng của T5 Market</a></label>
+                        </div>
+                    </div>
+
+                    <div class="introduction-content">
+                        <div class="intro-images">
+                            <div class="slider-wrapper">
+                                <img src="./assests/images/laptop.jpg" alt="Ảnh giới thiệu 1">
+                                <img src="./assests/images/banner.png" alt="Ảnh giới thiệu 2">
+                                <img src="./assests/images/laptop.jpg" alt="Ảnh giới thiệu 3">
+                            </div>
+                            <button type="button" class="slider-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+                            <button type="button" class="slider-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <div class="intro-text">
+                            <h3>Giao diện chuyên nghiệp</h3>
+                            <p>Tạo ấn cá nhân của bạn sẽ được nâng cấp thành Trang của hàng, với giao diện và nhiều tính năng mới. Cùng xem những tính năng và lợi ích mà Trang của hàng này mang lại cho bạn nhé!</p>
+                        </div>
+                    </div>
+
+                    <div class="shop-policy-section">
+                        <div class="shop-policy-card">
+                            <h4><i class="fas fa-trophy"></i> Lợi ích cho người bán</h4>
+                            <ul>
+                                <li>Đăng tin miễn phí và không giới hạn trong Trang cửa hàng</li>
+                                <li>Giao diện chuyên nghiệp hơn</li>
+                                <li>Tăng tỉ lệ chốt đơn</li>
+                            </ul>
+                        </div>
+                        <div class="shop-policy-card">
+                            <h4><i class="fas fa-bolt"></i> Tính năng nổi bật</h4>
+                            <div class="featured-features">
+                                <div class="feature-item">
+                                    <img src="./assests/images/manhinh.jpg" alt="Feature 1">
+                                    <p>Giao diện chuyên nghiệp, cho phép đăng nhiều hình ảnh cửa hàng</p>
+                                </div>
+                                <div class="feature-item">
+                                    <img src="./assests/images/banner.png" alt="Feature 2">
+                                    <p>Tên cửa hàng nổi bật trong trang tìm kiếm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="price-plan-section">
+                        <h3>Bảng giá</h3>
+                        <div class="price-cards">
+                            <div class="price-card">
+                                <h4>1 tháng</h4>
+                                <p>250.000 đ</p>
+                            </div>
+                            <div class="price-card">
+                                <h4>3 tháng</h4>
+                                <p>670.000 đ</p>
+                            </div>
+                            <div class="price-card">
+                                <h4>6 tháng</h4>
+                                <p>1.100.000 đ</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="featured-shops-section">
+                        <h3>Cửa hàng tiêu biểu</h3>
+                        <div class="featured-shops-grid">
+                            <div class="featured-shop-item">
+                                <img src="./assests/images/laptop.jpg" alt="Cửa hàng A">
+                                <p>Tạo cửa hàng Điện tử</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="next-step-btn" data-next-step="2">Tiếp theo</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Settings -->
+                <div id="step2" class="form-step">
+                    <div class="step-2-header">
+                        <h3><i class="fas fa-building"></i> Thông tin cửa hàng</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="shop-info-content">
+                        <div class="image-upload-section">
+                            <div class="shop-form-row">
+                                <div class="shop-form-label-col">
+                                    <i class="fas fa-image"></i>
+                                    <label>Ảnh đại diện cửa hàng</label>
+                                </div>
+                                <div class="shop-form-input-col">
+                                    <div class="avatar-upload-overlay">
+                                        <img id="avatarPreview" src="./assests/images/default-product.png" alt="Ảnh đại diện cửa hàng">
+                                        <label for="avatar" class="upload-btn"><i class="fas fa-camera"></i></label>
+                                        <input type="file" id="avatar" accept="image/*" class="hidden-file-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="shop-form-row">
+                            <div class="shop-form-label-col">
+                                <i class="fas fa-store"></i>
+                                <label for="shopName">Tên cửa hàng <span class="required">*</span></label>
+                            </div>
+                            <div class="shop-form-input-col">
+                                <input type="text" id="shopName" placeholder="Nhập tên cửa hàng" required>
+                                <span class="error-message" id="shopNameError" style="display: none;">Vui lòng nhập tên cửa hàng</span>
+                                <span class="hint-text">Lưu ý: Tên cửa hàng không thể thay đổi sau khi kích hoạt</span>
+                            </div>
+                        </div>
+                        <div class="shop-form-row">
+                            <div class="shop-form-label-col">
+                                <i class="fas fa-book"></i>
+                                <label for="shopDescription">Giới thiệu chuyên trang</label>
+                            </div>
+                            <div class="shop-form-input-col">
+                                <textarea id="shopDescription" rows="4" placeholder="Mô tả cửa hàng"></textarea>
+                                <span class="error-message" id="shopDescriptionError" style="display: none;">Vui lòng nhập mô tả cửa hàng</span>
+                                <span class="hint-text">Lưu ý: Không nhập số điện thoại vào phần giới thiệu để được duyệt nhanh hơn</span>
+                            </div>
+                        </div>
+                        <div class="shop-form-row">
+                            <div class="shop-form-label-col">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <label for="shopAddress">Địa chỉ cửa hàng <span class="required">*</span></label>
+                            </div>
+                            <div class="shop-form-input-col">
+                                <input type="text" id="shopAddress" placeholder="Nhập địa chỉ cửa hàng" required>
+                                <span id="addressError" class="error-message" style="display: none; color: red;">Vui lòng nhập địa chỉ cửa hàng</span>
+                            </div>
+                        </div>
+                        <div class="shop-form-row">
+                            <div class="shop-form-label-col">
+                                <i class="fas fa-phone"></i>
+                                <label for="shopPhone">Điện thoại liên hệ <span class="required">*</span></label>
+                            </div>
+                            <div class="shop-form-input-col">
+                                <input type="tel" id="shopPhone" placeholder="Số điện thoại" value="0962568279" required>
+                                <span class="error-message" id="shopPhoneError" style="display: none;">Vui lòng nhập số điện thoại liên hệ</span>
+                                <input type="tel" id="shopPhone2" placeholder="Số điện thoại phụ 1 (Nếu có)">
+                                <input type="tel" id="shopPhone3" placeholder="Số điện thoại phụ 2 (Nếu có)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-2-header" id="shopPolicyHeader">
+                        <h3><i class="fas fa-file-alt"></i> Chính sách cửa hàng</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                    <div class="shop-info-content" id="shopPolicyContent">
+                        <h5 class="hint-text">Hiển thị chính sách vận chuyển, bảo hành, đổi trả, đến người mua</h5>
+                        <button type="button" class="btn btn-edit-policy"><i class="fas fa-pen"></i> Chỉnh sửa chính sách</button>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="prev-step-btn" data-prev-step="1">Quay lại</button>
+                        <button type="button" class="next-step-btn" data-next-step="3">Tiếp theo</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Payment (New Step) -->
+                <div id="step3" class="form-step">
+                    <h3 class="section-title">Dịch vụ</h3>
+                    <div class="service-summary">
+                        <div class="service-item">
+                            <div class="service-info">
+                                <img src="./assests/images/logo.png" alt="Cửa hàng Điện tử Logo" class="service-logo">
+                                <div class="service-details">
+                                    <h4>Cửa hàng Điện tử</h4>
+                                    <p class="service-time">Thời gian: <span id="selectedPackageTime">1 tháng</span></p>
+                                </div>
+                            </div>
+                            <span class="service-price" id="selectedPackagePrice">250.000 đ</span>
+                            <i class="fas fa-times close-service-item"></i>
+                        </div>
+                        <p class="service-note">Lưu ý: Giá dịch vụ chưa bao gồm thuế GTGT. Mức thuế suất thuế GTGT được áp dụng theo quy định hiện hành của Nhà nước.</p>
+
+                        <div class="payment-summary">
+                            <div class="summary-row">
+                                <span>Tổng</span>
+                                <span id="summaryTotal">250.000 đ</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Thuế GTGT (8%)</span>
+                                <span id="summaryTax">20.000 đ</span>
+                            </div>
+                            <div class="summary-row total-amount">
+                                <span>Tổng tiền thanh toán</span>
+                                <span id="summaryGrandTotal">270.000 đ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="payment-method-title">Chọn hình thức thanh toán</h4>
+                    <div class="payment-methods-list">
+                        <!-- <label class="payment-method-card">
+                            <input type="radio" name="paymentMethod" value="dongtot" checked>
+                            <div class="method-content">
+                                <img src="../../assests/icons/logo.png" alt="Dong Tot" class="method-icon">
+                                <div class="method-details">
+                                    <h5>Đồng Tốt</h5>
+                                    <p>Số dư: <span>0 đT</span> <i class="fas fa-redo-alt reload-icon"></i></p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-top-up">Nạp thêm</button>
+                        </label> -->
+
+                        <label class="payment-method-card">
+                            <input type="radio" name="paymentMethod" value="bank_transfer">
+                            <div class="method-content">
+                                <i class="fas fa-university method-icon"></i>
+                                <div class="method-details">
+                                    <h5>Chuyển khoản ngân hàng</h5>
+                                </div>
+                            </div>
+                            <i class="fas fa-check-circle selected-icon"></i>
+                        </label>
+
+                        <label class="payment-method-card">
+                            <input type="radio" name="paymentMethod" value="momo">
+                            <div class="method-content">
+                                <img src="./assests/icons/momo-icon.png" alt="MoMo" class="method-icon">
+                                <div class="method-details">
+                                    <h5>Ví MoMo</h5>
+                                    <p class="hint-text">Hướng dẫn tải và thanh toán</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-plus-circle select-method-icon"></i>
+                        </label>
+
+                        <label class="payment-method-card">
+                            <input type="radio" name="paymentMethod" value="zalopay">
+                            <div class="method-content">
+                                <img src="./assests/icons/zalopay-icon.png" alt="ZaloPay" class="method-icon">
+                                <div class="method-details">
+                                    <h5>Ví ZaloPay</h5>
+                                    <p class="hint-text">Hướng dẫn tải và thanh toán</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-plus-circle select-method-icon"></i>
+                        </label>
+
+                        <!-- <label class="payment-method-card">
+                            <input type="radio" name="paymentMethod" value="domestic_card">
+                            <div class="method-content">
+                                <i class="fas fa-credit-card method-icon"></i>
+                                <div class="method-details">
+                                    <h5>Thẻ ngân hàng nội địa</h5>
+                                </div>
+                            </div>
+                            <i class="fas fa-plus-circle select-method-icon"></i>
+                        </label>
+
+                        <label class="payment-method-card">
+                            <input type="radio" name="paymentMethod" value="international_card">
+                            <div class="method-content">
+                                <i class="fas fa-globe method-icon"></i>
+                                <div class="method-details">
+                                    <h5>Thẻ quốc tế</h5>
+                                </div>
+                            </div>
+                            <i class="fas fa-plus-circle select-method-icon"></i>
+                        </label> -->
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="prev-step-btn" data-prev-step="2">Quay lại</button>
+                        <button type="button" class="confirm-payment-btn">270.000 đ - THANH TOÁN</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Activation & Pending Approval -->
+                <div id="step4" class="form-step">
+                    <div class="success-message-section">
+                        <i class="fas fa-check-circle success-icon"></i>
+                        <h2>Đăng ký thành công!</h2>
+                        <p>Thông tin cửa hàng của bạn đã được gửi và đang chờ kiểm duyệt từ hệ thống. Chúng tôi sẽ thông báo cho bạn ngay khi cửa hàng được kích hoạt.</p>
+                        <p>Bạn có thể kiểm tra trạng thái cửa hàng của mình trong mục <a href="#">Quản lý cửa hàng</a>.</p>
+                    </div>
+
+                    <!-- Giới thiệu Section -->
+                    <div class="shop-summary-card">
+                        <h3 class="section-title"><i class="fas fa-info-circle"></i> Giới thiệu</h3>
+                        <div class="summary-details-introduction">
+                            <div class="summary-item">
+                                <strong><i class="fas fa-store"></i> Tên cửa hàng:</strong> <span id="summaryShopName"></span>
+                            </div>
+                            <div class="summary-item full-width">
+                                <strong><i class="fas fa-book"></i> Giới thiệu chuyên trang:</strong> <span id="summaryShopDescription"></span>
+                            </div>
+                            <div class="summary-item">
+                                <strong><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong> <span id="summaryShopAddress"></span>
+                            </div>
+                            <div class="summary-item">
+                                <strong><i class="fas fa-phone"></i> Số điện thoại:</strong> 
+                                <span id="summaryShopPhone"></span>
+                                <a href="#" class="show-phone-number-link" data-full-phone="">Hiện số</a>
+                            </div>
+                            <div class="summary-item">
+                                <strong><i class="fas fa-image"></i> Ảnh đại diện:</strong>
+                                <img id="summaryAvatar" src="./assests/images/default-product.png" alt="Ảnh đại diện" class="preview-image-summary">
+                            </div>
+                        </div>
+                        <div class="form-actions-shop-info">
+                            <button type="button" class="btn btn-edit-info">Chỉnh sửa thông tin</button>
+                        </div>
+                    </div>
+
+                    <!-- Chính sách cửa hàng Section -->
+                    <div class="shop-summary-card">
+                        <h3 class="section-title"><i class="fas fa-file-alt"></i> Chính sách cửa hàng</h3>
+                        <div class="summary-policies">
+                            <ul id="summaryShopPoliciesList">
+                                <!-- Policies will be dynamically added here by JS -->
+                            </ul>
+                            <p class="no-policy-message hidden" id="noPolicyMessage">Chưa có chính sách nào được thêm.</p>
+                        </div>
+                        <div class="form-actions-shop-policy">
+                            <button type="button" class="btn btn-edit-policy">Chỉnh sửa chính sách</button>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="back-to-home-btn">Quay lại trang chủ</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+          <div class="footer-container">
+            <div class="footer-column footer-about">
+              <h3>Về T5Market</h3>
+              <p>
+                T5Market là chợ điện tử uy tín và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+              </p>
+              <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+              </div>
+            </div>
+  
+            <div class="footer-column">
+              <h3>Liên kết nhanh</h3>
+              <ul>
+                <li><a hìnha href="../home/index.html">Trang chủ</a></li>
+                <li><a href="../menu/menu.html">Danh mục sản phẩm</a></li>
+              </ul>
+            </div>
+  
+            <div class="footer-column">
+              <h3>Thông tin</h3>
+              <ul>
+                <li><a href="#">Về chúng tôi</a></li>
+                <li><a href="#">Tuyển dụng</a></li>
+                <li><a href="#">Chính sách bảo mật</a></li>
+                <li><a href="#">Điều khoản sử dụng</a></li>
+              </ul>
+            </div>
+  
+            <div class="footer-column">
+              <h3>Liên hệ</h3>
+              <ul>
+                <li>
+                  <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1,
+                  TP.HCM
+                </li>
+                <li><i class="fas fa-phone"></i> 1900 1234</li>
+                <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
+                <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+  
+        <div class="footer-bottom">
+          <div class="container">
+            <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
+            <div class="payment-methods">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
+                alt="Mastercard"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
+                alt="Visa"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
+                alt="Amex"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
+                alt="Momo"
+              />
+            </div>
+          </div>
+        </div>
+      </footer>    
+
+    <!-- Policy Edit Modal -->
+    <div id="policyEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chỉnh sửa chính sách</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-hint">Tạo tối đa 4 chính sách của cửa hàng</p>
+
+                <!-- Vận chuyển (Shipping) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-truck policy-icon"></i>
+                            <label for="shippingPolicyToggle">Vận chuyển</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="shippingPolicyToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="shippingPolicy" placeholder="Miễn phí vận chuyển nội thành" value="Miễn phí vận chuyển nội thành">
+                    </div>
+                </div>
+
+                <!-- Bảo hành (Warranty) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-shield-alt policy-icon"></i>
+                            <label for="warrantyPolicyToggle">Bảo hành</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="warrantyPolicyToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="warrantyPolicy" placeholder="Bảo hành 6 tháng phần cứng" value="Bảo hành 6 tháng phần cứng">
+                    </div>
+                </div>
+
+                <!-- Đổi trả (Return) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-exchange-alt policy-icon"></i>
+                            <label for="returnPolicyToggle">Đổi trả</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="returnPolicyToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="returnPolicy" placeholder="Chính sách đổi trả trong 7 ngày" value="">
+                    </div>
+                </div>
+
+                <!-- Trả góp (Installment) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-money-check-alt policy-icon"></i>
+                            <label for="installmentPolicyToggle">Trả góp</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="installmentPolicyToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="installmentPolicy" placeholder="Hỗ trợ trả góp qua thẻ tín dụng" value="">
+                    </div>
+                </div>
+
+                <!-- Thu cũ (Trade-in) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-sync-alt policy-icon"></i>
+                            <label for="tradeinPolicyToggle">Thu cũ</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="tradeinPolicyToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="tradeinPolicy" placeholder="Hỗ trợ thu cũ đổi mới giá cao" value="">
+                    </div>
+                </div>
+
+                <!-- Chính sách khác (Other Policies) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-file-alt policy-icon"></i>
+                            <label>Chính sách khác</label>
+                        </div>
+                        <button type="button" id="addCustomPolicyBtn" class="add-custom-policy-btn">Tạo thêm</button>
+                    </div>
+                    <div id="customPolicyContainer"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn cancel-policy-btn">Hủy</button>
+                <button type="button" class="btn confirm-policy-btn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Choose Package Modal -->
+    <div id="choosePackageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chọn gói Cửa hàng</h2>
+                <span class="close-button choose-package-close">&times;</span>
+            </div>
+            <div class="modal-body choose-package-body">
+                <div class="product-showcase">
+                    <img src="./assests/images/laptop.jpg" alt="Product Showcase">
+                    <div class="product-overlay-info">
+                        <p class="overlay-text">Sản phẩm đang bán</p>
+                        <div class="products-grid-small">
+                            <div class="product-item-small">
+                                <img src="./assests/images/phone.jpg" alt="iPhone XR">
+                                <p>iPhone XR</p>
+                                <span>7.490.000 đ</span>
+                            </div>
+                            <div class="product-item-small">
+                                <img src="./assests/images/pad.jpg" alt="iPad Pro">
+                                <p>iPad Pro</p>
+                                <span>11.990.000 đ</span>
+                            </div>
+                            <div class="product-item-small">
+                                <img src="./assests/images/manhinh.jpg" alt="MacBook">
+                                <p>MacBook</p>
+                                <span>24.990.000 đ</span>
+                            </div>
+                            <div class="product-item-small">
+                                <img src="./assests/images/camera.webp" alt="iPhone 11">
+                                <p>iPhone 11</p>
+                                <span>14.990.000 đ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="benefits-list">
+                    <p><i class="fas fa-check-circle"></i> Tiếp cận nhiều khách hàng</p>
+                    <p><i class="fas fa-check-circle"></i> Đăng tin miễn phí không giới hạn trong trang Cửa hàng</p>
+                    <p><i class="fas fa-check-circle"></i> Tăng tỉ lệ chốt đơn</p>
+                </div>
+
+                <h4 class="package-select-title">Chọn thời gian sử dụng:</h4>
+                <div class="package-options">
+                    <label class="package-card">
+                        <input type="radio" name="package" value="1_month" data-price="250000" checked>
+                        <div class="package-info">
+                            <h5>1 tháng</h5>
+                            <p>250.000 đ</p>
+                        </div>
+                    </label>
+                    <label class="package-card">
+                        <input type="radio" name="package" value="3_months" data-price="670000">
+                        <div class="package-info">
+                            <h5>3 tháng</h5>
+                            <p>670.000 đ</p>
+                        </div>
+                    </label>
+                    <label class="package-card">
+                        <input type="radio" name="package" value="6_months" data-price="1100000">
+                        <div class="package-info">
+                            <h5>6 tháng</h5>
+                            <p>1.100.000 đ</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer choose-package-footer">
+                <button type="button" class="btn confirm-package-btn">250.000 đ - MUA NGAY!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./components/header/header.js" type="module"></script>
+    <script src="./js/shop-register.js" type="module"></script>
+</body>
+</html>

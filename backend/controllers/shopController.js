@@ -147,6 +147,7 @@ module.exports = {
     approveShop,
     requestUpgradeToSeller,
     getPendingShops,
-    getShopWithProducts
+    getShopWithProducts,
+    rejectShop
 }
 
