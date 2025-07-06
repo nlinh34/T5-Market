@@ -1,4 +1,4 @@
-const BASE_URL = "https://t5-market.onrender.com";
+import { API_BASE_URL } from "../../config.js";
 
 
 export const apiCall = async ({
@@ -6,6 +6,7 @@ export const apiCall = async ({
   method = "GET",
   data = null,
   customHeaders = {},
+  expectedStatusCodes = [],
 }) => {
   try {
     const token = localStorage.getItem("token");
@@ -32,12 +33,15 @@ export const apiCall = async ({
     }
 
     const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-    const url = `${BASE_URL}${cleanEndpoint}`;
+    const url = `${API_BASE_URL}${cleanEndpoint}`;
 
     console.log("Calling API: ", url);
     const response = await fetch(url, config);
 
     if (!response.ok) {
+      if (expectedStatusCodes.includes(response.status)) {
+        return response.json();
+      }
       const errorText = await response.text();
       throw new Error(errorText || `HTTP error! status: ${response.status}`);
     }

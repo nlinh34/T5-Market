@@ -3,6 +3,8 @@ const Product = require("../models/Product");
 const User = require("../models/User")
 const { httpStatusCodes } = require("../utils/constants");
 
+const { Role } = require("../constants/roleEnum"); 
+
 const approveShop = async (req, res) => {
   try {
     const { id } = req.params; // id của 
@@ -20,7 +22,7 @@ const approveShop = async (req, res) => {
     await shop.save();
 
     const user = await User.findById(shop.owner._id);
-    user.role = "seller";
+    user.role = Role.SELLER;
     user.status = "approved";
     user.approvedBy = req.user.userId;
     await user.save();
@@ -69,7 +71,7 @@ const requestUpgradeToSeller = async (req, res) => {
   try {
     console.log("User in req:", req.user);
     const userId = req.user.userId;
-    const { name, address, phone, description, logoUrl } = req.body;
+    const { name, address, phone, description, logoUrl, policies } = req.body;
 
     // Kiểm tra đã có shop chưa
     const existingShop = await Shop.findOne({ owner: userId });
@@ -85,12 +87,13 @@ const requestUpgradeToSeller = async (req, res) => {
       phone,
       description,
       logoUrl,
+      policies,
       status: "pending",
     });
 
     await newShop.save();
 
-    res.status(200).json({ message: "Yêu cầu mở shop đã được gửi, vui lòng chờ admin duyệt." });
+    res.status(200).json({ success: true, message: "Yêu cầu mở shop đã được gửi, vui lòng chờ admin duyệt." });
   } catch (error) {
     console.error("Error in requestUpgradeToSeller:", error);
     res.status(500).json({ error: "Lỗi khi gửi yêu cầu nâng cấp seller" });
@@ -109,6 +112,27 @@ const getPendingShops = async (req, res) => {
   }
 };
 
+const getApprovedShops = async (req, res) => {
+  try {
+    const approvedShops = await Shop.find({ status: "approved" })
+      .populate("owner", "fullName email")
+      .populate("approvedBy", "fullName email") 
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      data: approvedShops,
+    });
+  } catch (error) {
+    console.error("❌ Lỗi khi lấy danh sách shop đã duyệt:", error);
+    res.status(500).json({
+      success: false,
+      error: "Lỗi server khi lấy danh sách shop đã được duyệt",
+    });
+  }
+};
+
+
 
 const getShopWithProducts = async (req, res) => {
   try {
@@ -117,6 +141,7 @@ const getShopWithProducts = async (req, res) => {
     // Lấy thông tin shop
     const shop = await Shop.findById(shopId)
       .populate("owner", "fullName email")
+      .populate("approvedBy", "fullName")
       .lean();
 
     if (!shop) {
@@ -141,13 +166,83 @@ const getShopWithProducts = async (req, res) => {
   }
 };
 
+const getMyShop = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const shop = await Shop.findOne({ owner: userId }).lean();
 
+    if (!shop) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({ success: false, message: "Không tìm thấy shop cho người dùng này." });
+    }
+
+    res.status(httpStatusCodes.OK).json({ success: true, data: shop });
+  } catch (error) {
+    console.error("Error in getMyShop:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, error: "Lỗi khi lấy thông tin shop." });
+  }
+};
+
+const updateShopProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { name, address, phone, description, logoUrl } = req.body;
+
+    const shop = await Shop.findOne({ owner: userId });
+
+    if (!shop) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({ success: false, message: "Shop không tìm thấy." });
+    }
+
+    if (name) shop.name = name;
+    if (address) shop.address = address;
+    if (phone) shop.phone = phone;
+    if (description) shop.description = description;
+    if (logoUrl) shop.logoUrl = logoUrl;
+
+    await shop.save();
+
+    res.status(httpStatusCodes.OK).json({ success: true, message: "Cập nhật thông tin shop thành công.", data: shop });
+  } catch (error) {
+    console.error("Error in updateShopProfile:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, error: "Lỗi khi cập nhật thông tin shop." });
+  }
+};
+
+const updateShopPolicies = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { policies } = req.body;
+
+    const shop = await Shop.findOne({ owner: userId });
+
+    if (!shop) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({ success: false, message: "Shop không tìm thấy." });
+    }
+
+    // Validate policies structure if necessary (e.g., each policy has type and value)
+    if (!Array.isArray(policies)) {
+        return res.status(httpStatusCodes.BAD_REQUEST).json({ success: false, message: "Chính sách phải là một mảng." });
+    }
+
+    shop.policies = policies;
+    await shop.save();
+
+    res.status(httpStatusCodes.OK).json({ success: true, message: "Cập nhật chính sách shop thành công.", data: shop });
+  } catch (error) {
+    console.error("Error in updateShopPolicies:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, error: "Lỗi khi cập nhật chính sách shop." });
+  }
+};
 
 module.exports = {
     approveShop,
     requestUpgradeToSeller,
     getPendingShops,
     getShopWithProducts,
-    rejectShop
+    rejectShop,
+    getApprovedShops,
+    getMyShop,
+    updateShopProfile,
+    updateShopPolicies
 }
 

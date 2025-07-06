@@ -6,8 +6,10 @@
     <title>Đăng ký cửa hàng - T5Market</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./styles/shop.css">
-    <link rel="stylesheet" href="./styles/style.css">
+    <!-- <link rel="stylesheet" href="./styles/style.css"> -->
     <link rel="stylesheet" href="./styles/header.css">
+    <link rel="stylesheet" href="./styles/shop-register.css">
+    <link rel="stylesheet" href="./styles/footer.css">
 </head>
 <body>
     <header-component></header-component>
@@ -29,10 +31,6 @@
                 </div>
                 <div class="step" data-step="3">
                     <div class="step-number">3</div>
-                    <div class="step-name">Thanh toán</div>
-                </div>
-                <div class="step" data-step="4">
-                    <div class="step-number">4</div>
                     <div class="step-name">Kích hoạt & Chờ duyệt</div>
                 </div>
             </div>
@@ -189,7 +187,7 @@
                             </div>
                             <div class="shop-form-input-col">
                                 <input type="tel" id="shopPhone" placeholder="Số điện thoại" value="0962568279" required>
-                                <span class="error-message" id="shopPhoneError" style="display: none;">Vui lòng nhập số điện thoại liên hệ</span>
+                                <span class="error-message" id="shopPhoneError" style="display: none;">Vui lòng nhập số điện thoại liên Hệ</span>
                                 <input type="tel" id="shopPhone2" placeholder="Số điện thoại phụ 1 (Nếu có)">
                                 <input type="tel" id="shopPhone3" placeholder="Số điện thoại phụ 2 (Nếu có)">
                             </div>
@@ -208,117 +206,6 @@
                     <div class="form-actions">
                         <button type="button" class="prev-step-btn" data-prev-step="1">Quay lại</button>
                         <button type="button" class="next-step-btn" data-next-step="3">Tiếp theo</button>
-                    </div>
-                </div>
-
-                <!-- Step 3: Payment (New Step) -->
-                <div id="step3" class="form-step">
-                    <h3 class="section-title">Dịch vụ</h3>
-                    <div class="service-summary">
-                        <div class="service-item">
-                            <div class="service-info">
-                                <img src="./assests/images/logo.png" alt="Cửa hàng Điện tử Logo" class="service-logo">
-                                <div class="service-details">
-                                    <h4>Cửa hàng Điện tử</h4>
-                                    <p class="service-time">Thời gian: <span id="selectedPackageTime">1 tháng</span></p>
-                                </div>
-                            </div>
-                            <span class="service-price" id="selectedPackagePrice">250.000 đ</span>
-                            <i class="fas fa-times close-service-item"></i>
-                        </div>
-                        <p class="service-note">Lưu ý: Giá dịch vụ chưa bao gồm thuế GTGT. Mức thuế suất thuế GTGT được áp dụng theo quy định hiện hành của Nhà nước.</p>
-
-                        <div class="payment-summary">
-                            <div class="summary-row">
-                                <span>Tổng</span>
-                                <span id="summaryTotal">250.000 đ</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Thuế GTGT (8%)</span>
-                                <span id="summaryTax">20.000 đ</span>
-                            </div>
-                            <div class="summary-row total-amount">
-                                <span>Tổng tiền thanh toán</span>
-                                <span id="summaryGrandTotal">270.000 đ</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4 class="payment-method-title">Chọn hình thức thanh toán</h4>
-                    <div class="payment-methods-list">
-                        <!-- <label class="payment-method-card">
-                            <input type="radio" name="paymentMethod" value="dongtot" checked>
-                            <div class="method-content">
-                                <img src="../../assests/icons/logo.png" alt="Dong Tot" class="method-icon">
-                                <div class="method-details">
-                                    <h5>Đồng Tốt</h5>
-                                    <p>Số dư: <span>0 đT</span> <i class="fas fa-redo-alt reload-icon"></i></p>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-top-up">Nạp thêm</button>
-                        </label> -->
-
-                        <label class="payment-method-card">
-                            <input type="radio" name="paymentMethod" value="bank_transfer">
-                            <div class="method-content">
-                                <i class="fas fa-university method-icon"></i>
-                                <div class="method-details">
-                                    <h5>Chuyển khoản ngân hàng</h5>
-                                </div>
-                            </div>
-                            <i class="fas fa-check-circle selected-icon"></i>
-                        </label>
-
-                        <label class="payment-method-card">
-                            <input type="radio" name="paymentMethod" value="momo">
-                            <div class="method-content">
-                                <img src="./assests/icons/momo-icon.png" alt="MoMo" class="method-icon">
-                                <div class="method-details">
-                                    <h5>Ví MoMo</h5>
-                                    <p class="hint-text">Hướng dẫn tải và thanh toán</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-plus-circle select-method-icon"></i>
-                        </label>
-
-                        <label class="payment-method-card">
-                            <input type="radio" name="paymentMethod" value="zalopay">
-                            <div class="method-content">
-                                <img src="./assests/icons/zalopay-icon.png" alt="ZaloPay" class="method-icon">
-                                <div class="method-details">
-                                    <h5>Ví ZaloPay</h5>
-                                    <p class="hint-text">Hướng dẫn tải và thanh toán</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-plus-circle select-method-icon"></i>
-                        </label>
-
-                        <!-- <label class="payment-method-card">
-                            <input type="radio" name="paymentMethod" value="domestic_card">
-                            <div class="method-content">
-                                <i class="fas fa-credit-card method-icon"></i>
-                                <div class="method-details">
-                                    <h5>Thẻ ngân hàng nội địa</h5>
-                                </div>
-                            </div>
-                            <i class="fas fa-plus-circle select-method-icon"></i>
-                        </label>
-
-                        <label class="payment-method-card">
-                            <input type="radio" name="paymentMethod" value="international_card">
-                            <div class="method-content">
-                                <i class="fas fa-globe method-icon"></i>
-                                <div class="method-details">
-                                    <h5>Thẻ quốc tế</h5>
-                                </div>
-                            </div>
-                            <i class="fas fa-plus-circle select-method-icon"></i>
-                        </label> -->
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="prev-step-btn" data-prev-step="2">Quay lại</button>
-                        <button type="button" class="confirm-payment-btn">270.000 đ - THANH TOÁN</button>
                     </div>
                 </div>
 
@@ -645,6 +532,6 @@
     </div>
 
     <script src="./components/header/header.js" type="module"></script>
-    <script src="./js/shop-register.js" type="module"></script>
+    <script type="module" src="js/shop-register.js"></script>
 </body>
 </html>

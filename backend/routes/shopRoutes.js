@@ -4,15 +4,25 @@ const {
     requestUpgradeToSeller,
     approveShop,
     getPendingShops,
-    getShopWithProducts
+    getShopWithProducts,
+    getApprovedShops,
+    getMyShop,
+    updateShopProfile,
+    updateShopPolicies
 } = require("../controllers/shopController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 
 router.get("/get-pending-shops", protect, getPendingShops);
+router.get("/get-approve-shops", protect, getApprovedShops);
+
 router.get("/:shopId/details-with-products", getShopWithProducts);
+router.get("/my-shop", protect, getMyShop);
 
 router.post("/", protect, requestUpgradeToSeller);
 router.put("/approve-shop/:id", protect, approveShop);
+router.put("/profile", protect, updateShopProfile);
+router.put("/policies", protect, updateShopPolicies);
+
 
 
 module.exports = router;

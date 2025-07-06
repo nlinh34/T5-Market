@@ -1,4 +1,57 @@
+import { ShopAPI } from "../APIs/shopAPI.js";
+
+async function checkExistingShop() {
+    const shopCreationSection = document.getElementById('shopCreationSection');
+    const container = document.querySelector('.shop-container');
+
+    if (!shopCreationSection || !container) return;
+
+    // Hide the form initially to prevent flash of content
+    shopCreationSection.style.display = 'none';
+
+    try {
+        const response = await ShopAPI.getMyShop();
+        if (response.success && response.data) {
+            // Shop exists, hide form and show an informative message
+            const existingShopMessage = document.createElement('div');
+            existingShopMessage.className = 'has-shop-section'; // Use a class for styling
+            
+            let statusMessage = "Bạn có thể quản lý cửa hàng của mình tại đây.";
+            let title = "Bạn đã có một cửa hàng!";
+
+            switch (response.data.status) {
+                case 'pending':
+                    title = "Yêu cầu của bạn đang chờ duyệt";
+                    statusMessage = "Yêu cầu đăng ký cửa hàng của bạn đã được ghi nhận và đang chờ quản trị viên phê duyệt. Vui lòng quay lại sau.";
+                    break;
+                case 'rejected':
+                    title = "Yêu cầu của bạn đã bị từ chối";
+                    statusMessage = "Yêu cầu đăng ký cửa hàng của bạn trước đó đã bị từ chối. Vui lòng liên hệ bộ phận hỗ trợ để biết thêm chi tiết.";
+                    break;
+            }
+
+            existingShopMessage.innerHTML = `
+                <div class="shop-dashboard" style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-store" style="font-size: 48px; color: var(--primary-color); margin-bottom: 20px;"></i>
+                    <h3>${title}</h3>
+                    <p style="max-width: 500px; margin: 0 auto 20px auto;">${statusMessage}</p>
+                    <a href="./shop-manager.html" class="manage-shop-btn" style="display: inline-block; text-decoration: none;">Đi tới trang quản lý</a>
+                </div>
+            `;
+            container.appendChild(existingShopMessage);
+        } else {
+            // This case might happen if API returns success: false but not an error (which is unlikely for getMyShop)
+             shopCreationSection.style.display = 'block';
+        }
+    } catch (error) {
+        // This is the expected case for a new user (API returns 404 Not Found)
+        console.log("No existing shop found for this user. Displaying registration form.");
+        shopCreationSection.style.display = 'block';
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  checkExistingShop();
   const shopRegisterForm = document.getElementById("shopRegisterForm");
   const stepperSteps = document.querySelectorAll(".stepper .step");
   const formSteps = document.querySelectorAll(".form-step");
@@ -36,11 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Terms checkbox
   const acceptTermsCheckbox = document.getElementById("acceptTerms");
-
-  // Payment Method elements
-  const paymentMethodSelect = document.getElementById("paymentMethod");
-  const bankInfoDiv = document.getElementById("bankInfo");
-  const accountNumberDiv = document.getElementById("accountNumber");
 
   // Summary elements (for Step 4)
   const summaryShopAddress = document.getElementById("summaryShopAddress");
@@ -99,20 +147,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const MAX_CUSTOM_POLICIES = 4; // Limit to 4 custom policies
 
   // New: Choose Package Modal Elements
-  const choosePackageModal = document.getElementById("choosePackageModal");
-  const choosePackageCloseBtn = document.querySelector(".choose-package-close");
-  const packageRadios = document.querySelectorAll('input[name="package"]');
-  const confirmPackageBtn = document.querySelector(".confirm-package-btn");
-
-  // New: Step 3 Payment Elements
-  const selectedPackageTime = document.getElementById("selectedPackageTime");
-  const selectedPackagePrice = document.getElementById("selectedPackagePrice");
-  const summaryTotal = document.getElementById("summaryTotal");
-  const summaryTax = document.getElementById("summaryTax");
-  const summaryGrandTotal = document.getElementById("summaryGrandTotal");
-  const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');
-  const confirmPaymentBtn = document.querySelector(".confirm-payment-btn");
-  const backToHomeBtn = document.querySelector(".back-to-home-btn");
+  // const choosePackageModal = document.getElementById("choosePackageModal");
+  // const choosePackageCloseBtn = document.querySelector(".choose-package-close");
+  // const packageRadios = document.querySelectorAll('input[name="package"]');
+  // const confirmPackageBtn = document.querySelector(".confirm-package-btn");
 
   // New: Step 4 Edit buttons
   const editInfoBtn = document.querySelector("#step4 .btn-edit-info");
@@ -140,15 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Update stepper progress line width
-    const totalSteps = stepperSteps.length;
+    const totalSteps = 3; // Hardcode to 3 steps
     const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
     document.documentElement.style.setProperty('--stepper-progress-width', `${progressPercentage}%`);
 
-    // Update summary information when navigating to Step 4
-    if (currentStep === 4) {
+    // Update summary information when navigating to Step 3 (formerly Step 4)
+    if (currentStep === 3) {
       updateSummary();
-    } else if (currentStep === 3) { // Update payment summary when navigating to Step 3
-        updatePaymentSummary();
     }
   };
 
@@ -258,190 +294,191 @@ document.addEventListener("DOMContentLoaded", () => {
     // Shop policies (assuming collectPolicyData already updates summaryShopPoliciesList)
     const policies = collectPolicyData();
     summaryShopPoliciesList.innerHTML = ''; // Clear existing policies
+
     if (policies.length > 0) {
-        policies.forEach(policy => {
-            const li = document.createElement('li');
-            li.innerHTML = `<i class="fas fa-check-circle"></i> ${policy.value}`; // Use policy.value instead of policy.description
-            summaryShopPoliciesList.appendChild(li);
-        });
-        noPolicyMessage.classList.add('hidden');
+      noPolicyMessage.style.display = 'none';
+      policies.forEach((policy) => {
+        const listItem = document.createElement("li");
+        const policyIcon = getPolicyIcon(policy.type); // Function to get icon
+        const policyName = getPolicyName(policy.type); // Function to get display name
+        listItem.innerHTML = `<i class="${policyIcon}"></i> <strong>${policyName}:</strong> ${policy.value}`;
+        summaryShopPoliciesList.appendChild(listItem);
+      });
     } else {
-        noPolicyMessage.classList.remove('hidden');
+      noPolicyMessage.style.display = 'block';
+    }
+
+    // Update current user email (if it's not a placeholder)
+    const currentUserEmailElement = document.getElementById("summaryUserEmail");
+    if (currentUserEmailElement) {
+        currentUserEmailElement.textContent = userEmail; // Use the placeholder or actual user email
     }
   };
 
-  // Helper function to get policy icon
+  // Function to get policy icon class based on type
   const getPolicyIcon = (policyType) => {
     switch (policyType) {
-        case 'shipping': return 'fas fa-truck';
-        case 'warranty': return 'fas fa-shield-alt';
-        case 'return': return 'fas fa-exchange-alt';
-        case 'installment': return 'fas fa-money-check-alt';
-        case 'tradein': return 'fas fa-sync-alt';
-        case 'custom': return 'fas fa-file-alt';
-        default: return 'fas fa-info-circle';
+      case "shipping": return "fas fa-truck";
+      case "warranty": return "fas fa-shield-alt";
+      case "return": return "fas fa-undo";
+      case "installment": return "fas fa-credit-card";
+      case "tradein": return "fas fa-exchange-alt";
+      case "custom": return "fas fa-info-circle";
+      default: return "fas fa-question-circle";
     }
   };
 
-  // Helper function to get policy display name
+  // Function to get policy display name based on type
   const getPolicyName = (policyType) => {
     switch (policyType) {
-        case 'shipping': return 'Vận chuyển';
-        case 'warranty': return 'Bảo hành';
-        case 'return': return 'Đổi trả';
-        case 'installment': return 'Trả góp';
-        case 'tradein': return 'Thu cũ';
-        case 'custom': return 'Chính sách tùy chỉnh';
-        default: return 'Thông tin khác';
-    }
-  };
-
-  // Function to update payment summary in Step 3
-  const updatePaymentSummary = () => {
-    const selectedPackage = document.querySelector('input[name="package"]:checked');
-    if (selectedPackage) {
-        const price = parseInt(selectedPackage.dataset.price);
-        let time = "";
-        if (selectedPackage.value === "1_month") {
-            time = "1 tháng";
-        } else if (selectedPackage.value === "3_months") {
-            time = "3 tháng";
-        } else if (selectedPackage.value === "6_months") {
-            time = "6 tháng";
-        }
-
-        selectedPackageTime.textContent = time;
-        selectedPackagePrice.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
-
-        const taxRate = 0.08; // 8% tax
-        const tax = price * taxRate;
-        const grandTotal = price + tax;
-
-        summaryTotal.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
-        summaryTax.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tax);
-        summaryGrandTotal.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(grandTotal);
-
-        confirmPaymentBtn.textContent = `${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(grandTotal)} - THANH TOÁN`;
+      case "shipping": return "Chính sách vận chuyển";
+      case "warranty": return "Chính sách bảo hành";
+      case "return": return "Chính sách đổi trả";
+      case "installment": return "Chính sách trả góp";
+      case "tradein": return "Chính sách thu cũ đổi mới";
+      case "custom": return "Chính sách khác";
+      default: return "Chính sách không xác định";
     }
   };
 
   // Function to handle policy toggle and input visibility
   const handlePolicyToggle = (toggle, inputGroup) => {
     if (toggle && inputGroup) {
+      // Initial state
       if (toggle.checked) {
         inputGroup.classList.remove("hidden");
       } else {
         inputGroup.classList.add("hidden");
       }
+      // Add change listener
+      toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+          inputGroup.classList.remove("hidden");
+        } else {
+          inputGroup.classList.add("hidden");
+          // Clear input value when policy is unchecked
+          const inputField = inputGroup.querySelector('input[type="text"]');
+          if (inputField) {
+            inputField.value = '';
+          }
+        }
+      });
     }
   };
 
-  // Add event listeners for policy toggles
-  if (shippingPolicyToggle) {
-    shippingPolicyToggle.addEventListener("change", () => handlePolicyToggle(shippingPolicyToggle, shippingPolicyInputGroup));
-  }
-  if (warrantyPolicyToggle) {
-    warrantyPolicyToggle.addEventListener("change", () => handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup));
-  }
-  if (returnPolicyToggle) {
-    returnPolicyToggle.addEventListener("change", () => handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup));
-  }
-  if (installmentPolicyToggle) {
-    installmentPolicyToggle.addEventListener("change", () => handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup));
-  }
-  if (tradeinPolicyToggle) {
-    tradeinPolicyToggle.addEventListener("change", () => handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup));
-  }
-
-  // Function to add a new custom policy field
+  // Function to add a new custom policy input field
   const addCustomPolicyField = () => {
-    if (customPolicyCount < MAX_CUSTOM_POLICIES) {
-      customPolicyCount++;
-      const newPolicyHtml = `
+    if (customPolicyCount >= MAX_CUSTOM_POLICIES) {
+      showNotification(`Chỉ được phép thêm tối đa ${MAX_CUSTOM_POLICIES} chính sách tùy chỉnh.`, "error");
+      return;
+    }
+    customPolicyCount++;
+    const newPolicyHtml = `
             <div class="policy-input-group custom-policy-input" data-custom-policy-id="${customPolicyCount}">
-                <input type="text" placeholder="Nhập chính sách tùy chỉnh ${customPolicyCount}">
+                <input type="text" placeholder="Tên chính sách tùy chỉnh và mô tả" value="">
                 <button type="button" class="remove-custom-policy-btn" data-custom-policy-id="${customPolicyCount}">Xóa</button>
             </div>
         `;
-      customPolicyContainer.insertAdjacentHTML('beforeend', newPolicyHtml);
+    customPolicyContainer.insertAdjacentHTML('beforeend', newPolicyHtml);
 
-      // Add event listener for the new remove button
-      const newRemoveBtn = customPolicyContainer.querySelector(`.remove-custom-policy-btn[data-custom-policy-id="${customPolicyCount}"]`);
-      if (newRemoveBtn) {
-        newRemoveBtn.addEventListener('click', (event) => {
-          const policyIdToRemove = event.target.dataset.customPolicyId;
-          const policyElementToRemove = customPolicyContainer.querySelector(`.custom-policy-input[data-custom-policy-id="${policyIdToRemove}"]`);
-          if (policyElementToRemove) {
-            policyElementToRemove.remove();
-            customPolicyCount--; // Decrement count
-          }
-        });
-      }
-    } else {
-      alert(`Bạn chỉ có thể tạo tối đa ${MAX_CUSTOM_POLICIES} chính sách tùy chỉnh.`);
+    // Add event listener to the new remove button
+    const newRemoveBtn = customPolicyContainer.querySelector(`.remove-custom-policy-btn[data-custom-policy-id="${customPolicyCount}"]`);
+    if (newRemoveBtn) {
+      newRemoveBtn.addEventListener('click', (event) => {
+        const policyIdToRemove = event.target.dataset.customPolicyId;
+        const policyElementToRemove = customPolicyContainer.querySelector(`.custom-policy-input[data-custom-policy-id="${policyIdToRemove}"]`);
+        if (policyElementToRemove) {
+          policyElementToRemove.remove();
+          customPolicyCount--; // Decrement count on removal
+        }
+      });
     }
   };
 
-  // Add event listener for adding custom policy
-  if (addCustomPolicyBtn) {
-    addCustomPolicyBtn.addEventListener('click', addCustomPolicyField);
-  }
-
-  // Function to collect all active policy data
+  // Function to collect all policy data from the modal
   const collectPolicyData = () => {
     const policies = [];
 
-    // Shipping policy
-    if (shippingPolicyToggle && shippingPolicyToggle.checked && shippingPolicyInput) {
-      policies.push({ type: 'shipping', value: shippingPolicyInput.value });
-    }
+    const addPolicyIfChecked = (toggle, input) => {
+      if (toggle && toggle.checked && input && input.value.trim() !== '') {
+        policies.push({ type: toggle.id.replace("PolicyToggle", "").toLowerCase(), value: input.value.trim() });
+      }
+    };
 
-    // Warranty policy
-    if (warrantyPolicyToggle && warrantyPolicyToggle.checked && warrantyPolicyInput) {
-      policies.push({ type: 'warranty', value: warrantyPolicyInput.value });
-    }
+    addPolicyIfChecked(shippingPolicyToggle, shippingPolicyInput);
+    addPolicyIfChecked(warrantyPolicyToggle, warrantyPolicyInput);
+    addPolicyIfChecked(returnPolicyToggle, returnPolicyInput);
+    addPolicyIfChecked(installmentPolicyToggle, installmentPolicyInput);
+    addPolicyIfChecked(tradeinPolicyToggle, tradeinPolicyInput);
 
-    // Return policy
-    if (returnPolicyToggle && returnPolicyToggle.checked && returnPolicyInput) {
-      policies.push({ type: 'return', value: returnPolicyInput.value });
-    }
-
-    // Installment policy
-    if (installmentPolicyToggle && installmentPolicyToggle.checked && installmentPolicyInput) {
-      policies.push({ type: 'installment', value: installmentPolicyInput.value });
-    }
-
-    // Trade-in policy
-    if (tradeinPolicyToggle && tradeinPolicyToggle.checked && tradeinPolicyInput) {
-      policies.push({ type: 'tradein', value: tradeinPolicyInput.value });
-    }
-
-    // Custom policies
-    document.querySelectorAll('#customPolicyContainer .custom-policy-input input[type="text"]').forEach(input => {
+    // Collect custom policies
+    customPolicyContainer.querySelectorAll('.custom-policy-input input[type="text"]').forEach(input => {
       if (input.value.trim() !== '') {
         policies.push({ type: 'custom', value: input.value.trim() });
       }
     });
-
     return policies;
   };
 
-  // Function to show notification
+  // Universal notification display function
   const showNotification = (message, type = "success") => {
     const notification = document.createElement("div");
     notification.className = `notification ${type}`;
-    notification.textContent = message;
+
+    let iconHtml = '';
+    if (type === 'success') {
+      iconHtml = '<i class="fas fa-check-circle"></i> ';
+    } else if (type === 'error') {
+      iconHtml = '<i class="fas fa-times-circle"></i> ';
+    } else if (type === 'info') {
+      iconHtml = '<i class="fas fa-info-circle"></i> ';
+    } else if (type === 'warning') {
+        iconHtml = '<i class="fas fa-exclamation-triangle"></i> '; // Warning icon
+    }
+
+    notification.innerHTML = iconHtml + message; // Add icon before the message
+
+    // Calculate dynamic top position to prevent overlapping
+    const existingNotifications = document.querySelectorAll('.notification');
+    let currentOffset = 20; // Initial top offset from the top of the viewport
+    existingNotifications.forEach(notif => {
+        // Only consider notifications that are currently visible and not removed yet
+        // We assume notifications are removed after their animation
+        // Add height of existing notification plus a small margin (e.g., 10px)
+        currentOffset += notif.offsetHeight + 10;
+    });
+
+    notification.style.top = `${currentOffset}px`;
+    notification.style.right = `20px`; // Keep it aligned to the right
+
     document.body.appendChild(notification);
 
+    // Automatically remove after 3 seconds
     setTimeout(() => {
       notification.remove();
+      // Optional: Re-adjust positions of other notifications after one is removed
+      // This is more complex and might involve looping through remaining notifications
+      // and recalculating their `top` based on their new relative positions.
+      // For now, new notifications will just stack on top of the current highest one.
     }, 3000);
+  };
+
+  // Helper to show/hide error messages
+  const toggleError = (element, hasError, errorMessageElement = null) => {
+    if (hasError) {
+      element.classList.add("input-error");
+      if (errorMessageElement) errorMessageElement.style.display = 'block';
+    } else {
+      element.classList.remove("input-error");
+      if (errorMessageElement) errorMessageElement.style.display = 'none';
+    }
   };
 
   // Initial setup when DOM is loaded
   updateFormStepUI();
   updateSlider();
   setupSingleImagePreview(avatarInput, avatarPreview);
+  setupMultipleImagePreview(shopImagesInput, shopImagesPreview);
 
   // Event listener for the new "Chọn ảnh" button
   if (selectShopImagesBtn) {
@@ -456,84 +493,6 @@ document.addEventListener("DOMContentLoaded", () => {
   handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup);
   handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup);
   handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup);
-
-  // Event Listeners for Navigation Buttons
-  document.querySelectorAll(".next-step-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      const nextStep = parseInt(button.dataset.nextStep);
-
-      if (validateCurrentStep(currentStep)) {
-        if (currentStep === 2) {
-          choosePackageModal.style.display = 'flex'; // Show the modal
-        } else {
-          currentStep = nextStep;
-          updateFormStepUI();
-        }
-      }
-    });
-  });
-
-  document.querySelectorAll(".prev-step-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      const prevStep = parseInt(button.dataset.prevStep);
-      currentStep = prevStep;
-      updateFormStepUI();
-    });
-  });
-
-  // Slider navigation
-  if (prevBtn) {
-    prevBtn.addEventListener("click", () => {
-      currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : sliderImages.length - 1;
-      updateSlider();
-    });
-  }
-
-  if (nextBtn) {
-    nextBtn.addEventListener("click", () => {
-      currentImageIndex = (currentImageIndex < sliderImages.length - 1) ? currentImageIndex + 1 : 0;
-      updateSlider();
-    });
-  }
-
-  // Terms checkbox validation for Step 1
-  if (acceptTermsCheckbox) {
-    shopRegisterForm.querySelector('.next-step-btn[data-next-step="2"]').disabled = !acceptTermsCheckbox.checked;
-    acceptTermsCheckbox.addEventListener('change', () => {
-      shopRegisterForm.querySelector('.next-step-btn[data-next-step="2"]').disabled = !acceptTermsCheckbox.checked;
-    });
-  }
-
-  // Step 2: Toggle content visibility
-  if (step2Header) {
-    step2Header.addEventListener("click", () => {
-      shopInfoContent.classList.toggle("hidden");
-      if (toggleIcon) {
-        toggleIcon.classList.toggle("fa-chevron-down");
-        toggleIcon.classList.toggle("fa-chevron-up");
-      }
-    });
-  }
-
-  if (shopPolicyHeader) {
-    shopPolicyHeader.addEventListener("click", () => {
-      shopPolicyContent.classList.toggle("hidden");
-      if (shopPolicyToggleIcon) {
-        shopPolicyToggleIcon.classList.toggle("fa-chevron-down");
-        shopPolicyToggleIcon.classList.toggle("fa-chevron-up");
-      }
-    });
-  }
-
-  if (shopImagesHeader) {
-    shopImagesHeader.addEventListener("click", () => {
-      shopImagesContent.classList.toggle("hidden");
-      if (shopImagesToggleIcon) {
-        shopImagesToggleIcon.classList.toggle("fa-chevron-down");
-        shopImagesToggleIcon.classList.toggle("fa-chevron-up");
-      }
-    });
-  }
 
   // Policy Modal Event Listeners
   if (openPolicyModalBtn) {
@@ -597,176 +556,178 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Choose Package Modal Event Listeners
-  if (confirmPackageBtn) {
-      confirmPackageBtn.addEventListener('click', () => {
-          // Close the package modal
-          choosePackageModal.style.display = 'none';
-          // Move to the next step (Step 3 to Step 4)
-          currentStep = 3; // Now explicitly set to 3
-          updateFormStepUI(); // This will also call updatePaymentSummary()
-      });
-  }
+  // Event listeners for form navigation buttons
+  shopRegisterForm.addEventListener('click', async (event) => {
+    if (event.target.classList.contains('next-step-btn')) {
+      const nextStep = parseInt(event.target.dataset.nextStep);
 
-  if (choosePackageCloseBtn) {
-    choosePackageCloseBtn.addEventListener('click', () => {
-        choosePackageModal.style.display = 'none';
+      // Validation for Step 1 (only terms checkbox)
+      if (currentStep === 1) {
+        if (!acceptTermsCheckbox.checked) {
+          showNotification('Vui lòng đồng ý với Điều khoản sử dụng của T5 Market.', 'error');
+          return;
+        }
+        currentStep++; // Move to next step
+      }
+      // Validation for Step 2 (shop info fields) and API call
+      else if (currentStep === 2) {
+        let isValid = true;
+
+        // Validate Avatar (only check if file exists, actual loading handled in registerShopHandler)
+        if (!avatarInput.files || avatarInput.files.length === 0) {
+            // Also check if there's an existing data URL in avatarPreview.src
+            if (!(avatarPreview.src && avatarPreview.src.startsWith("data:image"))) {
+                showNotification("Vui lòng chọn ảnh đại diện.", 'warning');
+                isValid = false;
+            }
+        }
+
+        if (shopNameInput.value.trim() === '') {
+          toggleError(shopNameInput, true, shopNameError);
+          showNotification("Vui lòng nhập tên cửa hàng.", 'warning');
+          isValid = false;
+        } else {
+          toggleError(shopNameInput, false, shopNameError);
+        }
+
+        if (shopDescriptionInput.value.trim() === '') {
+            toggleError(shopDescriptionInput, true, shopDescriptionError);
+            showNotification("Vui lòng nhập mô tả cửa hàng.", 'warning');
+            isValid = false;
+        } else {
+            toggleError(shopDescriptionInput, false, shopDescriptionError);
+        }
+
+        if (shopAddressInput.value.trim() === '') {
+          toggleError(shopAddressInput, true, addressError);
+          showNotification("Vui lòng nhập địa chỉ cửa hàng.", 'warning');
+          isValid = false;
+        } else {
+          toggleError(shopAddressInput, false, addressError);
+        }
+
+        if (shopPhoneInput.value.trim() === '') {
+          toggleError(shopPhoneInput, true, shopPhoneError);
+          showNotification("Vui lòng nhập số điện thoại.", 'warning');
+          isValid = false;
+        } else {
+          toggleError(shopPhoneInput, false, shopPhoneError);
+        }
+
+        if (!isValid) {
+          return;
+        }
+
+        const registerShopHandler = async (avatarFile = null) => {
+            let logoUrl = null;
+            if (avatarFile) {
+                try {
+                    logoUrl = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.onerror = (error) => reject(error);
+                        reader.readAsDataURL(avatarFile);
+                    });
+                } catch (error) {
+                    showNotification('Lỗi đọc ảnh đại diện: ' + error.message, 'error');
+                    return false; // Indicate failure
+                }
+            } else if (avatarPreview.src && avatarPreview.src.startsWith("data:image")) {
+                // Use existing data URL if no new file is selected but preview has a data URL
+                logoUrl = avatarPreview.src;
+            }
+
+            const shopData = {
+                name: shopNameInput.value,
+                address: shopAddressInput.value,
+                phone: shopPhoneInput.value,
+                description: shopDescriptionInput.value,
+                policies: collectPolicyData(),
+                logoUrl: logoUrl, // Assign the resolved logoUrl
+            };
+
+            try {
+                const response = await ShopAPI.registerShop(shopData);
+                if (response.success) {
+                    showNotification('Đăng ký cửa hàng thành công!', 'success');
+                    return true; // Indicate success
+                } else {
+                    // If API returns an error, show it and DO NOT advance step
+                    showNotification(response.error || 'Đăng ký cửa hàng thất bại.', 'error');
+                    return false; // Indicate failure
+                }
+            } catch (error) {
+                console.error("Error registering shop:", error);
+                let errorMessageText = "Đã xảy ra lỗi không xác định. Vui lòng thử lại.";
+                let messageType = 'error';
+
+                try {
+                    // error.message is the raw JSON string from the server
+                    const parsedError = JSON.parse(error.message);
+                    if (parsedError && parsedError.error) {
+                        if (parsedError.error.includes("Bạn đã gửi yêu cầu hoặc đã có shop.")) {
+                            errorMessageText = "Bạn đã có yêu cầu đăng ký hoặc đã sở hữu một cửa hàng. Không cần đăng ký lại.";
+                            messageType = 'warning';
+                        } else {
+                            errorMessageText = `Đăng ký thất bại: ${parsedError.error}`;
+                        }
+                    }
+                } catch (e) {
+                    // If parsing fails, it's not a JSON string. Use the raw message.
+                    if (error.message) {
+                        errorMessageText = `Đăng ký thất bại: ${error.message}`;
+                    }
+                }
+
+                showNotification(errorMessageText, messageType);
+                return false; // Indicate failure
+            }
+        };
+
+        // Call handler, passing the file directly
+        const registrationSuccess = await registerShopHandler(avatarInput.files.length > 0 ? avatarInput.files[0] : null);
+
+        if (registrationSuccess) {
+            currentStep++; // Only advance step if registerShopHandler explicitly returned true
+        }
+        updateFormStepUI();
+      }
+    }
+    else if (event.target.classList.contains('prev-step-btn')) {
+      currentStep--; // Go back to the previous step
+    }
+
+    updateFormStepUI();
+  });
+
+  // Event listeners for Step 3 (formerly Step 4) edit buttons
+  if (editInfoBtn) {
+    editInfoBtn.addEventListener('click', () => {
+      currentStep = 2;
+      updateFormStepUI();
+      // Scroll to top of the form or relevant section if needed
+      shopRegisterForm.scrollIntoView({ behavior: 'smooth' });
     });
   }
 
-  // Update confirm payment button text based on selected package
-  paymentMethodRadios.forEach(radio => {
-    radio.addEventListener('change', updatePaymentSummary);
-  });
-
-  // Handle "THANH TOÁN" button click in Step 3
-  if (confirmPaymentBtn) {
-      confirmPaymentBtn.addEventListener('click', () => {
-          // In a real application, you would process the payment here.
-          // For now, simulate success and move to Step 4.
-          currentStep = 4;
-          updateFormStepUI();
-          showNotification("Cửa hàng của bạn đã được đăng ký và đang chờ kiểm duyệt!", "success");
-      });
+  if (editPolicyBtn) {
+    editPolicyBtn.addEventListener('click', () => {
+      currentStep = 2;
+      updateFormStepUI();
+      // Open policy modal immediately
+      policyEditModal.style.display = 'block';
+      // Scroll to policy section in modal if needed
+      policyEditModal.querySelector('.policy-modal-content').scrollIntoView({ behavior: 'smooth' });
+    });
   }
 
-  // Handle "Quay lại trang chủ" button in Step 4
+  // Handle "Quay lại trang chủ" button in Step 3 (formerly Step 4)
+  const backToHomeBtn = document.querySelector(".back-to-home-btn");
   if (backToHomeBtn) {
       backToHomeBtn.addEventListener('click', () => {
           window.location.href = "../../index.html"; // Redirect to home page
       });
   }
-
-  // Event Listener for Edit Info button in Step 4
-  if (editInfoBtn) {
-      editInfoBtn.addEventListener('click', () => {
-          currentStep = 2; // Go back to Step 2 (Settings)
-          updateFormStepUI();
-      });
-  }
-
-  // Event Listener for Edit Policy button in Step 4
-  if (editPolicyBtn) {
-      editPolicyBtn.addEventListener('click', () => {
-          // Trigger the existing logic to open and populate the policy modal
-          if (openPolicyModalBtn) {
-              openPolicyModalBtn.click();
-          } else {
-              // Fallback: manually open modal and load policies if openPolicyModalBtn is not available
-              policyEditModal.style.display = 'flex';
-              const policies = collectPolicyData();
-              policies.forEach(policy => {
-                if (policy.type === 'shipping' && shippingPolicyInput) { shippingPolicyInput.value = policy.value; shippingPolicyToggle.checked = true; handlePolicyToggle(shippingPolicyToggle, shippingPolicyInputGroup); }
-                if (policy.type === 'warranty' && warrantyPolicyInput) { warrantyPolicyInput.value = policy.value; warrantyPolicyToggle.checked = true; handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup); }
-                if (policy.type === 'return' && returnPolicyInput) { returnPolicyInput.value = policy.value; returnPolicyToggle.checked = true; handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup); }
-                if (policy.type === 'installment' && installmentPolicyInput) { installmentPolicyInput.value = policy.value; installmentPolicyToggle.checked = true; handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup); }
-                if (policy.type === 'tradein' && tradeinPolicyInput) { tradeinPolicyInput.value = policy.value; tradeinPolicyToggle.checked = true; handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup); }
-                // For custom policies, re-add them if they exist
-                if (policy.type === 'custom') {
-                    const existingCustomInput = customPolicyContainer.querySelector(`input[value="${policy.value}"]`);
-                    if (!existingCustomInput) {
-                        customPolicyCount++;
-                        const newPolicyHtml = `
-                            <div class="policy-input-group custom-policy-input" data-custom-policy-id="${customPolicyCount}">
-                                <input type="text" value="${policy.value}">
-                                <button type="button" class="remove-custom-policy-btn" data-custom-policy-id="${customPolicyCount}">Xóa</button>
-                            </div>
-                        `;
-                        customPolicyContainer.insertAdjacentHTML('beforeend', newPolicyHtml);
-                        const newRemoveBtn = customPolicyContainer.querySelector(`.remove-custom-policy-btn[data-custom-policy-id="${customPolicyCount}"]`);
-                        if (newRemoveBtn) {
-                            newRemoveBtn.addEventListener('click', (event) => {
-                                const policyIdToRemove = event.target.dataset.customPolicyId;
-                                const policyElementToRemove = customPolicyContainer.querySelector(`.custom-policy-input[data-custom-policy-id="${policyIdToRemove}"]`);
-                                if (policyElementToRemove) {
-                                    policyElementToRemove.remove();
-                                    customPolicyCount--;
-                                }
-                            });
-                        }
-                    }
-                }
-              });
-          }
-      });
-  }
-
-  // Validation logic
-  const validateCurrentStep = (step) => {
-    let isValid = true;
-    // Function to add/remove error class
-    const toggleError = (element, hasError, errorMessageElement = null) => {
-        if (element) {
-            if (hasError) {
-                element.classList.add("input-error");
-            } else {
-                element.classList.remove("input-error");
-            }
-        }
-        if (errorMessageElement) {
-            errorMessageElement.style.display = hasError ? "block" : "none";
-        }
-    };
-
-    if (step === 1) {
-        if (!acceptTermsCheckbox.checked) {
-            showNotification("Vui lòng đồng ý với Điều khoản sử dụng của T5 Market.", "error");
-            isValid = false;
-        }
-    } else if (step === 2) {
-        let allFieldsFilled = true;
-
-        // Check Shop Name
-        if (shopNameInput.value.trim() === "") {
-            toggleError(shopNameInput, true, shopNameError);
-            allFieldsFilled = false;
-        } else {
-            toggleError(shopNameInput, false, shopNameError);
-        }
-
-        // Check Shop Address
-        if (shopAddressInput.value.trim() === "") {
-            toggleError(shopAddressInput, true, addressError);
-            allFieldsFilled = false;
-        } else {
-            toggleError(shopAddressInput, false, addressError);
-        }
-
-        // Check Shop Phone
-        if (shopPhoneInput.value.trim() === "") {
-            toggleError(shopPhoneInput, true, shopPhoneError);
-            allFieldsFilled = false;
-        } else {
-            toggleError(shopPhoneInput, false, shopPhoneError);
-        }
-
-        // Check Avatar
-        if (avatarInput.files.length === 0) {
-            toggleError(avatarPreview, true); // No specific text error for avatar, just border
-            allFieldsFilled = false;
-        } else {
-            toggleError(avatarPreview, false);
-        }
-
-        // Check Shop Description
-        if (shopDescriptionInput.value.trim() === "") {
-            toggleError(shopDescriptionInput, true, shopDescriptionError);
-            allFieldsFilled = false;
-        } else {
-            toggleError(shopDescriptionInput, false, shopDescriptionError);
-        }
-
-        if (!allFieldsFilled) {
-            // showNotification("bắt buộc nhập đầy đủ tất cả.", "error"); // Removed generic message
-            isValid = false;
-        }
-    } else if (step === 3) {
-        const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-        if (!selectedPaymentMethod) {
-            showNotification("Vui lòng chọn hình thức thanh toán.", "error");
-            isValid = false;
-        }
-    }
-    return isValid;
-  };
 });
+
+// Add new utility functions here if needed
