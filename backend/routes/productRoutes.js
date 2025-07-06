@@ -11,7 +11,8 @@ const {
     getAllProductsByShopId,
     getApprovedProductsByShopId,
     getPendingProductsByShopId,
-    getRejectedProductsByShopId
+    getRejectedProductsByShopId,
+    getAllProducts
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
@@ -21,6 +22,7 @@ const { Role } = require("../constants/roleEnum")
 router.post("/", protect, authorize(Role.SELLER), createProduct);
 
 // Lấy sản phẩm theo trạng thái
+router.get("/get-all-products", getAllProducts);
 router.get("/get-pending-products", getPendingProducts);
 router.get("/get-approved-products", getApprovedProducts);
 router.get("/get-rejected-products", getRejectedProducts);
