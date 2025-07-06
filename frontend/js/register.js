@@ -44,7 +44,7 @@ document
 
       // Chuyển hướng sau 2 giây
       setTimeout(() => {
-        window.location.href = "../login/login.html";
+        window.location.href = "./login.html";
       }, 2000);
     } catch (error) {
       errorMessage.textContent = error.message;

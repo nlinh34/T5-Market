@@ -3,6 +3,8 @@ const Product = require("../models/Product");
 const User = require("../models/User")
 const { httpStatusCodes } = require("../utils/constants");
 
+const { Role } = require("../constants/roleEnum"); 
+
 const approveShop = async (req, res) => {
   try {
     const { id } = req.params; // id của 
@@ -20,7 +22,7 @@ const approveShop = async (req, res) => {
     await shop.save();
 
     const user = await User.findById(shop.owner._id);
-    user.role = "seller";
+    user.role = Role.SELLER;
     user.status = "approved";
     user.approvedBy = req.user.userId;
     await user.save();
@@ -109,6 +111,27 @@ const getPendingShops = async (req, res) => {
   }
 };
 
+const getApprovedShops = async (req, res) => {
+  try {
+    const approvedShops = await Shop.find({ status: "approved" })
+      .populate("owner", "fullName email")
+      .populate("approvedBy", "fullName email") 
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      data: approvedShops,
+    });
+  } catch (error) {
+    console.error("❌ Lỗi khi lấy danh sách shop đã duyệt:", error);
+    res.status(500).json({
+      success: false,
+      error: "Lỗi server khi lấy danh sách shop đã được duyệt",
+    });
+  }
+};
+
+
 
 const getShopWithProducts = async (req, res) => {
   try {
@@ -117,6 +140,7 @@ const getShopWithProducts = async (req, res) => {
     // Lấy thông tin shop
     const shop = await Shop.findById(shopId)
       .populate("owner", "fullName email")
+      .populate("approvedBy", "fullName")
       .lean();
 
     if (!shop) {
@@ -148,6 +172,7 @@ module.exports = {
     requestUpgradeToSeller,
     getPendingShops,
     getShopWithProducts,
-    rejectShop
+    rejectShop,
+    getApprovedShops
 }
 

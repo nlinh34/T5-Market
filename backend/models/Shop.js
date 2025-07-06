@@ -43,6 +43,10 @@ const ShopSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // admin duyệt
     },
+    staffs: [ {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    } ]
   },
   { timestamps: true }
 );

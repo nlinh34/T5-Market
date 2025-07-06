@@ -5,50 +5,50 @@ const { httpStatusCodes } = require("../utils/constants");
 // Người bán đăng sản phẩm
 const createProduct = async (req, res) => {
   try {
-    const { name, price, description, image_url, category } = req.body;
     const userId = req.user.userId;
+    const { name, price, description, image_url, category } = req.body;
 
-    // Tìm shop mà user là chủ hoặc nhân viên
+    // 👉 Tìm shop mà user là chủ hoặc nhân viên
     const shop = await Shop.findOne({
+      status: "approved",
       $or: [
         { owner: userId },
-        { staff: userId } // giả sử bạn có mảng staff trong Shop
+        { staffs: userId },
       ],
-      status: "approved"
     });
 
     if (!shop) {
       return res.status(httpStatusCodes.FORBIDDEN).json({
-        success: false,
-        message: "Bạn không thuộc shop hợp lệ nào để đăng sản phẩm",
+        error: "Bạn không có quyền đăng sản phẩm. Chỉ chủ shop hoặc nhân viên được phép.",
       });
     }
 
+    // 👉 Tạo sản phẩm
     const product = new Product({
       name,
       price,
       description,
       image_url,
       category,
-      seller: userId,
-      shop: shop._id, // ✅ thêm vào đây
+      shop: shop._id,
+      seller: userId, // có thể là seller hoặc staff
       isApproved: false,
     });
 
     await product.save();
 
-    res.status(httpStatusCodes.CREATED).json({
-      success: true,
-      message: "Sản phẩm đã được gửi để chờ duyệt",
+    return res.status(httpStatusCodes.CREATED).json({
+      message: "Sản phẩm đã được tạo, chờ admin duyệt",
       data: product,
     });
   } catch (error) {
-    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      error: error.message,
+    console.error("❌ Lỗi khi tạo sản phẩm:", error);
+    return res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Lỗi khi tạo sản phẩm",
     });
   }
 };
+
 
 // Admin lấy danh sách sản phẩm chờ duyệt
 const getPendingProducts = async(req, res) => {
@@ -68,21 +68,23 @@ const getPendingProducts = async(req, res) => {
 };
 
 // Lấy danh sách sản phẩm đã được duyệt (hiển thị trên web)
-const getApprovedProducts = async(req, res) => {
-    try {
-        const products = await Product.find({ isApproved: true });
+const getApprovedProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isApproved: true })
+      .populate("category", "name")
+      .populate("shop", "name") // 
+      .populate("seller", "fullName role") 
+      .lean();
 
-        res.status(httpStatusCodes.OK).json({
-            success: true,
-            data: products,
-        });
-    } catch (error) {
-        res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            error: error.message,
-        });
-    }
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Lỗi khi lấy sản phẩm" });
+  }
 };
+
 
 // Lấy danh sách sản phẩm nổi bật
 const getFeaturedProducts = async(req, res) => {
@@ -104,35 +106,6 @@ const getFeaturedProducts = async(req, res) => {
     }
 };
 
-// Lấy danh sách sản phẩm của user hiện tại
-const getUserProducts = async(req, res) => {
-    try {
-        const userId = req.user.userId;
-
-        // Lấy tất cả sản phẩm của user
-        const allProducts = await Product.find({ seller: userId }).populate("category", "name");
-
-        // Phân loại sản phẩm theo trạng thái
-        const pendingProducts = allProducts.filter(product => !product.isApproved);
-        const approvedProducts = allProducts.filter(product => product.isApproved);
-
-        res.status(httpStatusCodes.OK).json({
-            success: true,
-            data: {
-                pending: pendingProducts,
-                approved: approvedProducts,
-                total: allProducts.length,
-                pendingCount: pendingProducts.length,
-                approvedCount: approvedProducts.length
-            },
-        });
-    } catch (error) {
-        res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
-            success: false,
-            error: error.message,
-        });
-    }
-};
 
 // Cập nhật sản phẩm
 const updateProduct = async(req, res) => {
@@ -308,7 +281,6 @@ module.exports = {
     getPendingProducts,
     getApprovedProducts,
     getFeaturedProducts,
-    getUserProducts,
     updateProduct,
     deleteProduct,
     updateStatus,

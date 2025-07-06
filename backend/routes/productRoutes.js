@@ -5,7 +5,6 @@ const {
     getPendingProducts,
     getApprovedProducts,
     getFeaturedProducts,
-    getUserProducts,
     updateProduct,
     deleteProduct,
     updateStatus, //  Thêm controller mới
@@ -23,9 +22,6 @@ router.put("/:id", protect, authorize("user"), updateProduct);
 
 // Người bán xoá sản phẩm chưa được duyệt hoặc bị từ chối
 router.delete("/:id", protect, authorize("user"), deleteProduct);
-
-// User: lấy danh sách sản phẩm của mình
-router.get("/my-products", protect, authorize("user"), getUserProducts);
 
 // Admin: xem danh sách sản phẩm chờ duyệt
 router.get("/pending", protect, authorize("admin"), getPendingProducts);
