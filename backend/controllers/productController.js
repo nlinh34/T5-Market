@@ -112,6 +112,28 @@ const rejectProduct = async (req, res) => {
     }
 };
 
+const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find()
+      .populate("shop", "name")     
+      .populate("category", "name")  
+      .populate("createdBy", "name"); 
+
+    if (products.length === 0) {
+      return res.status(200).json({
+        message: "Không có sản phẩm nào.",
+        data: [],
+      });
+    }
+    return res.status(200).json({
+      message: "Lấy danh sách tất cả sản phẩm thành công.",
+      data: products,
+    });
+  } catch (error) {
+    console.error("❌ Lỗi khi lấy tất cả sản phẩm:", error);
+    return res.status(500).json({ error: "Lỗi hệ thống." });
+  }
+};
 
 const getPendingProducts = async (req, res) => {
     try {
@@ -294,6 +316,7 @@ module.exports = {
     createProduct,
     approveProduct,
     rejectProduct,
+    getAllProducts,
     getApprovedProducts,
     getPendingProducts,
     getRejectedProducts,
