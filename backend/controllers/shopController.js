@@ -7,20 +7,12 @@ const { Role } = require("../constants/roleEnum");
 
 const approveShop = async (req, res) => {
   try {
-
     if (req.user.role !== Role.ADMIN) {
       return res.status(403).json({
         error: "Chỉ quản trị viên mới có quyền duyệt cửa hàng.",
       });
     }
 
-    // Lấy thông tin người dùng từ DB để kiểm tra status
-    const dbUser = await User.findById(userId);
-    if (!dbUser || dbUser.status !== "approved") {
-      return res.status(403).json({
-        error: "Tài khoản chưa được duyệt để mở cửa hàng.",
-      });
-    }
     const { id } = req.params; // id của 
     const shop = await Shop.findById(id).populate("owner");
 
@@ -52,13 +44,14 @@ const approveShop = async (req, res) => {
 
 const rejectShop = async (req, res) => {
   try {
-
     if (req.user.role !== Role.ADMIN) {
       return res.status(403).json({
         error: "Chỉ quản trị viên mới có quyền duyệt cửa hàng.",
       });
     }
+
     const { id } = req.params;
+    const { reason } = req.body; // 👈 Nhận lý do từ client
 
     const shop = await Shop.findById(id).populate("owner");
     if (!shop || shop.status !== "pending") {
@@ -68,16 +61,18 @@ const rejectShop = async (req, res) => {
     }
 
     shop.status = "rejected";
+    shop.rejectionReason = reason || "Không rõ lý do";
     shop.rejectedBy = req.user.userId;
     await shop.save();
 
     const user = await User.findById(shop.owner._id);
-    user.status = "rejected"; // Hoặc vẫn để là "pending" tùy bạn
+    user.status = "rejected"; // Tuỳ yêu cầu, có thể để là "pending"
     await user.save();
 
     return res.status(httpStatusCodes.OK).json({
       success: true,
       message: "❌ Đã từ chối yêu cầu mở cửa hàng.",
+      rejectionReason: shop.rejectionReason,
     });
   } catch (error) {
     console.error("❌ Error in rejectShop:", error);
@@ -87,6 +82,7 @@ const rejectShop = async (req, res) => {
   }
 };
 
+
 const requestUpgradeToSeller = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -94,6 +90,14 @@ const requestUpgradeToSeller = async (req, res) => {
     if (req.user.role !== Role.CUSTOMER) {
       return res.status(403).json({
         error: "Chỉ tài khoản khách hàng mới được yêu cầu mở cửa hàng.",
+      });
+    }
+
+// Lấy thông tin người dùng từ DB để kiểm tra status
+    const dbUser = await User.findById(userId);
+    if (!dbUser || dbUser.status !== "approved") {
+      return res.status(403).json({
+        error: "Tài khoản chưa được duyệt để mở cửa hàng.",
       });
     }
 

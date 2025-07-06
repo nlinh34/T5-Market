@@ -8,7 +8,8 @@ const {
     getApprovedShops,
     getMyShop,
     updateShopProfile,
-    updateShopPolicies
+    updateShopPolicies,
+    rejectShop
 } = require("../controllers/shopController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 const { Role } = require("../constants/roleEnum");
@@ -21,9 +22,8 @@ router.get("/my-shop", protect, getMyShop);
 
 router.post("/", protect, authorize(Role.CUSTOMER), requestUpgradeToSeller);
 router.put("/approve-shop/:id", protect, authorize(Role.ADMIN), approveShop);
+router.put("/reject-shop/:id", protect, authorize(Role.ADMIN), rejectShop);
 router.put("/profile", protect, updateShopProfile);
 router.put("/policies", protect, updateShopPolicies);
-
-
 
 module.exports = router;

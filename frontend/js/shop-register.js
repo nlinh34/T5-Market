@@ -729,5 +729,3 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 });
-
-// Add new utility functions here if needed
