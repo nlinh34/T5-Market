@@ -13,11 +13,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const shopRoutes = require("./routes/shopRoutes");
 
 const app = express();
-const port = process.env.PORT;
-if (!port) {
-  console.error("❌ PORT is not defined in environment!");
-  process.exit(1); // Không cho chạy nếu không có PORT
-}
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors(corsOptions));
