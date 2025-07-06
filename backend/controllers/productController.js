@@ -59,6 +59,94 @@ const createProduct = async (req, res) => {
 };
 
 
+const updateProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.userId.toString();
+
+        const product = await Product.findById(id);
+
+        if (!product) {
+            return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
+        }
+
+        // Kiểm tra quyền: chỉ seller (chủ shop) hoặc người tạo mới được sửa
+        if (
+            product.seller._id.toString() !== userId &&
+            product.createdBy._id.toString() !== userId
+        ) {
+            return res.status(403).json({ error: "Bạn không có quyền sửa sản phẩm này" });
+        }
+
+        const allowedFields = [
+            "name",
+            "price",
+            "description",
+            "images",
+            "category",
+            "isAvailable"
+        ];
+
+        for (let field of allowedFields) {
+            if (req.body[field] !== undefined) {
+                product[field] = req.body[field];
+            }
+        }
+
+        product.updatedAt = new Date(); // nếu bạn có trường này trong schema
+
+        // Nếu sửa => trạng thái trở lại pending để duyệt lại
+        product.status = "pending";
+        await product.save();
+
+        res.status(200).json({
+            message: "Cập nhật sản phẩm thành công. Đang chờ duyệt lại.",
+            success: true,
+            data: product,
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi cập nhật sản phẩm:", error);
+        res.status(500).json({ error: "Lỗi hệ thống khi cập nhật sản phẩm" });
+    }
+};
+
+
+const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.userId.toString();
+        const userRole = req.user.role;
+
+        const product = await Product.findById(id);
+    
+        if (!product) {
+            return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
+        }
+
+        // Check role
+        const isSeller =
+            product.seller?.toString() === userId ||
+            product.createdBy?.toString() === userId;
+
+        const isAdmin = userRole === Role.ADMIN;
+        
+        if (!isAdmin && !isSeller) {
+            return res.status(403).json({ error: "Bạn không có quyền xóa sản phẩm này" });
+        }
+
+        await product.deleteOne();
+
+        res.status(200).json({
+            success: true,
+            message: "Xóa sản phẩm thành công.",
+        });
+    } catch (error) {
+        console.error("Lỗi khi xóa sản phẩm:", error);
+        res.status(500).json({ error: "Lỗi hệ thống khi xóa sản phẩm" });
+    }
+};
+
+
 const approveProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -113,26 +201,27 @@ const rejectProduct = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find()
-      .populate("shop", "name")     
-      .populate("category", "name")  
-      .populate("createdBy", "name"); 
+    try {
+        const products = await Product.find()
+            .populate("shop", "name")
+            .populate("category", "name")
+            .populate("createdBy", "name");
 
-    if (products.length === 0) {
-      return res.status(200).json({
-        message: "Không có sản phẩm nào.",
-        data: [],
-      });
+        if (products.length === 0) {
+            return res.status(200).json({
+                message: "Không có sản phẩm nào.",
+                data: [],
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Lấy danh sách tất cả sản phẩm thành công.",
+            data: products,
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi lấy tất cả sản phẩm:", error);
+        return res.status(500).json({ error: "Lỗi hệ thống." });
     }
-    return res.status(200).json({
-      message: "Lấy danh sách tất cả sản phẩm thành công.",
-      data: products,
-    });
-  } catch (error) {
-    console.error("❌ Lỗi khi lấy tất cả sản phẩm:", error);
-    return res.status(500).json({ error: "Lỗi hệ thống." });
-  }
 };
 
 const getPendingProducts = async (req, res) => {
@@ -303,7 +392,7 @@ const getRejectedProductsByShopId = async (req, res) => {
                 data: [],
             });
         }
-        res.status(200).json({message: "Danh sách sản phẩm bị từ chối của SHOP:", success: true, data: products });
+        res.status(200).json({ message: "Danh sách sản phẩm bị từ chối của SHOP:", success: true, data: products });
     } catch (error) {
         console.error("❌ Lỗi khi lấy sản phẩm bị từ chối:", error);
         res.status(500).json({ error: "Lỗi hệ thống" });
@@ -314,6 +403,8 @@ const getRejectedProductsByShopId = async (req, res) => {
 
 module.exports = {
     createProduct,
+    updateProduct,
+    deleteProduct,
     approveProduct,
     rejectProduct,
     getAllProducts,
