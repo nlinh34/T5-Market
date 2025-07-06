@@ -13,6 +13,14 @@ const approveShop = async (req, res) => {
         error: "Chỉ quản trị viên mới có quyền duyệt cửa hàng.",
       });
     }
+
+    // Lấy thông tin người dùng từ DB để kiểm tra status
+    const dbUser = await User.findById(userId);
+    if (!dbUser || dbUser.status !== "approved") {
+      return res.status(403).json({
+        error: "Tài khoản chưa được duyệt để mở cửa hàng.",
+      });
+    }
     const { id } = req.params; // id của 
     const shop = await Shop.findById(id).populate("owner");
 
