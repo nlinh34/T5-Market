@@ -7,6 +7,12 @@ const { Role } = require("../constants/roleEnum");
 
 const approveShop = async (req, res) => {
   try {
+
+    if (req.user.role !== Role.ADMIN) {
+      return res.status(403).json({
+        error: "Chỉ quản trị viên mới có quyền duyệt cửa hàng.",
+      });
+    }
     const { id } = req.params; // id của 
     const shop = await Shop.findById(id).populate("owner");
 
@@ -38,6 +44,12 @@ const approveShop = async (req, res) => {
 
 const rejectShop = async (req, res) => {
   try {
+
+    if (req.user.role !== Role.ADMIN) {
+      return res.status(403).json({
+        error: "Chỉ quản trị viên mới có quyền duyệt cửa hàng.",
+      });
+    }
     const { id } = req.params;
 
     const shop = await Shop.findById(id).populate("owner");
@@ -69,8 +81,14 @@ const rejectShop = async (req, res) => {
 
 const requestUpgradeToSeller = async (req, res) => {
   try {
-    console.log("User in req:", req.user);
     const userId = req.user.userId;
+    
+    if (req.user.role !== Role.CUSTOMER) {
+      return res.status(403).json({
+        error: "Chỉ tài khoản khách hàng mới được yêu cầu mở cửa hàng.",
+      });
+    }
+
     const { name, address, phone, description, logoUrl, policies } = req.body;
 
     // Kiểm tra đã có shop chưa
