@@ -56,10 +56,22 @@ const ShopSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // admin duyệt
     },
-    staffs: [ {
+    staffs: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
-    } ]
+    }],
+
+    //Lí do và người từ chối 
+    rejectionReason: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    rejectedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
   },
   { timestamps: true }
 );
