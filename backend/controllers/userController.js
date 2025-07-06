@@ -266,7 +266,122 @@ const updateUserStatus = async (req, res) => {
   }
 };
 
+const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const {
+      fullName,
+      email,
+      phone,
+      gender,
+      dateofbirth,
+      address,
+      avatarUrl
+    } = req.body;
 
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({
+        success: false,
+        error: "Người dùng không tìm thấy"
+      });
+    }
+
+    // Cập nhật các trường
+    if (fullName) user.fullName = fullName;
+    if (email) {
+      const existingEmail = await User.findOne({ email, _id: { $ne: userId } });
+      if (existingEmail) {
+        return res.status(httpStatusCodes.CONFLICT).json({
+          success: false,
+          error: "Email đã được sử dụng"
+        });
+      }
+      user.email = email;
+    }
+    if (phone) {
+      const existingPhone = await User.findOne({ phone, _id: { $ne: userId } });
+      if (existingPhone) {
+        return res.status(httpStatusCodes.CONFLICT).json({
+          success: false,
+          error: "Số điện thoại đã được sử dụng"
+        });
+      }
+      user.phone = phone;
+    }
+    if (gender) user.gender = gender;
+    if (dateofbirth) user.dateofbirth = dateofbirth;
+    if (address) user.address = address;
+    if (avatarUrl) user.avatarUrl = avatarUrl; // Assuming you add avatarUrl to User model
+
+    await user.save();
+
+    res.status(httpStatusCodes.OK).json({
+      success: true,
+      message: "Cập nhật thông tin thành công",
+      data: user.toObject(), // Trả về đối tượng đã cập nhật
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật profile người dùng:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: "Lỗi server khi cập nhật profile người dùng",
+    });
+  }
+};
+
+const changeUserPassword = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        success: false,
+        error: "Vui lòng nhập đầy đủ mật khẩu hiện tại, mật khẩu mới và xác nhận mật khẩu mới",
+      });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        success: false,
+        error: "Mật khẩu mới và xác nhận mật khẩu mới không khớp",
+      });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(httpStatusCodes.NOT_FOUND).json({
+        success: false,
+        error: "Người dùng không tìm thấy"
+      });
+    }
+
+    const isPasswordCorrect = await user.matchPassword(currentPassword);
+    if (!isPasswordCorrect) {
+      return res.status(httpStatusCodes.UNAUTHORIZED).json({
+        success: false,
+        error: "Mật khẩu hiện tại không chính xác"
+      });
+    }
+
+    user.password = newPassword; // Mongoose pre-save hook will hash this
+    await user.save();
+
+    res.status(httpStatusCodes.OK).json({
+      success: true,
+      message: "Đổi mật khẩu thành công",
+    });
+  } catch (error) {
+    console.error("Lỗi khi đổi mật khẩu người dùng:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: "Lỗi server khi đổi mật khẩu người dùng",
+    });
+  }
+};
 
 module.exports = {
   handleSignIn,
@@ -274,5 +389,7 @@ module.exports = {
   getCurrentUser,
   getAllUsers,
   deleteUserById,
-  updateUserStatus
+  updateUserStatus,
+  updateUserProfile,
+  changeUserPassword,
 };

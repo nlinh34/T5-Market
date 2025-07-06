@@ -18,7 +18,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 
 // Connect to Database
