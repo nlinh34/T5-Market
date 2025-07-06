@@ -23,4 +23,27 @@ export const UserAPI = {
       data: { status }, // status: 'approve' | 'reject'
     });
   },
+
+  getCurrentUser: async () => {
+    return await apiCall({
+      endpoint: `/auth/current-user`,
+      method: "GET",
+    });
+  },
+
+  updateProfile: async (userData) => {
+    return await apiCall({
+      endpoint: `/auth/profile`,
+      method: "PUT",
+      data: userData,
+    });
+  },
+
+  changePassword: async (passwordData) => {
+    return await apiCall({
+      endpoint: `/auth/change-password`,
+      method: "PATCH",
+      data: passwordData,
+    });
+  },
 };

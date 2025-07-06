@@ -29,7 +29,7 @@ body {
 /* General Layout */
 .shop-container {
     max-width: 1200px;
-    margin: 80px auto 40px auto;
+    margin: 10px auto 10px auto;
     padding: 30px;
     background-color: var(--primary-white);
     border-radius: 12px;
@@ -2786,17 +2786,23 @@ input:checked + .slider:before {
 #summaryShopPoliciesList li {
     background-color: var(--primary-white);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 10px 15px;
-    margin-bottom: 8px;
+    border-radius: 8px; /* Slightly more rounded */
+    padding: 15px 20px; /* Increased padding */
+    margin-bottom: 12px; /* More space between items */
     display: flex;
-    align-items: center;
-    font-size: 0.9rem;
+    font-size: 0.95rem; /* Slightly larger font */
     color: var(--text-dark);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+    transition: all 0.2s ease-in-out; /* Add transition for hover effect */
+}
+
+#summaryShopPoliciesList li:hover {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* More prominent shadow on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
 }
 
 #summaryShopPoliciesList li i {
-    margin-right: 10px;
+    margin: 5px 10px;
     color: var(--primary-yellow);
 }
 

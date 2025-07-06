@@ -1,0 +1,65 @@
+/* Notification Styles */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards;
+  min-width: 280px; /* Set a minimum width for consistent sizing */
+  max-width: 350px; /* Optional: Set a maximum width to prevent excessively long notifications */
+  text-align: left;
+}
+
+.notification.success {
+  background-color: #4CAF50;
+}
+
+.notification.error {
+  background-color: #f44336;
+}
+
+.notification.info {
+  background-color: #2196F3;
+}
+
+.notification.warning {
+  background-color: #ff9800;
+}
+
+.notification i {
+  font-size: 18px;
+}
+
+@keyframes slideIn {
+  from {
+    right: -300px;
+  }
+  to {
+    right: 20px;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Error Message Styles */
+.error-message {
+  color: red;
+  font-size: 0.85em;
+  margin-top: 5px;
+  display: none;
+} 

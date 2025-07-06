@@ -40,18 +40,25 @@ body {
 }
 
 .shop-avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    background: #FFD700; /* Gold/Yellow */
+    overflow: hidden;
     display: flex;
-    align-items: center;
     justify-content: center;
-    color: #333; /* Dark text for avatar */
-    font-size: 32px;
+    align-items: center;
+    background-color: var(--secondary-background-color);
+    color: var(--text-color);
+    font-size: 2rem;
     font-weight: bold;
+    margin: 15px 5px;
     flex-shrink: 0;
-    border: 3px solid #333; /* Black border */
+}
+
+.shop-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .shop-details h1 {
@@ -115,40 +122,41 @@ body {
 }
 
 .btn {
-    padding: 10px 20px;
+    padding: 12px 24px; /* Slightly larger padding */
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600; /* Bolder text */
+    border-radius: 6px; /* Slightly sharper radius */
+    font-size: 15px; /* Slightly larger font */
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s ease-in-out; /* Smooth transition */
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother transition */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle initial shadow */
 }
 
 .btn-primary {
-    background: #FFD700; /* Gold/Yellow */
-    color: #000; /* Black text on primary button */
+    background: #FFD700;
+    color: #333; /* Darker text for contrast */
     border: 1px solid #FFD700;
 }
 
 .btn-primary:hover {
-    background: #EEDD00; /* Slightly darker yellow on hover */
-    transform: translateY(-2px); /* Lift effect */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: #EEDD00;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15); /* More prominent shadow on hover */
 }
 
 .btn-secondary {
-    background: #f8f9fa; /* Light grey */
-    color: #333; /* Dark grey text */
-    border: 1px solid #ddd; /* Lighter grey border */
+    background: #ffffff; /* White background */
+    color: #555; /* Slightly softer text color */
+    border: 1px solid #e0e0e0; /* Lighter, more subtle border */
 }
 
 .btn-secondary:hover {
-    background: #e9ecef; /* Slightly darker grey on hover */
+    background: #f0f0f0; /* Subtle grey on hover */
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08); /* More prominent shadow on hover */
 }
 
 /* Shop Stats */
@@ -304,23 +312,19 @@ body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 12px;
 }
 
 .policy-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: #f8f9fa; /* Light grey background */
-    border-radius: 8px;
-    color: #333; /* Dark grey */
-    font-size: 14px;
+    background-color: #ffffff; /* White background for each item */
+    padding: 5px; /* Increased padding */
+    border-radius: 12px; /* Consistent rounded corners */
+    margin-bottom: 10px; /* Space between policy items */
+
 }
 
 .policy-icon {
     color: #FFD700; /* Gold/Yellow icon */
-    width: 20px;
+    width: 40px;
     text-align: center;
 }
 
@@ -380,9 +384,9 @@ body {
 .edit-section {
     display: flex;
     justify-content: flex-end;
-    padding-top: 16px;
-    border-top: 1px solid #eee; /* Lighter border */
-    margin-top: 16px;
+    padding-top: 20px; /* Increased padding */
+    border-top: 1px solid #e0e0e0; /* Lighter border */
+    margin-top: 20px; /* Increased margin */
 }
 
 /* Responsive */
@@ -610,5 +614,406 @@ body {
 
     .tab-list {
         flex-direction: column;
+    }
+}
+
+/* Policy Edit Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1001; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Darker overlay for better focus */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: none; /* Remove border */
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px; /* Increased max-width for better content display */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25); /* Stronger, softer shadow */
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    display: flex; /* Make content a flex container */
+    flex-direction: column; /* Stack header, body, footer vertically */
+    max-height: 90vh; /* Limit modal height */
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px; /* Increased padding */
+    border-bottom: 1px solid #e0e0e0; /* Lighter, subtle border */
+    background-color: #ffffff; /* White background */
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.3rem; /* Slightly larger font */
+    color: #333; /* Darker text */
+    font-weight: 700; /* Bolder title */
+}
+
+.close-button {
+    color: #888;
+    font-size: 32px; /* Larger close button */
+    font-weight: normal; /* Normal font weight */
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+    transform: rotate(90deg); /* Rotate effect on hover */
+    text-decoration: none;
+}
+
+.modal-body {
+    padding: 25px 30px; /* Increased padding */
+    background-color: #f8f8f8; /* Light grey background for body */
+    flex-grow: 1; /* Allow body to take available space */
+    overflow-y: auto; /* Enable scroll within body */
+}
+
+.modal-hint {
+    font-size: 0.95rem; /* Slightly larger font */
+    color: #666; /* Softer gray text */
+    margin-bottom: 25px; /* Increased margin */
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px; /* Increased margin between form groups */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px; /* Space between label and input */
+    font-weight: 600; /* Bolder label text */
+    color: #444; /* Darker label color */
+    font-size: 0.95rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px; /* More padding for inputs */
+    border: 1px solid #ddd; /* Lighter border */
+    border-radius: 8px; /* Softer rounded corners */
+    font-size: 1rem; /* Standard font size */
+    color: #333;
+    background-color: #ffffff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="tel"]:focus,
+.form-group textarea:focus {
+    border-color: #FFD700; /* Yellow border on focus */
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2); /* Softer, larger shadow */
+}
+
+.avatar-upload-overlay {
+    position: relative;
+    width: 120px; /* Larger avatar preview */
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px; /* Center and add margin */
+    background-color: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid #f0f0f0; /* Light border */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Subtle shadow */
+}
+
+.avatar-upload-overlay img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-upload-overlay .upload-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #FFD700; /* Yellow button */
+    color: #333;
+    border-radius: 50%;
+    width: 40px; /* Larger button */
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: 2px solid #ffffff; /* White border */
+}
+
+.avatar-upload-overlay .upload-btn:hover {
+    background-color: #EEDD00;
+    transform: scale(1.05); /* Slight scale on hover */
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.policy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px; /* Increased margin */
+}
+
+.policy-icon-title {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Increased gap */
+}
+
+.policy-icon {
+    color: #FFD700; /* Yellow icon */
+}
+
+.policy-header label {
+    font-weight: 600; /* Bolder text */
+    color: #333; /* Darker text */
+    font-size: 1.05rem; /* Slightly larger font */
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px; /* Larger switch */
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 28px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px; /* Larger circle */
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #FFD700; /* Gold/Yellow when checked to match design */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px); /* Adjust for larger switch */
+}
+
+.policy-input-group {
+    margin-top: 15px; /* Consistent spacing */
+    padding: 0 10px; /* Add horizontal padding to align with image */
+}
+
+.policy-input-group input[type="text"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0; /* Lighter border */
+    border-radius: 8px; /* Softer rounded corners */
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #f8f8f8; /* Light background for inputs */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.policy-input-group input[type="text"]:focus {
+    border-color: #FFD700;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+.add-custom-policy-btn {
+    padding: 8px 16px; /* Adjusted padding for a more compact button */
+    background-color: #e0e0e0; /* Light gray background */
+    color: #555; /* Darker text color */
+    border: 1px solid #ccc; /* Lighter border */
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem; /* Slightly smaller font size */
+    font-weight: 500;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.add-custom-policy-btn:hover {
+    background-color: #d0d0d0; /* Darker gray on hover */
+    border-color: #bbb;
+}
+
+.custom-policy-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.custom-policy-input input[type="text"] {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0; /* Lighter border for custom inputs */
+    border-radius: 8px; /* Softer rounded corners */
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #f8f8f8; /* Light background for custom inputs */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-policy-input input[type="text"]:focus {
+    border-color: #FFD700;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+.remove-custom-policy-btn {
+    background-color: transparent; /* Transparent background */
+    color: #888; /* Softer grey for icon */
+    border: none;
+    padding: 5px; /* Smaller padding for icon button */
+    border-radius: 50%; /* Make it round */
+    cursor: pointer;
+    font-size: 1.1rem; /* Adjust icon size */
+    transition: all 0.3s ease;
+    width: 30px; /* Fixed width for consistent size */
+    height: 30px; /* Fixed height for consistent size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.remove-custom-policy-btn:hover {
+    background-color: #f0f0f0; /* Light background on hover */
+    color: #dc3545; /* Red on hover */
+    transform: scale(1.1);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px; /* Increased gap between buttons */
+    padding: 20px 30px; /* Increased padding */
+    border-top: 1px solid #e0e0e0; /* Lighter, subtle border */
+    background-color: #f8f8f8; /* Light gray background */
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.modal-footer .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-policy-btn {
+    background-color: #e9ecef; /* Light grey for cancel */
+    color: #555;
+    border: 1px solid #dee2e6;
+}
+
+.cancel-policy-btn:hover {
+    background-color: #d8dee3;
+}
+
+.confirm-policy-btn {
+    background-color: #FFD700; /* Yellow for confirm */
+    color: #333;
+    border: 1px solid #FFD700;
+}
+
+.confirm-policy-btn:hover {
+    background-color: #EEDD00;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 15px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .policy-item {
+        padding: 15px;
+    }
+
+    .policy-input-group input[type="text"] {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .add-custom-policy-btn,
+    .remove-custom-policy-btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .modal-footer .btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
     }
 } 

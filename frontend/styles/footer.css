@@ -1,0 +1,230 @@
+/* Footer Styles */
+
+:root {
+    --footer-bg-dark: #2c2c2c;
+    --footer-bg-darker: #222222;
+    --footer-text-light: #e0e0e0;
+    --footer-text-lighter: #b0b0b0;
+    --accent-color: #ffeb3b;
+    --gap-md: 20px;
+    --gap-lg: 30px;
+}
+
+.main-footer {
+    background-color: var(--footer-bg-dark);
+    color: var(--footer-text-light);
+    font-size: 0.95em;
+    line-height: 1.6;
+    transition: background-color 0.3s ease;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-lg); /* Sử dụng biến cho khoảng cách */
+    max-width: 1200px; /* Tăng max-width cho layout rộng hơn */
+    margin: 0 auto;
+    padding: 20px 5px;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 220px; /* Điều chỉnh min-width */
+    margin-bottom: var(--gap-md); /* Khoảng cách dưới cho các cột khi wrap */
+}
+
+.footer-column h3 {
+    color: var(--footer-text-light);
+    margin-bottom: var(--gap-md);
+    font-size: 1.2em; /* Tăng font-size cho tiêu đề */
+    font-weight: 700; /* Bolder headings */
+    position: relative;
+    padding-bottom: 10px;
+    letter-spacing: 0.03em; /* Thêm letter-spacing */
+}
+
+.footer-column h3::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px; /* Tăng chiều rộng gạch chân */
+    height: 2.5px; /* Tăng độ dày gạch chân */
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 12px; /* Tăng khoảng cách giữa các mục */
+}
+
+.footer-column ul li a {
+    color: var(--footer-text-lighter);
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.2s ease; /* Thêm transform transition */
+    display: inline-block; /* Để áp dụng transform */
+}
+
+.footer-column ul li a:hover {
+    color: var(--accent-color);
+    transform: translateX(5px); /* Hiệu ứng trượt nhẹ */
+}
+
+.footer-column ul li i { /* Style for icons in list items */
+    margin-right: 8px;
+    color: var(--accent-color);
+    font-size: 1em;
+}
+
+.footer-about p {
+    color: var(--footer-text-lighter);
+    line-height: 1.7;
+    margin-bottom: var(--gap-md);
+}
+
+.social-links {
+    margin-top: var(--gap-md);
+    display: flex; /* Dùng flexbox cho căn chỉnh tốt hơn */
+    gap: 15px; /* Khoảng cách giữa các icon */
+}
+
+.social-links a {
+    display: flex; /* Dùng flexbox để căn giữa icon */
+    align-items: center;
+    justify-content: center;
+    color: var(--footer-text-light);
+    background-color: #444; /* Màu nền icon */
+    width: 40px; /* Tăng kích thước icon */
+    height: 40px; /* Tăng kích thước icon */
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px; /* Căn giữa icon */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.social-links a:hover {
+    background-color: var(--accent-color);
+    color: var(--footer-bg-dark);
+    transform: translateY(-5px) scale(1.05); /* Hiệu ứng nổi bật */
+    box-shadow: 0 8px 15px rgba(255, 235, 59, 0.3); /* Đổ bóng khi hover */
+}
+
+.footer-bottom {
+    background-color: var(--footer-bg-darker);
+    color: var(--footer-text-lighter);
+    padding: 20px 0; /* Tăng padding */
+    text-align: center;
+    margin-top: var(--gap-lg);
+    border-top: 1px solid #3a3a3a; /* Đường viền nhẹ */
+}
+
+.footer-bottom .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--gap-md);
+}
+
+.payment-methods {
+    display: flex;
+    gap: 15px; /* Tăng khoảng cách giữa các icon thanh toán */
+    flex-wrap: wrap; /* Cho phép wrap trên màn hình nhỏ */
+    justify-content: center; /* Căn giữa khi wrap */
+}
+
+.payment-methods img {
+    height: 30px; /* Tăng kích thước ảnh thanh toán */
+    border-radius: 4px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    filter: grayscale(80%); /* Giảm độ bão hòa màu */
+    opacity: 0.8;
+}
+
+.payment-methods img:hover {
+    transform: scale(1.1); /* Phóng to nhẹ khi hover */
+    opacity: 1; /* Hiển thị màu đầy đủ khi hover */
+    filter: grayscale(0%);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .footer-container {
+        gap: var(--gap-md);
+    }
+    .footer-column {
+        min-width: 180px;
+    }
+    .footer-column h3 {
+        font-size: 1.15em;
+    }
+    .footer-bottom .container {
+        flex-direction: column;
+        gap: var(--gap-md);
+    }
+    .footer-bottom p {
+        margin-bottom: 0; /* Loại bỏ margin khi stack */
+    }
+}
+
+@media (max-width: 768px) {
+    .main-footer {
+        padding: 40px 0;
+    }
+    .footer-container {
+        flex-direction: column;
+        text-align: center; /* Căn giữa toàn bộ văn bản trong cột */
+        gap: var(--gap-md);
+    }
+
+    .footer-column {
+        min-width: unset; /* Bỏ min-width để full width */
+        width: 100%;
+        margin-bottom: 0; /* Reset margin */
+    }
+
+    .footer-column h3::after {
+        left: 50%;
+        transform: translateX(-50%); /* Căn giữa gạch chân */
+    }
+
+    .social-links {
+        justify-content: center; /* Căn giữa các icon xã hội */
+    }
+    .payment-methods {
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-footer {
+        font-size: 0.9em;
+        padding: 30px 0;
+    }
+    .footer-column h3 {
+        font-size: 1.1em;
+        margin-bottom: 15px;
+    }
+    .footer-column ul li {
+        margin-bottom: 8px;
+    }
+    .social-links {
+        gap: 10px;
+    }
+    .social-links a {
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+    }
+    .payment-methods img {
+        height: 25px;
+    }
+} 

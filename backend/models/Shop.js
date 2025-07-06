@@ -1,5 +1,17 @@
 const mongoose = require("mongoose");
 
+// Create a separate schema for the policy items for clarity and robustness.
+const PolicySchema = new mongoose.Schema({
+  type: {
+    type: String,
+    required: true,
+  },
+  value: {
+    type: String,
+    required: true,
+  },
+}, { _id: false }); // No need for a separate _id for each policy item.
+
 const ShopSchema = new mongoose.Schema(
   {
     owner: {
@@ -29,6 +41,7 @@ const ShopSchema = new mongoose.Schema(
     logoUrl: {
       type: String,
     },
+    policies: [PolicySchema], // Use the defined sub-schema here
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
