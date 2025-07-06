@@ -6,9 +6,9 @@
     <title>Quản lý cửa hàng - T5Market</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./styles/shop-manager.css">
-    <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/header.css">
     <link rel="stylesheet" href="./styles/footer.css">
+    <link rel="stylesheet" href="./styles/header.css">
+    <!-- <link rel="stylesheet" href="./styles/style.css"> -->
 </head>
 <body>
     <header-component></header-component>
@@ -22,7 +22,7 @@
                         NA
                     </div>
                     <div class="shop-details">
-                        <h1 id="shopName">Ngân Anh mobile</h1>
+                        <h1 id="shopName">Admin </h1>
                         <div class="shop-status" id="shopStatus">
                             <i class="fas fa-circle"></i>
                             Hoạt động 8 giờ trước
@@ -39,22 +39,9 @@
                         </div>
                         <div class="shop-location">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span id="shopAddress">1272 Đường Kha Vạn Cân, Phường Linh Tây, Thủ Đức, Hồ Chí Minh, Việt Nam</span>
+                            <span id="shopAddress"> Hồ Chí Minh, Việt Nam</span>
                         </div>
                     </div>
-                </div>
-                <div class="shop-actions">
-                    <button class="btn btn-secondary">
-                        <i class="fas fa-share-alt"></i>
-                    </button>
-                    <button class="btn btn-secondary">
-                        <i class="fas fa-user-plus"></i>
-                        Theo dõi
-                    </button>
-                    <button class="btn btn-primary">
-                        <i class="fas fa-comments"></i>
-                        Hiển số điện thoại
-                    </button>
                 </div>
             </div>
 
@@ -121,7 +108,7 @@
                         </div>
                     </div>
                     <div class="edit-section">
-                        <button class="btn btn-secondary">
+                        <button class="btn btn-secondary" id="editShopInfoBtn">
                             <i class="fas fa-edit"></i>
                             Chỉnh sửa thông tin
                         </button>
@@ -154,25 +141,11 @@
                         Chính sách cửa hàng
                     </h3>
                     <ul class="policy-list" id="shopPoliciesList">
-                        <li class="policy-item">
-                            <i class="fas fa-truck policy-icon"></i>
-                            Miễn phí vận chuyển nội thành
-                        </li>
-                        <li class="policy-item">
-                            <i class="fas fa-sync-alt policy-icon"></i>
-                            Đổi trả hàng 1 đổi 1 trong 7 ngày
-                        </li>
-                        <li class="policy-item">
-                            <i class="fas fa-credit-card policy-icon"></i>
-                            Trả trước 0 Đ nhận máy
-                        </li>
-                        <li class="policy-item">
-                            <i class="fas fa-tools policy-icon"></i>
-                            Trợ giá thu cũ lên đời máy
-                        </li>
+                        <!-- Policies will be dynamically added here by JS -->
                     </ul>
+                    <p class="no-policy-message hidden" id="noPolicyMessage">Chưa có chính sách nào được thêm.</p>
                     <div class="edit-section">
-                        <button class="btn btn-secondary">
+                        <button class="btn btn-secondary" id="editPoliciesBtn">
                             <i class="fas fa-edit"></i>
                             Chỉnh sửa chính sách
                         </button>
@@ -256,6 +229,169 @@
           </div>
         </div>
       </footer>
+
+    <!-- Edit Shop Info Modal -->
+    <div id="editShopInfoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chỉnh sửa thông tin cửa hàng</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="shopInfoEditForm">
+                    <div class="form-group">
+                        <label for="editShopAvatar">Ảnh đại diện cửa hàng</label>
+                        <div class="avatar-upload-overlay">
+                            <img id="editShopAvatarPreview" src="./assests/images/default-product.png" alt="Ảnh đại diện cửa hàng">
+                            <label for="editShopAvatar" class="upload-btn"><i class="fas fa-camera"></i></label>
+                            <input type="file" id="editShopAvatar" accept="image/*" class="hidden-file-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editShopName">Tên cửa hàng <span class="required">*</span></label>
+                        <input type="text" id="editShopName" placeholder="Nhập tên cửa hàng" required>
+                        <span class="error-message" id="editShopNameError" style="display: none;">Vui lòng nhập tên cửa hàng</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="editShopDescription">Giới thiệu chuyên trang</label>
+                        <textarea id="editShopDescription" rows="4" placeholder="Mô tả cửa hàng"></textarea>
+                        <span class="error-message" id="editShopDescriptionError" style="display: none;">Vui lòng nhập mô tả cửa hàng</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="editShopAddress">Địa chỉ cửa hàng <span class="required">*</span></label>
+                        <input type="text" id="editShopAddress" placeholder="Nhập địa chỉ cửa hàng" required>
+                        <span id="editAddressError" class="error-message" style="display: none;">Vui lòng nhập địa chỉ cửa hàng</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="editShopPhone">Điện thoại liên hệ <span class="required">*</span></label>
+                        <input type="tel" id="editShopPhone" placeholder="Số điện thoại" required>
+                        <span class="error-message" id="editShopPhoneError" style="display: none;">Vui lòng nhập số điện thoại liên hệ</span>
+                        <input type="tel" id="editShopPhone2" placeholder="Số điện thoại phụ 1 (Nếu có)">
+                        <input type="tel" id="editShopPhone3" placeholder="Số điện thoại phụ 2 (Nếu có)">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-button">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Policies Modal -->
+    <div id="editPoliciesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chỉnh sửa chính sách cửa hàng</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-hint">Tạo tối đa 4 chính sách của cửa hàng</p>
+
+                <!-- Vận chuyển (Shipping) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-truck policy-icon"></i>
+                            <label for="editShippingPolicyToggle">Vận chuyển</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="editShippingPolicyToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="editShippingPolicy" placeholder="Miễn phí vận chuyển nội thành">
+                    </div>
+                </div>
+
+                <!-- Bảo hành (Warranty) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-shield-alt policy-icon"></i>
+                            <label for="editWarrantyPolicyToggle">Bảo hành</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="editWarrantyPolicyToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="editWarrantyPolicy" placeholder="Bảo hành 6 tháng phần cứng">
+                    </div>
+                </div>
+
+                <!-- Đổi trả (Return) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-exchange-alt policy-icon"></i>
+                            <label for="editReturnPolicyToggle">Đổi trả</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="editReturnPolicyToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="editReturnPolicy" placeholder="Chính sách đổi trả trong 7 ngày">
+                    </div>
+                </div>
+
+                <!-- Trả góp (Installment) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-money-check-alt policy-icon"></i>
+                            <label for="editInstallmentPolicyToggle">Trả góp</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="editInstallmentPolicyToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="editInstallmentPolicy" placeholder="Hỗ trợ trả góp qua thẻ tín dụng">
+                    </div>
+                </div>
+
+                <!-- Thu cũ (Trade-in) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-sync-alt policy-icon"></i>
+                            <label for="editTradeinPolicyToggle">Thu cũ</label>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="editTradeinPolicyToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="policy-input-group">
+                        <input type="text" id="editTradeinPolicy" placeholder="Hỗ trợ thu cũ đổi mới giá cao">
+                    </div>
+                </div>
+
+                <!-- Chính sách khác (Other Policies) -->
+                <div class="policy-item">
+                    <div class="policy-header">
+                        <div class="policy-icon-title">
+                            <i class="fas fa-file-alt policy-icon"></i>
+                            <label>Chính sách khác</label>
+                        </div>
+                        <button type="button" id="addCustomPolicyBtnModal" class="add-custom-policy-btn"><i class="fas fa-plus"></i> Tạo thêm</button>
+                    </div>
+                    <div id="customPolicyContainerModal"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-button">Hủy</button>
+                <button type="button" class="btn btn-primary" id="confirmEditPoliciesBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
     <script src="./components/header/header.js" type="module"></script>
     <script src="./js/shop-manager.js" type="module"></script>
 </body>
