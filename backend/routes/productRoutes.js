@@ -12,14 +12,16 @@ const {
     getApprovedProductsByShopId,
     getPendingProductsByShopId,
     getRejectedProductsByShopId,
-    getAllProducts
+    getAllProducts,
+    updateProduct,
+    deleteProduct
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
 const { Role } = require("../constants/roleEnum")
 
 // Người bán đăng sản phẩm
-router.post("/", protect, authorize(Role.SELLER), createProduct);
+router.post("/", protect, authorize(Role.SELLER, Role.STAFF), createProduct);
 
 // Lấy sản phẩm theo trạng thái
 router.get("/get-all-products", getAllProducts);
@@ -33,6 +35,8 @@ router.put("/reject-product/:id", protect, authorize(Role.ADMIN, Role.MOD, Role.
 
 // Lấy chi tiết sản phẩm
 router.get("/:id", getProductById);
+router.patch("/:id", protect, authorize(Role.SELLER, Role.STAFF), updateProduct);
+router.delete("/:id", protect, authorize(Role.SELLER, Role.STAFF, Role.ADMIN), deleteProduct);
 
 // Lấy tất cả sản phẩm theo shopId
 router.get("/by-shop/:shopId", getAllProductsByShopId);
