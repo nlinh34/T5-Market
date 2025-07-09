@@ -1,5 +1,11 @@
 import { ProductAPI } from "../../APIs/productAPI.js";
 
+const statusDisplayVN = {
+  pending: "Chờ duyệt",
+  approved: "Đã duyệt",
+  rejected: "Từ chối",
+};
+
 export class ProductList {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
@@ -39,7 +45,7 @@ export class ProductList {
               <th>Tên</th>
               <th>Giá</th>
               <th>Danh mục</th>
-              <th>Mô tả</th>
+              <th>Trạng thái</th>
               <th>Người bán</th>
               <th>Thao tác</th>
             </tr>
@@ -90,13 +96,10 @@ export class ProductList {
           style: "currency",
           currency: "VND",
         }).format(product.price)}</td>
-        <td>${this.getCategoryName(product.category?.name)}</td>
-        <td>${product.description}</td>
-        <td>${product.seller?.fullName || "Không rõ"}</td>
+        <td>${product.category.name}</td>
+        <td>${statusDisplayVN[product.status] || "Chưa cập nhật"}</td>
+        <td>${product.shop?.name || "Không rõ"}</td>
         <td class="action-buttons">
-          <button class="approve-btn" data-id="${product._id}">
-            <i class="fas fa-check"></i> Duyệt
-          </button>
           <button class="delete-btn" data-id="${product._id}">
             <i class="fas fa-trash"></i> Xóa
           </button>
@@ -105,15 +108,6 @@ export class ProductList {
     `;
   }
 
-  getCategoryName(category) {
-    const categories = {
-      "main course": "Món chính",
-      "side dish": "Món phụ",
-      drink: "Đồ uống",
-      dessert: "Tráng miệng",
-    };
-    return categories[category] || category;
-  }
 
   async handleDelete(productId) {
     if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
