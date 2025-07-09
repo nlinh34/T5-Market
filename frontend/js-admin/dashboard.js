@@ -5,6 +5,7 @@ import { UsersList } from "./users/usersList.js";
 import { ApproveUserList } from "./users/approveUser.js";
 import { ApproveShopList } from "./shops/upgradeShop.js"
 import { Role } from "../APIs/utils/roleEnum.js";
+import { ApproveProduct } from "./products/approveProduct.js";
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -113,6 +114,17 @@ function loadPage(page) {
                 <div id="approveUserListContainer"></div>
             `;
       new ApproveUserList("approveUserListContainer");
+      breadcrumb.textContent = "Quản lý kiểm duyệt";
+      break;
+
+      case "approve-products":
+      contentDiv.innerHTML = `
+                <div class="page-header">
+                    <h3>Kiểm duyệt bài đăng</h3>
+                </div>
+                <div id="ApproveProduct"></div>
+            `;
+      new ApproveProduct("ApproveProduct");
       breadcrumb.textContent = "Quản lý kiểm duyệt";
       break;
 

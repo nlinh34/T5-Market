@@ -40,6 +40,7 @@ export const ProductAPI = {
     return await apiCall({
       endpoint: `/products/approve-product/${id}`,
       method: "PUT",
+      data: { status: "approved" },
     });
   },
 
@@ -48,7 +49,9 @@ export const ProductAPI = {
     return await apiCall({
       endpoint: `/products/reject-product/${id}`,
       method: "PUT",
-      data: { rejectionReason: reason },
+      data: { 
+        status: "rejected",
+        rejectionReason: reason },
     });
   },
 
