@@ -72,6 +72,26 @@ const ShopSchema = new mongoose.Schema(
       ref: "User",
     },
 
+    staff: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+          required: true,
+        },
+        permissions: [
+          {
+            type: String,
+            enum: ['manage_products', 'manage_orders', 'view_reports', 'chat_support'],
+          },
+        ],
+        joinedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+
   },
   { timestamps: true }
 );

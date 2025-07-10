@@ -393,6 +393,7 @@ body {
     background: #ddd;
 }
 
+
 /* .btn-primary {
     background: #ff6b6b;
 } */
@@ -2835,8 +2836,8 @@ nav ul li a.active {
 }
 
 .seller-rating {
-    font-size: 0.95rem;
-    color: #ffc107;
+    font-size: 0.7rem;
+    /* color: #ffc107; */
     /* Star color */
     margin: 0;
     display: flex;
@@ -2978,4 +2979,105 @@ nav ul li a.active {
 .main-content-grid .featured-sellers .section-title,
 .products.featured .section-title {
     text-align: left;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    /* Slightly reduced margin */
+    gap: 8px;
+    /* Reduced gap */
+}
+
+.page-btn {
+    background-color: #ffeb3b;
+    /* Brighter yellow */
+    color: #333;
+    /* Darker text for contrast */
+    border: 1px solid #ffdd00;
+    /* Lighter border */
+    padding: 6px 12px;
+    /* Smaller padding */
+    border-radius: 4px;
+    /* Slightly less rounded */
+    cursor: pointer;
+    font-size: 0.9rem;
+    /* Smaller font size */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    background-color: #fff059;
+    /* Lighter yellow on hover */
+    transform: translateY(-1px);
+    /* Subtle lift */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+}
+
+.page-btn:disabled {
+    background-color: #e0e0e0;
+    /* Lighter disabled color */
+    color: #999;
+    /* Lighter text color */
+    cursor: not-allowed;
+    border: 1px solid #d0d0d0;
+}
+
+#current-products-page {
+    font-size: 0.95rem;
+    /* Slightly smaller font */
+    font-weight: 600;
+    /* Slightly less bold */
+    color: #444;
+    /* Slightly lighter text */
+    padding: 4px 8px;
+    /* Smaller padding */
+    border: 1px solid #ccc;
+    /* Lighter border */
+    border-radius: 4px;
+    /* Slightly less rounded */
+    min-width: 28px;
+    /* Adjusted min-width */
+    text-align: center;
+    background-color: #f9f9f9;
+    /* Light background */
+}
+
+
+/* Media queries for responsiveness */
+
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 15px;
+        /* Further reduced margin */
+        gap: 6px;
+        /* Further reduced gap */
+    }
+    .page-btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+    }
+    #current-products-page {
+        font-size: 0.9rem;
+        padding: 3px 7px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination {
+        gap: 5px;
+    }
+    .page-btn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+    #current-products-page {
+        font-size: 0.8rem;
+        padding: 2px 6px;
+    }
 }

@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://t5-market.onrender.com"; 
+const API_BASE_URL = "https://t5-market.onrender.com";
 
 document
   .getElementById("registerForm")
@@ -95,8 +95,7 @@ document.head.appendChild(style);
 // Khởi tạo Google Sign-In
 function initializeGoogleSignIn() {
   google.accounts.id.initialize({
-    client_id:
-      "217304877915-ttuusm6c4fl8866mukanr82iuu3sitev.apps.googleusercontent.com", // Thay bằng client ID của bạn
+    client_id: "217304877915-ttuusm6c4fl8866mukanr82iuu3sitev.apps.googleusercontent.com", // Thay bằng client ID của bạn
     callback: handleGoogleSignIn,
     auto_select: false, // Ngăn không cho tự động hiển thị popup
     cancel_on_tap_outside: true,

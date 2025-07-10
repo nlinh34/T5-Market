@@ -1,4 +1,5 @@
-import { Role } from "../../APIs/utils/roleEnum.js";
+import { ShopAPI } from '../../APIs/shopAPI.js';
+import { Role } from '../../APIs/utils/roleEnum.js';
 
 class Header extends HTMLElement {
   constructor() {
@@ -52,32 +53,42 @@ class Header extends HTMLElement {
 
   initializeCartCount() {
     const updateCartCountUI = () => {
-      const countElement = this.querySelector(".cart-count");
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (countElement) {
-        countElement.textContent = user ? user.cartCount || 0 : 0;
-      }
+      const cartCount = localStorage.getItem("cartCount") || 0;
+      this.querySelector(".cart-count").textContent = cartCount;
     };
-    window.addEventListener("cartCountUpdated", updateCartCountUI);
-    updateCartCountUI();
+    updateCartCountUI(); // Initial call
+    window.addEventListener("cartUpdated", updateCartCountUI);
   }
 
-  updateUserInterface() {
+  async updateUserInterface() {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
     const menu = this.querySelector("#accountMenu");
 
     if (token && user) {
+
+      let shopLinkHtml = '';
+      try {
+        const shopResponse = await ShopAPI.getMyShop();
+        if (shopResponse.success && shopResponse.data) {
+            const shop = shopResponse.data;
+            if (shop.status === 'approved') {
+                shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
+            } else {
+                shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
+            }
+        }
+      } catch (error) {
+          // No shop exists, show create link
+          shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
+      }
+
+
       let html = `
         <a href="./favorites.html"><i class="fa fa-heart"></i>Mục yêu thích</a>
-        <a href="./post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
-        <a href="./product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
-        <a href="./seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
         <a href="./order-detail.html"><i class="fa fa-tasks"></i>Lịch Sử Mua Hàng</a>
         <a href="./account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
-        <a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>
-        <a href="./shop.html"><i class="fa fa-tasks"></i>Quản lý đăng tin</a>
-        <a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng </a>
+        ${shopLinkHtml}
         <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
       `;
 
@@ -101,7 +112,7 @@ class Header extends HTMLElement {
       logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        window.location.reload();
+        window.location.href = "./index.html";
       });
     } else {
       menu.innerHTML = `
@@ -112,17 +123,19 @@ class Header extends HTMLElement {
   }
 
   setupDropdownToggle() {
-    const toggleBtn = this.querySelector(".account-toggle");
-    const menu = this.querySelector(".account-menu");
+    const accountToggle = this.querySelector(".account-toggle");
+    const accountMenu = this.querySelector("#accountMenu");
 
-    toggleBtn.addEventListener("click", (e) => {
+    accountToggle.addEventListener("click", (e) => {
       e.stopPropagation();
-      menu.classList.toggle("hidden");
+      accountMenu.classList.toggle("hidden");
     });
 
     // Ẩn dropdown khi click bên ngoài
-    window.addEventListener("click", () => {
-      menu.classList.add("hidden");
+    document.addEventListener("click", (event) => {
+      if (!accountToggle.contains(event.target)) {
+        accountMenu.classList.add("hidden");
+      }
     });
   }
 }

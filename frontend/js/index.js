@@ -1,8 +1,13 @@
 // frontend/pages/home/index.js
 import { CategoryAPI } from "../APIs/categoryAPI.js";
-import { formatDate } from "../APIs/utils/formatter.js"
+import { formatDate } from "../APIs/utils/formatter.js";
+import { ProductAPI } from "../APIs/productAPI.js"; // Added import for ProductAPI
+import { ShopAPI } from "../APIs/shopAPI.js"; // Import ShopAPI
 
-document.addEventListener("DOMContentLoaded", function () {
+let currentProductsPage = 1;
+const productsPerPage = 9; // Changed from 6 to 9
+
+document.addEventListener("DOMContentLoaded", function() {
     console.log("DOM loaded, starting to load categories...");
 
     async function addToCart(productId) {
@@ -72,12 +77,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // Check for specific problematic external image sources and replace with fallback
         if (imageURL && (imageURL.includes("bing.com/images") || imageURL.includes("via.placeholder.com"))) {
             console.log("getValidImageURL - Replacing problematic external URL with fallback.");
-            return "/assests/images/phukien.png";
+            return "/assests/images/default-product.png"; // Changed fallback image
         }
 
         if (!imageURL || typeof imageURL !== "string" || imageURL.trim() === "" || imageURL === "null" || imageURL === "undefined" || !isValidImageUrl(imageURL)) {
             console.log("getValidImageURL - Returning fallback image (invalid or empty URL detected). Type: " + (typeof imageURL) + ", Value: " + imageURL);
-            return "/assests/images/phukien.png";
+            return "/assests/images/default-product.png"; // Changed fallback image
         }
         console.log("getValidImageURL - Returning valid image URL:", imageURL);
         return imageURL;
@@ -146,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
         for (const category of categories) {
             const validImg = getValidImageURL(category.imageURL);
             if (!seenImages.has(validImg)) {
-                uniqueCategories.push({ ...category, imageURL: validImg });
+                uniqueCategories.push({...category, imageURL: validImg });
                 seenImages.add(validImg);
             }
         }
@@ -161,16 +166,22 @@ document.addEventListener("DOMContentLoaded", function () {
         categoryGrid.innerHTML = categoriesHTML;
     }
 
-    async function loadApprovedProducts() {
+    async function loadApprovedProducts(page = 1, limit = productsPerPage) {
         try {
             const grid = document.querySelector(".products-grid");
             grid.innerHTML = '<div class="loading">Đang tải sản phẩm...</div>';
 
-            const response = await fetch("https://t5-market.onrender.com/products/approved");
-            if (!response.ok) throw new Error("Lỗi khi tải sản phẩm");
+            const result = await ProductAPI.getApprovedProducts(); // Use ProductAPI
+            if (!result.success) throw new Error(result.error || "Lỗi khi tải sản phẩm");
 
-            const result = await response.json();
-            renderProducts(result.data);
+            const allProducts = result.data;
+            const startIndex = (page - 1) * limit;
+            const endIndex = startIndex + limit;
+            const productsToRender = allProducts.slice(startIndex, endIndex);
+
+            renderProducts(productsToRender);
+            renderProductsPagination(page, allProducts.length);
+
         } catch (error) {
             console.error("Lỗi tải sản phẩm:", error);
             document.querySelector(".products-grid").innerHTML = `
@@ -190,25 +201,17 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const uniqueProducts = [];
-        const seenImages = new Set();
-        for (const product of products) {
-            const img = getValidImageURL(product.image_url);
-            if (!seenImages.has(img)) {
-                uniqueProducts.push({ ...product, image_url: img });
-                seenImages.add(img);
-            }
-        }
-
-        const html = uniqueProducts.map(product => `
+        const html = products.map(product => `
             <div class="product-card" data-id="${product._id}">
-                <img src="${getValidImageURL(product.image_url)}" alt="${product.name}" class="product-img" loading="lazy"/>
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-price">${product.price.toLocaleString()} VND</p>
-                <p class="product-posted-date">Ngày đăng: ${formatDate(product.createdAt)}</p>
-                <div class="product-seller-info">
-                    <span class="seller-name-display"><i class="fas fa-user"></i> ${product.seller.fullName || 'N/A'}</span>
-                    <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
+                <img src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="product-img" loading="lazy"/>
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-price">${product.price.toLocaleString()} VND</p>
+                    <p class="product-posted-date">Ngày đăng: ${formatDate(product.createdAt)}</p>
+                    <div class="product-seller-info">
+                        <span class="seller-name-display"><i class="fas fa-user"></i> ${product.shop.name || 'N/A'}</span>
+                        <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
+                    </div>
                 </div>
             </div>
         `).join("");
@@ -217,7 +220,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.querySelectorAll(".product-card").forEach((card) => {
             card.addEventListener("click", (e) => {
-                // Ensure the click isn't from a nested interactive element if any were re-added
                 const id = card.dataset.id;
                 if (id) {
                     window.location.href = `product.html?id=${id}`;
@@ -226,27 +228,54 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function renderProductsPagination(currentPage, totalProducts) {
+        const totalPages = Math.ceil(totalProducts / productsPerPage);
+        document.getElementById('current-products-page').textContent = currentPage;
+
+        const prevButton = document.getElementById('prev-products-page');
+        const nextButton = document.getElementById('next-products-page');
+
+        if (prevButton) {
+            prevButton.disabled = currentPage === 1;
+        }
+        if (nextButton) {
+            nextButton.disabled = currentPage === totalPages || totalPages === 0;
+        }
+    }
+
+    document.getElementById('prev-products-page').addEventListener('click', () => {
+        if (currentProductsPage > 1) {
+            currentProductsPage--;
+            loadApprovedProducts(currentProductsPage);
+        }
+    });
+
+    document.getElementById('next-products-page').addEventListener('click', () => {
+        // Need to fetch total products first to know total pages
+        ProductAPI.getApprovedProducts().then(result => {
+            if (result.success) {
+                const totalProducts = result.data.length;
+                const totalPages = Math.ceil(totalProducts / productsPerPage);
+                if (currentProductsPage < totalPages) {
+                    currentProductsPage++;
+                    loadApprovedProducts(currentProductsPage);
+                }
+            }
+        });
+    });
+
     async function loadFeaturedProducts() {
         try {
             const featuredGrid = document.querySelector(".featured-grid");
             featuredGrid.innerHTML = '<div class="loading">Đang tải sản phẩm nổi bật...</div>';
 
-            const response = await fetch("https://t5-market.onrender.com/products/featured");
-            if (!response.ok) throw new Error("Lỗi khi tải sản phẩm nổi bật");
-
-            const result = await response.json();
-
-            if (result.success) {
-                renderFeaturedProducts(result.data);
+            // Always use fallback to ProductAPI.getApprovedProducts, removed direct fetch to /products/featured
+            const fallbackResult = await ProductAPI.getApprovedProducts(); // Use ProductAPI
+            if (fallbackResult.success) {
+                const featuredProducts = fallbackResult.data.slice(0, 6); // Take first 6 products as featured
+                renderFeaturedProducts(featuredProducts);
             } else {
-                const fallbackResponse = await fetch("https://t5-market.onrender.com/products/approved");
-                if (fallbackResponse.ok) {
-                    const fallbackResult = await fallbackResponse.json();
-                    const featuredProducts = fallbackResult.data.slice(0, 6);
-                    renderFeaturedProducts(featuredProducts);
-                } else {
-                    throw new Error("Không thể tải sản phẩm nổi bật");
-                }
+                throw new Error(fallbackResult.error || "Không thể tải sản phẩm nổi bật");
             }
         } catch (error) {
             console.error("Lỗi tải sản phẩm nổi bật:", error);
@@ -274,9 +303,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const uniqueProducts = [];
         const seenImages = new Set();
         for (const product of products) {
-            const img = getValidImageURL(product.image_url);
+            const img = getValidImageURL(product.images[0]); // Changed to product.images[0]
             if (!seenImages.has(img)) {
-                uniqueProducts.push({ ...product, image_url: img });
+                uniqueProducts.push({...product, image_url: img });
                 seenImages.add(img);
             }
         }
@@ -286,13 +315,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="featured-badge">
                     <i class="fas fa-star"></i> Nổi bật
                 </div>
-                <img src="${getValidImageURL(product.image_url)}" alt="${product.name}" class="featured-product-img" loading="lazy"/>
+                <img src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="featured-product-img" loading="lazy"/>
                 <div class="featured-product-info">
                     <h3 class="featured-product-name">${product.name}</h3>
                     <p class="featured-product-price">${product.price.toLocaleString()} VND</p>
                     <p class="featured-product-posted-date">Ngày đăng: ${formatDate(product.createdAt)}</p>
                     <div class="featured-product-seller-info">
-                        <span class="seller-name-display"><i class="fas fa-user"></i> ${product.seller.fullName || 'N/A'}</span>
+                        <span class="seller-name-display"><i class="fas fa-user"></i> ${product.shop.name || 'N/A'}</span>
                         <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
                     </div>
                 </div>
@@ -310,7 +339,55 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    async function loadApprovedShops() {
+        try {
+            const sellersGrid = document.querySelector(".sellers-grid");
+            sellersGrid.innerHTML = '<div class="loading">Đang tải cửa hàng nổi bật...</div>';
+
+            const result = await ShopAPI.getApprovedShops();
+
+            if (result.success) {
+                renderApprovedShops(result.data);
+            } else {
+                throw new Error(result.error || "Không thể tải danh sách cửa hàng nổi bật");
+            }
+        } catch (error) {
+            console.error("Lỗi tải cửa hàng nổi bật:", error);
+            document.querySelector(".sellers-grid").innerHTML = `
+                <div class="error-message">
+                    Không thể tải cửa hàng nổi bật. Vui lòng thử lại sau!
+                </div>
+            `;
+        }
+    }
+
+    function renderApprovedShops(shops) {
+        const sellersGrid = document.querySelector(".sellers-grid");
+        sellersGrid.innerHTML = "";
+
+        if (!shops || shops.length === 0) {
+            sellersGrid.innerHTML = "<p>Không có cửa hàng nổi bật nào.</p>";
+            return;
+        }
+
+        const html = shops.slice(0, 3).map(shop => `
+            <div class="seller-card">
+                <img src="${shop.logoUrl || './assests/images/default-product.png'}" alt="${shop.name}" class="seller-avatar" />
+                <div class="seller-details-group">
+                    <div class="seller-name-row">
+                        <h3 class="seller-name">${shop.name}</h3>
+                        <span class="seller-status-circle ${shop.status === 'approved' ? 'active' : 'inactive'}"></span>
+                    </div>
+                    <p class="seller-rating"><i class="fas fa-star"></i> <span>${shop.rating ? shop.rating.toFixed(1) : 'Chưa có'} sao (${shop.reviewCount || 0} đánh giá)</span></p>
+                </div>
+            </div>
+        `).join("");
+
+        sellersGrid.innerHTML = html;
+    }
+
     loadCategories();
-    loadApprovedProducts();
+    loadApprovedProducts(currentProductsPage); // Initial call with currentProductsPage
     loadFeaturedProducts();
+    loadApprovedShops(); // Call the new function to load approved shops
 });

@@ -139,6 +139,7 @@ body {
     background: #FFD700;
     color: #333; /* Darker text for contrast */
     border: 1px solid #FFD700;
+    font-weight: 650;
 }
 
 .btn-primary:hover {
@@ -157,6 +158,17 @@ body {
     background: #f0f0f0; /* Subtle grey on hover */
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.08); /* More prominent shadow on hover */
+}
+
+/* Make modal cancel buttons look like primary buttons */
+.modal-footer .btn-secondary.close-button {
+    color: #333;
+}
+
+.modal-footer .btn-secondary.close-button:hover {
+    background: #e9e7e7;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
 /* Shop Stats */
@@ -382,40 +394,193 @@ body {
 
 /* Edit Buttons */
 .edit-section {
+    margin-top: 20px;
+    text-align: right;
+}
+
+/* Staff Management Section */
+.card-header {
     display: flex;
-    justify-content: flex-end;
-    padding-top: 20px; /* Increased padding */
-    border-top: 1px solid #e0e0e0; /* Lighter border */
-    margin-top: 20px; /* Increased margin */
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card-header a.btn {
+    text-decoration: none;
+}
+
+#staffManagementCard .card-header .card-title {
+    flex-grow: 1;
+}
+
+.staff-list {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    min-width: 600px;
+}
+
+.staff-table th,
+.staff-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.staff-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+}
+
+.staff-info {
+    display: flex;
+    align-items: center;
+}
+
+.staff-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.staff-name {
+    font-weight: 500;
+}
+
+.staff-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    gap: 5px; /* Add space between buttons */
+    padding-left: 10px;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    margin: 0;
+}
+
+.btn-icon:hover {
+    color: #343a40;
+}
+
+.btn-icon.btn-danger:hover {
+    color: #dc3545;
+}
+
+/* Style for staff rows where the user has been deleted */
+.staff-table .deleted-user td {
+    color: #721c24; /* Dark red text */
+    background-color: #f8d7da; /* Light pink background */
+    font-style: italic;
+}
+
+.staff-table .deleted-user .staff-avatar {
+    background-color: #f5c6cb;
+    color: #721c24;
+}
+
+.staff-table .deleted-user .btn-icon:disabled {
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+
+/* Permissions Modal */
+.permissions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.permission-item:hover {
+    background-color: #f8f9fa;
+}
+
+.permission-item label:not(.switch) {
+    cursor: pointer;
+    flex: 1;
+}
+
+.permission-item input[type="checkbox"]:disabled + .slider {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.permission-item input[type="checkbox"]:disabled ~ label {
+    color: #999;
+    cursor: not-allowed;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .container {
-        padding: 16px;
+        padding: 15px;
     }
 
     .shop-header-top {
         flex-direction: column;
-        gap: 16px;
+        align-items: center;
+        text-align: center;
     }
 
     .shop-actions {
-        width: 100%;
-        justify-content: center;
+        margin-top: 15px;
     }
 
     .shop-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .content-section {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
     .tab-list {
+        justify-content: space-around;
+    }
+
+    .staff-info {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .staff-avatar {
+        margin-right: 0;
     }
 }
 
@@ -568,53 +733,35 @@ body {
     margin-bottom: 30px;
 }
 
-.post-listing-btn {
-    display: inline-block;
-    padding: 12px 30px;
-    background-color: #FFD700;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
+/* Product Tabs */
+.product-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.product-tab-btn {
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    color: #555;
     cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
-.post-listing-btn:hover {
-    background-color: #EEDD00;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.product-tab-btn:hover {
+    background-color: #e0e0e0;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .container {
-        padding: 16px;
-    }
-
-    .shop-header-top {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .shop-actions {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .shop-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
-
-    .content-section {
-        grid-template-columns: 1fr;
-    }
-
-    .tab-list {
-        flex-direction: column;
-    }
+.product-tab-btn.active {
+    background-color: #FFFACD;
+    color: #FFD700;
+    border-color: #FFD700;
+    font-weight: 700;
 }
 
 /* Policy Edit Modal Styles */
@@ -685,58 +832,71 @@ body {
     transition: color 0.3s ease, transform 0.2s ease; /* Smooth transition */
 }
 
-.close-button:hover,
-.close-button:focus {
+.modal-header .close-button:hover,
+.modal-header .close-button:focus {
     color: #333;
     transform: rotate(90deg); /* Rotate effect on hover */
     text-decoration: none;
 }
 
 .modal-body {
-    padding: 25px 30px; /* Increased padding */
-    background-color: #f8f8f8; /* Light grey background for body */
-    flex-grow: 1; /* Allow body to take available space */
-    overflow-y: auto; /* Enable scroll within body */
+    padding: 20px 30px;
+    background-color: #fff;
+    max-height: 70vh;
+    overflow-y: auto;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .modal-hint {
-    font-size: 0.95rem; /* Slightly larger font */
-    color: #666; /* Softer gray text */
-    margin-bottom: 25px; /* Increased margin */
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 20px;
     text-align: center;
 }
 
 .form-group {
-    margin-bottom: 20px; /* Increased margin between form groups */
+    margin-bottom: 20px;
 }
-
 .form-group label {
     display: block;
-    margin-bottom: 8px; /* Space between label and input */
-    font-weight: 600; /* Bolder label text */
-    color: #444; /* Darker label color */
-    font-size: 0.95rem;
-}
-
-.form-group input[type="text"],
-.form-group input[type="tel"],
-.form-group textarea {
-    width: 100%;
-    padding: 12px 15px; /* More padding for inputs */
-    border: 1px solid #ddd; /* Lighter border */
-    border-radius: 8px; /* Softer rounded corners */
-    font-size: 1rem; /* Standard font size */
+    font-weight: 600;
+    margin-bottom: 8px;
     color: #333;
-    background-color: #ffffff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.modal-body .form-group input[type='text'],
+.modal-body .form-group input[type='tel'],
+.modal-body .form-group input[type='email'],
+.modal-body .form-group input[type='password'],
+.modal-body .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="tel"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
 .form-group textarea:focus {
-    border-color: #FFD700; /* Yellow border on focus */
+    border-color: #ffe600;
     outline: none;
-    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2); /* Softer, larger shadow */
+}
+
+.form-group .error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 5px;
+    display: none; /* Hidden by default, shown by JS */
+}
+
+.form-group input.input-error {
+    border-color: #dc3545 !important;
 }
 
 .avatar-upload-overlay {
@@ -871,7 +1031,6 @@ input:checked + .slider:before {
     border-radius: 8px; /* Softer rounded corners */
     font-size: 0.95rem;
     color: #333;
-    background-color: #f8f8f8; /* Light background for inputs */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -949,7 +1108,6 @@ input:checked + .slider:before {
     gap: 15px; /* Increased gap between buttons */
     padding: 20px 30px; /* Increased padding */
     border-top: 1px solid #e0e0e0; /* Lighter, subtle border */
-    background-color: #f8f8f8; /* Light gray background */
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
