@@ -1,13 +1,30 @@
 // backend/controllers/orderController.js
 const Order = require("../models/Order");
-const User = require("../models/User");
 const Product = require("../models/Product");
 const { Role } = require("../constants/roleEnum")
-const mongoose = require("mongoose");
+
+async function generateUniqueOrderCode() {
+  let code;
+  let exists = true;
+  let attempts = 0;
+
+  while (exists && attempts < 5) {
+    code = "ORD-" + Math.floor(1000 + Math.random() * 9000);
+    const existingOrder = await Order.findOne({ orderCode: code });
+    exists = !!existingOrder;
+    attempts++;
+  }
+
+  if (exists) {
+    throw new Error("Không thể tạo mã đơn hàng duy nhất sau nhiều lần thử.");
+  }
+
+  return code;
+}
 
 exports.createOrder = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
     const { products, shippingInfo, paymentMethod } = req.body;
 
     if (!products || !Array.isArray(products) || products.length === 0) {
@@ -18,41 +35,51 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ success: false, error: "Thông tin giao hàng không đầy đủ." });
     }
 
-    const detailedProducts = await Promise.all(
-      products.map(async (item) => {
-        const product = await Product.findById(item.productId);
-        if (!product) {
-          throw new Error(`Không tìm thấy sản phẩm với ID: ${item.productId}`);
-        }
-        return {
-          productId: product._id,
-          name: product.name,
-          quantity: item.quantity,
-          price: product.price,
-          image: product.image_url || ""
-        };
-      })
-    );
+    const productDocs = await Product.find({ _id: { $in: products.map(p => p.productId) } })
+      .select("_id name price image_url shop");
 
-    const totalAmount = detailedProducts.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    const ordersByShop = {}; // { shopId: [product1, product2] }
 
-    const newOrder = new Order({
-      user: new mongoose.Types.ObjectId(userId),
-      products: detailedProducts,
-      shippingInfo,
-      paymentMethod: paymentMethod || "cod",
-      totalAmount
-    });
+    for (const item of products) {
+      const prod = productDocs.find(p => p._id.equals(item.productId));
+      if (!prod) throw new Error(`Không tìm thấy sản phẩm với ID: ${item.productId}`);
 
-    await newOrder.save();
+      const shopId = prod.shop.toString();
+
+      if (!ordersByShop[shopId]) ordersByShop[shopId] = [];
+
+      ordersByShop[shopId].push({
+        productId: prod._id,
+        name: prod.name,
+        quantity: item.quantity,
+        price: prod.price,
+        image: prod.image_url || ""
+      });
+    }
+
+    const createdOrders = [];
+
+    for (const [shopId, shopProducts] of Object.entries(ordersByShop)) {
+      const totalAmount = shopProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      const orderCode = await generateUniqueOrderCode();
+      const newOrder = await Order.create({
+        user: userId,
+        shop: shopId,
+        products: shopProducts,
+        shippingInfo,
+        paymentMethod: paymentMethod || "cod",
+        totalAmount,
+        orderCode
+      });
+
+      createdOrders.push(newOrder);
+    }
 
     res.status(201).json({
       success: true,
       message: "Tạo đơn hàng thành công",
-      data: newOrder
+      data: createdOrders
     });
   } catch (error) {
     console.error("Create Order Error:", error);
@@ -63,9 +90,10 @@ exports.createOrder = async (req, res) => {
   }
 };
 
+
 exports.getUserOrders = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
 
     const filterStatus = req.query.status;
     const filterOptions = { user: userId };
@@ -87,7 +115,7 @@ exports.getUserOrders = async (req, res) => {
 exports.cancelOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
-    const userId = req.user._id;
+    const userId = req.user.userId;
     const { cancelReason } = req.body;
 
     const order = await Order.findOne({ _id: orderId, user: userId });
@@ -206,5 +234,21 @@ exports.getProductPurchaseStats = async (req, res) => {
   } catch (error) {
     console.error("Error getting product purchase stats:", error);
     res.status(500).json({ success: false, error: "Có lỗi xảy ra khi thống kê lượt mua sản phẩm" });
+  }
+};
+
+exports.getDeliveredOrderCountByShop = async (req, res) => {
+  try {
+    const shopId = req.params.shopId;
+
+    const count = await Order.countDocuments({
+      shop: shopId,
+      status: "delivered"
+    });
+
+    res.status(200).json({ success: true, shopId, deliveredOrders: count });
+  } catch (error) {
+    console.error("Delivered order count error:", error);
+    res.status(500).json({ success: false, error: "Lỗi khi thống kê đơn hàng đã giao" });
   }
 };

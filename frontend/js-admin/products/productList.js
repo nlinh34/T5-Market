@@ -13,26 +13,26 @@ export class ProductList {
   }
 
   async loadProducts() {
-  try {
-    const result = await ProductAPI.getAllProducts();
-    console.log("Kết quả từ API:", result);
+    try {
+      const result = await ProductAPI.getAllProducts();
+      console.log("Kết quả từ API:", result);
 
-    if (result.data && Array.isArray(result.data)) {
-      if (result.data.length === 0) {
-        this.container.innerHTML =
-          '<p class="no-products">Không có sản phẩm nào.</p>';
+      if (result.data && Array.isArray(result.data)) {
+        if (result.data.length === 0) {
+          this.container.innerHTML =
+            '<p class="no-products">Không có sản phẩm nào.</p>';
+        } else {
+          this.renderProducts(result.data);
+        }
       } else {
-        this.renderProducts(result.data);
+        throw new Error(result.message || "Không thể tải danh sách sản phẩm");
       }
-    } else {
-      throw new Error(result.message || "Không thể tải danh sách sản phẩm");
+    } catch (error) {
+      console.error("Load products error:", error);
+      this.container.innerHTML =
+        '<p class="error">Có lỗi xảy ra khi tải danh sách sản phẩm</p>';
     }
-  } catch (error) {
-    console.error("Load products error:", error);
-    this.container.innerHTML =
-      '<p class="error">Có lỗi xảy ra khi tải danh sách sản phẩm</p>';
   }
-}
 
 
   renderProducts(products) {
@@ -86,6 +86,8 @@ export class ProductList {
   }
 
   renderProductRow(product) {
+    const categoryName = product.category?.name || "Không rõ";
+    const shopName = product.shop?.name || "Không rõ";
     return `
       <tr>
         <td class="product-image">
@@ -93,12 +95,12 @@ export class ProductList {
         </td>
         <td>${product.name}</td>
         <td>${new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(product.price)}</td>
-        <td>${product.category.name}</td>
+      style: "currency",
+      currency: "VND",
+    }).format(product.price)}</td>
+        <td>${categoryName}</td>
         <td>${statusDisplayVN[product.status] || "Chưa cập nhật"}</td>
-        <td>${product.shop?.name || "Không rõ"}</td>
+        <td>${shopName}</td>
         <td class="action-buttons">
           <button class="delete-btn" data-id="${product._id}">
             <i class="fas fa-trash"></i> Xóa

@@ -84,6 +84,8 @@ export class ApproveProduct {
     }
 
     renderProductRow(product) {
+        const categoryName = product.category?.name || "Không rõ";
+        const shopName = product.shop?.name || "Không rõ";
         return `
       <tr>
         <td class="product-image">
@@ -94,9 +96,9 @@ export class ApproveProduct {
             style: "currency",
             currency: "VND",
         }).format(product.price)}</td>
-        <td>${product.category.name}</td>
+        <td>${categoryName}</td>
         <td>${product.description}</td>
-        <td>${product.shop?.name || "Không rõ"}</td>
+        <td>${shopName}</td>
         <td class="action-buttons">
           <button class="approve-btn" data-id="${product._id}">
             <i class="fas fa-check"></i> Duyệt
