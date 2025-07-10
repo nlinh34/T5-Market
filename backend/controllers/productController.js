@@ -332,6 +332,7 @@ const getApprovedProductsByShopId = async (req, res) => {
             .populate("category", "name")
             .populate("createdBy", "name")
             .populate("shop", "name");
+  
 
         if (products.length === 0) {
             return res.status(200).json({
