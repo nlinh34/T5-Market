@@ -22,6 +22,7 @@ async function generateUniqueOrderCode() {
   return code;
 }
 
+//Tạo đơn hàng
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -90,7 +91,7 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-
+//Lấy danh sách đơn hàng của người dùng
 exports.getUserOrders = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -112,6 +113,7 @@ exports.getUserOrders = async (req, res) => {
   }
 };
 
+//Khách hàng hủy đơn
 exports.cancelOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
@@ -140,6 +142,7 @@ exports.cancelOrder = async (req, res) => {
   }
 };
 
+//Lấy danh sách tất cả đơn
 exports.getAllOrders = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -161,6 +164,7 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
+//Đếm số lượt bán của từng sản phẩm
 exports.updateOrderStatus = async (req, res) => {
   try {
     if (req.user.role !== Role.SELLER) {
@@ -200,6 +204,7 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
+//Cập nhật trạng thái đơn hàng
 exports.getProductPurchaseStats = async (req, res) => {
   try {
     const stats = await Order.aggregate([
@@ -237,6 +242,7 @@ exports.getProductPurchaseStats = async (req, res) => {
   }
 };
 
+//Đếm số lượt bán của shop dựa theo các đơn hàng ở trạng thái đã giao (delivered)
 exports.getDeliveredOrderCountByShop = async (req, res) => {
   try {
     const shopId = req.params.shopId;

@@ -1,9 +1,11 @@
 const Shop = require("../models/Shop");
 const Product = require("../models/Product");
+const Review = require("../models/Review");
 const User = require("../models/User")
 const { httpStatusCodes } = require("../utils/constants");
+const mongoose = require("mongoose")
 
-const { Role } = require("../constants/roleEnum"); 
+const { Role } = require("../constants/roleEnum");
 
 const approveShop = async (req, res) => {
   try {
@@ -35,7 +37,7 @@ const approveShop = async (req, res) => {
 
     return res.status(httpStatusCodes.OK).json({ message: "Đã duyệt cửa hàng và nâng cấp user thành seller" });
   } catch (error) {
-    console.error("❌ Error in approveShop:", error); 
+    console.error("❌ Error in approveShop:", error);
     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
       error: "Lỗi khi duyệt shop",
     });
@@ -86,14 +88,14 @@ const rejectShop = async (req, res) => {
 const requestUpgradeToSeller = async (req, res) => {
   try {
     const userId = req.user.userId;
-    
+
     if (req.user.role !== Role.CUSTOMER) {
       return res.status(403).json({
         error: "Chỉ tài khoản khách hàng mới được yêu cầu mở cửa hàng.",
       });
     }
 
-// Lấy thông tin người dùng từ DB để kiểm tra status
+    // Lấy thông tin người dùng từ DB để kiểm tra status
     const dbUser = await User.findById(userId);
     if (!dbUser || dbUser.status !== "approved") {
       return res.status(403).json({
@@ -146,7 +148,7 @@ const getApprovedShops = async (req, res) => {
   try {
     const approvedShops = await Shop.find({ status: "approved" })
       .populate("owner", "fullName email")
-      .populate("approvedBy", "fullName email") 
+      .populate("approvedBy", "fullName email")
       .lean();
 
     res.status(200).json({
@@ -251,7 +253,7 @@ const updateShopPolicies = async (req, res) => {
 
     // Validate policies structure if necessary (e.g., each policy has type and value)
     if (!Array.isArray(policies)) {
-        return res.status(httpStatusCodes.BAD_REQUEST).json({ success: false, message: "Chính sách phải là một mảng." });
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ success: false, message: "Chính sách phải là một mảng." });
     }
 
     shop.policies = policies;
@@ -264,15 +266,71 @@ const updateShopPolicies = async (req, res) => {
   }
 };
 
+const getShopRating = async (req, res) => {
+  try {
+    const { shopId } = req.params;
+    console.log("shopId received:", shopId);
+    if (!mongoose.Types.ObjectId.isValid(shopId)) {
+      return res.status(400).json({ error: "shopId không hợp lệ" });
+    }
+
+    const productIds = await Product.find({ shop: shopId }, "_id").then(products =>
+      products.map(p => p._id)
+    );
+
+    if (productIds.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          averageRating: 0,
+          totalReviews: 0,
+          reviews: [],
+        },
+      });
+    }
+
+    const stats = await Review.aggregate([
+      { $match: { product: { $in: productIds } } },
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const reviews = await Review.find({ product: { $in: productIds } })
+      .populate("user", "fullName email")
+      .populate("product", "name")
+      .sort({ createdAt: -1 });
+
+    const result = stats[0] || { averageRating: 0, totalReviews: 0 };
+
+    res.status(200).json({
+      success: true,
+      data: {
+        averageRating: result.averageRating,
+        totalReviews: result.totalReviews,
+        reviews,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi lấy đánh giá shop:", error);
+    res.status(500).json({ error: "Không thể lấy đánh giá của shop" });
+  }
+};
+
 module.exports = {
-    approveShop,
-    requestUpgradeToSeller,
-    getPendingShops,
-    getShopWithProducts,
-    rejectShop,
-    getApprovedShops,
-    getMyShop,
-    updateShopProfile,
-    updateShopPolicies
+  approveShop,
+  requestUpgradeToSeller,
+  getPendingShops,
+  getShopWithProducts,
+  rejectShop,
+  getApprovedShops,
+  getMyShop,
+  updateShopProfile,
+  updateShopPolicies,
+  getShopRating
 }
 

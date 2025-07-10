@@ -9,7 +9,8 @@ const {
     getMyShop,
     updateShopProfile,
     updateShopPolicies,
-    rejectShop
+    rejectShop,
+    getShopRating
 } = require("../controllers/shopController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 const { Role } = require("../constants/roleEnum");
@@ -25,5 +26,6 @@ router.put("/approve-shop/:id", protect, authorize(Role.ADMIN), approveShop);
 router.put("/reject-shop/:id", protect, authorize(Role.ADMIN), rejectShop);
 router.put("/profile", protect, updateShopProfile);
 router.put("/policies", protect, updateShopPolicies);
+router.get("/:shopId/reviews", protect, getShopRating);
 
 module.exports = router;
