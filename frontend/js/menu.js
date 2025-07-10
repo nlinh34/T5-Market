@@ -38,6 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="rating">
             ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
           </div>
+          <div class="product-seller-info">
+                    <span class="seller-name-display"><i class="fas fa-user"></i> ${product.seller.fullName || 'N/A'}</span>
+                    <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
+                </div>
           <div class="button-group">
             <button class="btn">
               <a href="product.html?id=${product._id}" style="color:white;"> <i class="fa-solid fa-eye"></i></a>

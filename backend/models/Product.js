@@ -70,6 +70,15 @@ const productSchema = new mongoose.Schema({
         trim: true,
     },
 
+    averageRating: {
+        type: Number,
+        default: 0,
+    },
+    totalReviews: {
+        type: Number,
+        default: 0,
+    },
+
     // Sản phẩm nổi bật
     isFeatured: {
         type: Boolean,
