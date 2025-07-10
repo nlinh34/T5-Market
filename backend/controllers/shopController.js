@@ -86,6 +86,51 @@ const rejectShop = async (req, res) => {
 
 
 const requestUpgradeToSeller = async (req, res) => {
+
+  try {
+    const userId = req.user.userId;
+
+    if (req.user.role !== Role.CUSTOMER) {
+      return res.status(403).json({
+        error: "Chỉ tài khoản khách hàng mới được yêu cầu mở cửa hàng.",
+      });
+    }
+
+    // Lấy thông tin người dùng từ DB để kiểm tra status
+    const dbUser = await User.findById(userId);
+    if (!dbUser || dbUser.status !== "approved") {
+      return res.status(403).json({
+        error: "Tài khoản chưa được duyệt để mở cửa hàng.",
+      });
+    }
+
+    const { name, address, phone, description, logoUrl, policies } = req.body;
+
+    // Kiểm tra đã có shop chưa
+    const existingShop = await Shop.findOne({ owner: userId });
+    if (existingShop) {
+      return res.status(400).json({ error: "Bạn đã gửi yêu cầu hoặc đã có shop." });
+    }
+
+    // Tạo shop mới
+    const newShop = new Shop({
+      owner: userId,
+      name,
+      address,
+      phone,
+      description,
+      logoUrl,
+      policies,
+      status: "pending",
+    });
+
+    await newShop.save();
+
+    res.status(200).json({ success: true, message: "Yêu cầu mở shop đã được gửi, vui lòng chờ admin duyệt." });
+  } catch (error) {
+    console.error("Error in requestUpgradeToSeller:", error);
+    res.status(500).json({ error: "Lỗi khi gửi yêu cầu nâng cấp seller" });
+  }
   try {
     const userId = req.user.userId;
 
@@ -322,6 +367,8 @@ const getShopRating = async (req, res) => {
 };
 
 module.exports = {
+
+
   approveShop,
   requestUpgradeToSeller,
   getPendingShops,
@@ -333,4 +380,3 @@ module.exports = {
   updateShopPolicies,
   getShopRating
 }
-

@@ -181,4 +181,4 @@ document.addEventListener('DOMContentLoaded', () => {
             avatarPreview.innerHTML = '<div class="default-avatar">NA</div>'; // Reset to default if no file
         }
     });
-}); 
+});

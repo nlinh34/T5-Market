@@ -2,26 +2,28 @@
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    /* Made products smaller */
     gap: 20px;
     padding: 20px 0;
+    justify-items: start;
+    /* Added for centering and preventing stretch */
 }
 
 .product-card {
     background-color: #fff;
-    border: 1px solid #e0e0e0;
-    /* Softer border */
+    border: 1px solid #eee;
     border-radius: 12px;
-    /* More rounded corners */
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    /* Enhanced shadow */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     padding: 10px;
+    /* Reduced padding */
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
-    height: 100%;
+    min-height: 300px;
+    /* Increased min-height for consistent card size */
 }
 
 .product-card:hover {
@@ -33,42 +35,68 @@
 
 .product-img {
     width: 100%;
-    height: 80px;
-    object-fit: contain;
+    height: 200px;
+    /* Changed height to 200px for 2/3 of card height */
+    object-fit: cover;
+    /* Ensures image covers the area */
     border-radius: 8px;
     margin-bottom: 8px;
+    flex-shrink: 0;
 }
 
 .product-name {
     font-size: 14px;
     font-weight: 600;
-    margin: 0 0 3px;
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
     color: #333;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: block;
+    /* Ensure it behaves as a block for truncation */
+    width: 100%;
+    /* Ensure it takes full width for truncation */
+    min-width: 0;
+    flex-shrink: 0;
+    line-height: 1.2em;
+    /* Strict line height */
+    max-height: 1.2em;
+    /* Ensures single line height */
 }
 
 .product-price {
     font-size: 13px;
     color: #e91e63;
     font-weight: 700;
-    margin-bottom: 3px;
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
+    flex-shrink: 0;
 }
 
 .product-posted-date {
     font-size: 12px;
     color: #666;
-    margin-bottom: 3px;
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
+    flex-shrink: 0;
 }
 
 .product-seller-info {
     font-size: 11px;
     color: #666;
-    margin-bottom: 3px;
+    margin-top: auto;
+    /* Push to the bottom */
     display: flex;
+    flex-shrink: 0;
+    /* Ensure it doesn't shrink */
     justify-content: space-between;
-    align-items: center;
+    /* Added to space out elements */
+    width: 100%;
+    margin: 0 -10px;
+    /* Added to make it flush with card edges */
+    padding: 0 10px;
+    /* Re-add padding for content inside */
 }
 
 .product-seller-info i {
@@ -82,8 +110,26 @@
     display: flex;
     align-items: center;
     white-space: nowrap;
+    /* Added for truncation */
     overflow: hidden;
+    /* Added for truncation */
     text-overflow: ellipsis;
+    /* Added for truncation */
+}
+
+.product-card .product-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+    /* Ensure it takes full available height */
+    text-align: left;
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    justify-content: space-between;
+    /* Distribute content evenly vertically */
 }
 
 
@@ -97,27 +143,32 @@
 
 .featured-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 180px);
-    gap: 20px;
+    grid-template-columns: repeat(5, 1fr);
+    /* Changed to display 5 products per row */
+    gap: 15px;
+    /* Adjusted gap for more products */
     margin-top: 2rem;
+    justify-items: center;
+    /* Centered items within their grid cells */
 }
 
 .featured-product-card {
     background-color: #fff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #eee;
     padding: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
-    max-width: 180px;
-    /* Adjusted width for smaller cards */
+    max-width: 200px;
+    /* Adjusted width for 5 column layout */
     width: 100%;
     box-sizing: border-box;
-    height: 100%;
+    min-height: 300px;
+    /* Increased min-height for consistent card size */
 }
 
 .featured-product-card:hover {
@@ -153,13 +204,15 @@
 
 .featured-product-img {
     width: 100%;
-    height: 80px;
-    /* Adjusted height to match regular product images */
-    object-fit: contain;
+    height: 200px;
+    /* Changed height to 200px for 2/3 of card height */
+    object-fit: cover;
+    /* Ensure image covers the area */
     border-radius: 8px;
     margin-bottom: 8px;
-    /* Adjusted margin */
-    transition: transform 0.4s ease;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    /* Prevent image from shrinking */
 }
 
 .featured-product-card:hover .featured-product-img {
@@ -171,47 +224,70 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+    /* Ensure it takes full available height */
+    text-align: left;
+    width: 100%;
+    overflow: hidden;
+    justify-content: space-between;
+    /* Distribute content evenly vertically */
 }
 
 .featured-product-name {
     font-size: 14px;
-    /* Adjusted font size to match regular products */
     font-weight: 600;
     color: #333;
-    margin: 0 0 3px;
-    /* Adjusted margin */
-    line-height: 1.2;
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
+    line-height: 1.2em;
+    /* Strict line height */
+    max-height: 1.2em;
+    /* Ensures single line height */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: block;
+    /* Ensure it behaves as a block for truncation */
+    width: 100%;
+    /* Ensure it takes full width for truncation */
+    min-width: 0;
+    /* Ensures it can shrink if needed */
+    flex-shrink: 0;
 }
 
 .featured-product-price {
     font-size: 13px;
-    /* Adjusted font size to match regular products */
     font-weight: 700;
     color: #e91e63;
-    /* Changed color to match regular products */
-    margin-bottom: 3px;
-    /* Adjusted margin */
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
+    flex-shrink: 0;
 }
 
 .featured-product-posted-date {
     font-size: 12px;
-    /* Adjusted font size to match regular products */
     color: #666;
-    margin-bottom: 2px;
-    /* Adjusted margin */
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
+    flex-shrink: 0;
 }
 
 .featured-product-seller-info {
     font-size: 11px;
-    /* Adjusted font size to match regular products */
     color: #666;
-    margin-bottom: 2px;
+    margin-top: auto;
+    /* Push to the bottom */
     display: flex;
+    flex-shrink: 0;
+    /* Ensure it doesn't shrink */
     justify-content: space-between;
-    align-items: center;
+    /* Added to space out elements */
+    width: 100%;
+    margin: 0 -10px;
+    /* Added to make it flush with card edges */
+    padding: 0 10px;
+    /* Re-add padding for content inside */
 }
 
 .featured-product-seller-info i {
@@ -225,8 +301,11 @@
     display: flex;
     align-items: center;
     white-space: nowrap;
+    /* Added for truncation */
     overflow: hidden;
+    /* Added for truncation */
     text-overflow: ellipsis;
+    /* Added for truncation */
 }
 
 .featured-product-location {
@@ -248,6 +327,8 @@
     gap: 10px;
     align-items: center;
     margin-top: auto;
+    flex-shrink: 0;
+    /* Ensure this block doesn't shrink */
 }
 
 
@@ -280,7 +361,8 @@
     .product-seller-info,
     .featured-product-posted-date,
     .featured-product-seller-info {
-        font-size: 8px;
+        font-size: 10px;
+        /* Adjusted font size for better readability on smaller screens */
     }
 }
 
@@ -311,6 +393,7 @@
     .product-seller-info,
     .featured-product-posted-date,
     .featured-product-seller-info {
-        font-size: 7px;
+        font-size: 9px;
+        /* Adjusted font size for very small screens */
     }
 }
