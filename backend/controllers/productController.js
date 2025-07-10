@@ -118,18 +118,18 @@ const deleteProduct = async (req, res) => {
         const userRole = req.user.role;
 
         const product = await Product.findById(id);
-    
+
         if (!product) {
             return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
         }
 
         // Check role
         const isSeller =
-            product.seller?.toString() === userId ||
-            product.createdBy?.toString() === userId;
+            (product.seller && product.seller.toString() === userId) ||
+            (product.createdBy && product.createdBy.toString() === userId);
 
         const isAdmin = userRole === Role.ADMIN;
-        
+
         if (!isAdmin && !isSeller) {
             return res.status(403).json({ error: "Bạn không có quyền xóa sản phẩm này" });
         }

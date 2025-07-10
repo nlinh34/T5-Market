@@ -1,12 +1,12 @@
 import { Role } from "../../APIs/utils/roleEnum.js";
 
 class Header extends HTMLElement {
-  constructor() {
-    super();
-  }
+    constructor() {
+        super();
+    }
 
-  connectedCallback() {
-    this.innerHTML = `
+    connectedCallback() {
+        this.innerHTML = `
       <header>
         <div class="logo">
           <img class="logo-img" src="./assests/images/logo.png" alt="">
@@ -37,41 +37,54 @@ class Header extends HTMLElement {
 
         <!-- Account Dropdown -->
         <div class="account-dropdown">
-          <button class="account-toggle">
-            <i class="fas fa-user"></i> Tài khoản <span class="arrow">▼</span>
+          <button class="account-toggle" id="accountToggleBtn">
+            <!-- Content will be set by JavaScript -->
           </button>
           <div class="account-menu hidden" id="accountMenu"></div>
         </div>
       </header>
     `;
 
-    this.updateUserInterface();
-    this.initializeCartCount();
-    this.setupDropdownToggle();
-  }
+        this.updateUserInterface(); // This will set the correct initial state
+        this.initializeCartCount();
+        this.setupDropdownToggle();
+    }
 
-  initializeCartCount() {
-    const updateCartCountUI = () => {
-      const countElement = this.querySelector(".cart-count");
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (countElement) {
-        countElement.textContent = user ? user.cartCount || 0 : 0;
-      }
-    };
-    window.addEventListener("cartCountUpdated", updateCartCountUI);
-    updateCartCountUI();
-  }
+    initializeCartCount() {
+        const updateCartCountUI = () => {
+            const countElement = this.querySelector(".cart-count");
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (countElement) {
+                countElement.textContent = user ? user.cartCount || 0 : 0;
+            }
+        };
+        window.addEventListener("cartCountUpdated", updateCartCountUI);
+        updateCartCountUI();
+    }
 
-  updateUserInterface() {
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
-    const menu = this.querySelector("#accountMenu");
+    updateUserInterface() {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+        const menu = this.querySelector("#accountMenu");
+        const accountToggleBtn = this.querySelector("#accountToggleBtn");
 
-    if (token && user) {
-      let html = `
+        // Update the account toggle button content
+        if (accountToggleBtn) {
+            if (token && user && user.fullName) {
+                // Display avatar and name if logged in
+                const avatar = user.avatarUrl ? `<img src="${user.avatarUrl}" alt="Avatar" class="account-avatar" />` : `<i class="fas fa-user-circle"></i>`;
+                accountToggleBtn.innerHTML = `${avatar} ${user.fullName} <i class="fa-solid fa-chevron-up fa-rotate-180" style="color: #f5f5f5;"></i>`;
+            } else {
+                // Display default "Tài khoản" if not logged in or no full name
+                accountToggleBtn.innerHTML = `<i class="fas fa-user"></i> Tài khoản <i class="fa-solid fa-chevron-up fa-rotate-180" style="color: #f5f5f5;"></i>`;
+            }
+        }
+
+        if (token && user) {
+            let html = `
         <a href="./favorites.html"><i class="fa fa-heart"></i>Mục yêu thích</a>
         <a href="./post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
-        <a href="./product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
+        
         <a href="./seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
         <a href="./order-detail.html"><i class="fa fa-tasks"></i>Lịch Sử Mua Hàng</a>
         <a href="./account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
@@ -81,50 +94,55 @@ class Header extends HTMLElement {
         <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
       `;
 
-      if ([Role.ADMIN, Role.MANAGER, Role.MOD].includes(user.role)) {
-        html += `<a href="./dashboard.html" target="_blank" class="dashboard-btn"><i class="fa fa-tachometer"></i>Trang quản trị</a>`;
-      }
+            if ([Role.ADMIN, Role.MANAGER, Role.MOD].includes(user.role)) {
+                html += `<a href="./dashboard.html" target="_blank" class="dashboard-btn"><i class="fa fa-tachometer"></i>Trang quản trị</a>`;
+            }
 
-      if ([Role.SELLER, Role.STAFF].includes(user.role)) {
-        html += `
-        <a href="./post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
-        <a href="./product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
+            if ([Role.SELLER, Role.STAFF].includes(user.role)) {
+                html += `
+        
         <a href="./seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
         `
-      }
+            }
 
-      
 
-      menu.innerHTML = html;
 
-      const logoutBtn = this.querySelector("#logoutBtn");
-      logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.reload();
-      });
-    } else {
-      menu.innerHTML = `
+            menu.innerHTML = html;
+
+            const logoutBtn = this.querySelector("#logoutBtn");
+            logoutBtn.addEventListener("click", () => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.reload();
+            });
+        } else {
+            menu.innerHTML = `
         <a href="./login.html">Đăng nhập</a>
         <a href="./register.html">Đăng ký</a>
       `;
+        }
     }
-  }
 
-  setupDropdownToggle() {
-    const toggleBtn = this.querySelector(".account-toggle");
-    const menu = this.querySelector(".account-menu");
+    setupDropdownToggle() {
+        const toggleBtn = this.querySelector(".account-toggle");
+        const menu = this.querySelector(".account-menu");
 
-    toggleBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      menu.classList.toggle("hidden");
-    });
+        toggleBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            menu.classList.toggle("hidden");
+            if (!menu.classList.contains("hidden")) {
+                toggleBtn.classList.add("dropdown-open");
+            } else {
+                toggleBtn.classList.remove("dropdown-open");
+            }
+        });
 
-    // Ẩn dropdown khi click bên ngoài
-    window.addEventListener("click", () => {
-      menu.classList.add("hidden");
-    });
-  }
+        // Ẩn dropdown khi click bên ngoài
+        window.addEventListener("click", () => {
+            menu.classList.add("hidden");
+            toggleBtn.classList.remove("dropdown-open"); // Ensure icon resets when clicking outside
+        });
+    }
 }
 
 customElements.define("header-component", Header);

@@ -59,4 +59,11 @@ export const ShopAPI = {
       data: policiesData,
     });
   },
+
+  getApprovedShops: async () => {
+    return await apiCall({
+      endpoint: "/shop/get-approved-shops",
+      method: "GET",
+    });
+  },
 };

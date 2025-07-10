@@ -15,7 +15,7 @@ const { protect, authorize } = require("../middlewares/authMiddleware");
 const { Role } = require("../constants/roleEnum");
 
 router.get("/get-pending-shops", protect, getPendingShops);
-router.get("/get-approve-shops", protect, getApprovedShops);
+router.get("/get-approved-shops", protect, getApprovedShops);
 
 router.get("/:shopId/details-with-products", getShopWithProducts);
 router.get("/my-shop", protect, getMyShop);
