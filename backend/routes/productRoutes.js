@@ -4,42 +4,45 @@ const {
     createProduct,
     getPendingProducts,
     getApprovedProducts,
-    getFeaturedProducts,
+    getProductById,
+    approveProduct,
+    rejectProduct,
+    getRejectedProducts,
+    getAllProductsByShopId,
+    getApprovedProductsByShopId,
+    getPendingProductsByShopId,
+    getRejectedProductsByShopId,
+    getAllProducts,
     updateProduct,
-    deleteProduct,
-    updateStatus, //  Thêm controller mới
-    updateFeaturedStatus,
-    getProductsByShop
+    deleteProduct
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
+const { Role } = require("../constants/roleEnum")
 
 // Người bán đăng sản phẩm
-router.post("/", protect, authorize("user", "admin"), createProduct);
+router.post("/", protect, authorize(Role.SELLER, Role.STAFF), createProduct);
 
-// Người bán cập nhật sản phẩm chưa được duyệt
-router.put("/:id", protect, authorize("user"), updateProduct);
+// Lấy sản phẩm theo trạng thái
+router.get("/get-all-products", getAllProducts);
+router.get("/get-pending-products", getPendingProducts);
+router.get("/get-approved-products", getApprovedProducts);
+router.get("/get-rejected-products", getRejectedProducts);
 
-// Người bán xoá sản phẩm chưa được duyệt hoặc bị từ chối
-router.delete("/:id", protect, authorize("user"), deleteProduct);
+// Duyệt hoặc từ chối sản phẩm
+router.put("/approve-product/:id", protect, authorize(Role.ADMIN, Role.MOD, Role.MANAGER), approveProduct);
+router.put("/reject-product/:id", protect, authorize(Role.ADMIN, Role.MOD, Role.MANAGER), rejectProduct);
 
-// Admin: xem danh sách sản phẩm chờ duyệt
-router.get("/pending", protect, authorize("admin"), getPendingProducts);
+// Lấy chi tiết sản phẩm
+router.get("/:id", getProductById);
+router.patch("/:id", protect, authorize(Role.SELLER, Role.STAFF), updateProduct);
+router.delete("/:id", protect, authorize(Role.SELLER, Role.STAFF, Role.ADMIN), deleteProduct);
 
-// Admin: cập nhật trạng thái duyệt sản phẩm (✔️ dùng cho approve hoặc từ chối)
-router.patch("/:id/status", protect, authorize("admin"), updateStatus);
-
-// Admin: cập nhật trạng thái nổi bật sản phẩm
-router.patch("/:id/featured", protect, authorize("admin"), updateFeaturedStatus);
-
-// Hiển thị sản phẩm đã được duyệt
-router.get("/approved", getApprovedProducts);
-
-// Hiển thị sản phẩm nổi bật
-router.get("/featured", getFeaturedProducts);
-
-// routes/productRoutes.js
-router.get("/by-shop/:shopId", getProductsByShop);
+// Lấy tất cả sản phẩm theo shopId
+router.get("/by-shop/:shopId", getAllProductsByShopId);
+router.get("/by-shop/:shopId/approved", getApprovedProductsByShopId);
+router.get("/by-shop/:shopId/pending", getPendingProductsByShopId);
+router.get("/by-shop/:shopId/rejected", getRejectedProductsByShopId);
 
 
 module.exports = router;

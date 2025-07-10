@@ -11,39 +11,73 @@ const productSchema = new mongoose.Schema({
         required: [true, "Giá sản phẩm không được để trống"],
         min: [0, "Giá sản phẩm không được âm"],
     },
+    isAvailable: {
+        type: Boolean,
+        default: true, // Còn hàng hoặc hết hàng
+    },
     description: {
         type: String,
         required: [true, "Mô tả sản phẩm không được để trống"],
     },
-    image_url: {
-        type: String,
-        required: [true, "URL hình ảnh không được để trống"],
-    },
+    images: [
+        {
+            type: String,
+            required: [true, "Cần ít nhất một hình ảnh sản phẩm"],
+        }
+    ],
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Categories",
+        ref: "Category",
         required: true,
     },
     seller: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-    },
-    isApproved: {
-        type: Boolean,
-        default: false,
-    },
-    approvedAt: {
-        type: Date,
-    },
-    isFeatured: {
-        type: Boolean,
-        default: false,
+        required: true,
     },
     shop: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Shop",
         required: true,
     },
-}, { timestamps: true });
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // người tạo bài đăng: seller hoặc staff
+        required: true,
+    },
+    // Trạng thái duyệt
+    status: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending",
+    },
+    approvedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // Admin hoặc Mod duyệt
+    },
+    approvedAt: {
+        type: Date,
+    },
+    rejectedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // Admin hoặc Mod từ chối
+    },
+    rejectedAt: {
+        type: Date,
+    },
+    rejectionReason: {
+        type: String,
+        trim: true,
+    },
+
+    // Sản phẩm nổi bật
+    isFeatured: {
+        type: Boolean,
+        default: false,
+    },
+
+},
+    { timestamps: true }
+);
 
 module.exports = mongoose.model("Product", productSchema);

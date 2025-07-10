@@ -138,9 +138,16 @@ body {
   border-collapse: collapse;
 }
 
-.data-table th,
+.data-table th {
+  padding: 12px 26px;
+  text-align: center;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+
+}
+
 .data-table td {
-  padding: 12px 15px;
+  padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #dee2e6;
   font-size: 14px;
@@ -227,13 +234,15 @@ body {
 .modal-content {
   position: relative;
   background-color: #fff;
-  margin: 20px auto; /* Giảm margin-top xuống */
+  margin: 20px auto;
+  /* Giảm margin-top xuống */
   padding: 0;
   width: 90%;
   max-width: 600px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-height: calc(100vh - 40px); /* Chiều cao tối đa là 100vh - 40px padding */
+  max-height: calc(100vh - 40px);
+  /* Chiều cao tối đa là 100vh - 40px padding */
   display: flex;
   flex-direction: column;
 }
@@ -269,7 +278,8 @@ body {
 
 .modal-body {
   padding: 20px;
-  overflow-y: auto; /* Cho phép scroll trong modal body */
+  overflow-y: auto;
+  /* Cho phép scroll trong modal body */
   flex: 1;
 }
 
@@ -337,9 +347,11 @@ body {
 
 /* Product Image in Table */
 .data-table .product-image {
-  width: 120px; /* Tăng chiều rộng */
-  height: 60px; /* Giảm chiều cao để tạo hình chữ nhật */
-  padding: 2px;
+  width: 120px;
+  /* Tăng chiều rộng */
+  height: 60px;
+  /* Giảm chiều cao để tạo hình chữ nhật */
+  padding: 10px;
 }
 
 .data-table .product-image img {
@@ -353,25 +365,25 @@ body {
 /* Điều chỉnh hiệu ứng hover */
 .data-table .product-image img:hover {
   position: relative;
-  transform: scale(1.5); /* Tăng kích thước khi hover */
-  transition: transform 0.3s ease;
-  z-index: 1000;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
 
 /* Thêm styles mới để đảm bảo các cột có chiều cao phù hợp */
 .data-table td {
-  vertical-align: middle; /* Căn giữa nội dung theo chiều dọc */
-  height: 70px; /* Đặt chiều cao cố định cho các ô */
+  vertical-align: middle;
+  /* Căn giữa nội dung theo chiều dọc */
+  height: 70px;
+  /* Đặt chiều cao cố định cho các ô */
 }
 
 /* Điều chỉnh cột thao tác */
 .data-table .action-buttons {
   display: flex;
   gap: 8px;
-  justify-content: flex-start; /* Căn trái các nút */
-  min-width: 150px; /* Đảm bảo đủ không gian cho các nút */
+  justify-content: flex-start;
+  /* Căn trái các nút */
+  min-width: 150px;
+  /* Đảm bảo đủ không gian cho các nút */
 }
 
 /* Điều chỉnh kích thước nút */
@@ -455,7 +467,8 @@ body {
 
 .data-table .blog-image img:hover {
   position: relative;
-  transform: scale(1.5); /* Tăng kích thước khi hover */
+  transform: scale(1.5);
+  /* Tăng kích thước khi hover */
   transition: transform 0.3s ease;
   z-index: 1000;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -741,7 +754,7 @@ body {
 }
 
 /* Animation khi focus vào input */
-.search-bar input:focus + i {
+.search-bar input:focus+i {
   color: #4a89dc;
 }
 
@@ -817,6 +830,7 @@ body {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -978,7 +992,7 @@ body {
   white-space: pre-line;
 }
 
-.view-user{
+.view-user {
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
@@ -998,7 +1012,10 @@ body {
 }
 
 .ellipsis {
-  white-space: nowrap;        /* Không xuống dòng */
-  overflow: hidden;           /* Ẩn phần vượt ra ngoài */
-  text-overflow: ellipsis;    /* Thay phần bị ẩn bằng dấu ... */
+  white-space: nowrap;
+  /* Không xuống dòng */
+  overflow: hidden;
+  /* Ẩn phần vượt ra ngoài */
+  text-overflow: ellipsis;
+  /* Thay phần bị ẩn bằng dấu ... */
 }
