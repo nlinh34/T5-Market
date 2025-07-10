@@ -81,4 +81,31 @@ const authorize = (...roles) => {
   };
 };
 
+
+exports.canEditReview = async (req, res, next) => {
+  try {
+    const review = await Review.findById(req.params.id);
+    if (!review) return res.status(404).json({ error: "Đánh giá không tồn tại" });
+
+    // Kiểm tra quyền chủ sở hữu
+    if (String(review.user) !== String(req.user.userId)) {
+      return res.status(403).json({ error: "Bạn không có quyền chỉnh sửa đánh giá này" });
+    }
+
+    // Giới hạn thời gian sửa: trong 24h
+    const timeDiffMs = Date.now() - new Date(review.createdAt).getTime();
+    const hoursPassed = timeDiffMs / (1000 * 60 * 60);
+
+    if (hoursPassed > 24) {
+      return res.status(403).json({ error: "Bạn chỉ có thể chỉnh sửa đánh giá trong vòng 24h" });
+    }
+
+    req.review = review;
+    next();
+  } catch (error) {
+    console.error("Middleware canEditReview error:", error);
+    res.status(500).json({ error: "Lỗi khi kiểm tra quyền chỉnh sửa đánh giá" });
+  }
+};
+
 module.exports = { protect, authorize, authenticateUser };

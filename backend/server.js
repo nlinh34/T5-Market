@@ -11,6 +11,7 @@ const voucherRoutes = require("./routes/voucherRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const shopRoutes = require("./routes/shopRoutes");
+const reviewRoutes = require("./routes/reviewRoutes")
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -34,7 +35,8 @@ connectDatabase()
     app.use("/vouchers", voucherRoutes);
     app.use("/cart", cartRoutes);
     app.use("/order", orderRoutes);
-    app.use("/shop", shopRoutes)
+    app.use("/shop", shopRoutes);
+    app.use("/review", reviewRoutes)
 
     app.use((err, req, res, next) => {
       console.error(err.stack);
