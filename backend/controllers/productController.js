@@ -279,10 +279,14 @@ const getRejectedProducts = async (req, res) => {
     }
 };
 
-
 const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
+
+        // 🔒 Kiểm tra ID có phải ObjectId hợp lệ không
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "ID sản phẩm không hợp lệ" });
+        }
 
         const product = await Product.findById(id)
             .populate("createdBy", "fullName email")
