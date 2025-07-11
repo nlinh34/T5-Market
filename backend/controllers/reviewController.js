@@ -4,8 +4,6 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 
-
-// Tạo đánh giá
 exports.createReview = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -52,7 +50,6 @@ exports.createReview = async (req, res) => {
 };
 
 
-// controllers/reviewController.js
 exports.getReviewsByProduct = async (req, res) => {
   try {
     const { productId } = req.params;
