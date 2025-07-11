@@ -210,7 +210,6 @@ const getApprovedShops = async (req, res) => {
 };
 
 
-
 const getShopWithProducts = async (req, res) => {
   try {
     const { shopId } = req.params;
