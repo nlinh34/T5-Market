@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Update seller info
         const sellerInfo = document.querySelector('.seller-info');
-        sellerInfo.querySelector('.seller-name').textContent = data.createdBy.fullName;
+        sellerInfo.querySelector('.seller-name').textContent = data.shop.name;
         sellerInfo.querySelector('.seller-status').textContent = 'Đã xác thực';
         sellerInfo.querySelector('.seller-meta').innerHTML = `
             <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
