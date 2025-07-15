@@ -44,7 +44,7 @@
       <aside class="sidebar">
         <!-- Bảng điều khiển -->
         <h4>Danh mục</h4>
-        <ul class="category-filter-list">
+        <ul class="category-filter-list"> 
           <!-- Checkbox danh mục sẽ được render ở đây bằng JS -->
         </ul>
 
@@ -72,46 +72,31 @@
         <div class="product-grid"></div>
 
         <!-- Quảng cáo dạng lưới giữa sản phẩm -->
-        <div class="ad-grid">
-          <div class="ad-item">
-            <img src="./assests/images/tainghe-blt.jpg" alt="Tai nghe Bluetooth">
-            <div class="ad-content">
-              <h4>Tai nghe Bluetooth</h4>
-              <p>Âm thanh sống động, pin trâu 20 giờ, chống nước IPX5</p>
-              <div class="ad-price">799.000đ</div>
-              <a href="#" class="btn">Mua ngay</a>
+        <div class="ad-slider-wrapper">
+          <div class="ad-slider">
+            <!-- Slide 1 -->
+            <div class="ad-slide">
+              <div class="ad-item single-slide">
+                <img src="./assests/images/tainghe-blt.jpg" alt="Tai nghe">
+                <div class="ad-content overlay">
+                  <h4>Tai nghe Bluetooth</h4>
+                  <p>Âm thanh sống động, pin 20h</p>
+                  <div class="ad-price">799.000đ</div>
+                  <a href="#" class="btn">Mua ngay</a>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="ad-item">
-            <img src="./assests/images/ssd.jpg" alt="Ổ cứng SSD">
-            <div class="ad-content">
-     
-              <h4>Ổ cứng SSD 1TB</h4>
-              <p>Tốc độ đọc 3500MB/s, bảo hành 5 năm, tương thích mọi laptop</p>
-              <div class="ad-price">1.299.000đ</div>
-              <a href="#" class="btn">Mua ngay</a>
-            </div>
-          </div>
-        </div>
-        <div class="ad-grid">
-          <div class="ad-item">
-            <img src="./assests/images/manhinh.jpg" alt="Tai nghe Bluetooth">
-            <div class="ad-content">
-
-              <h4>Tai nghe Bluetooth</h4>
-              <p>Âm thanh sống động, pin trâu 20 giờ, chống nước IPX5</p>
-              <div class="ad-price">799.000đ</div>
-              <a href="#" class="btn">Mua ngay</a>
-            </div>
-          </div>
-          <div class="ad-item">
-            <img src="./assests/images/camera.webp" alt="Ổ cứng SSD">
-            <div class="ad-content">
-
-              <h4>Ổ cứng SSD 1TB</h4>
-              <p>Tốc độ đọc 3500MB/s, bảo hành 5 năm, tương thích mọi laptop</p>
-              <div class="ad-price">1.299.000đ</div>
-              <a href="#" class="btn">Mua ngay</a>
+            <!-- Slide 2 -->
+            <div class="ad-slide">
+              <div class="ad-item single-slide">
+                <img src="./assests/images/camera.webp" alt="Camera">
+                <div class="ad-content overlay">
+                  <h4>Camera HD</h4>
+                  <p>Góc siêu rộng, hình ảnh rõ nét</p>
+                  <div class="ad-price">1.599.000đ</div>
+                  <a href="#" class="btn">Mua ngay</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

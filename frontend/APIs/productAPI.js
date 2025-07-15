@@ -1,51 +1,51 @@
 import { apiCall } from "./utils/api.js";
 
-export const ProductAPI = {
+export class ProductAPI {
   // Lấy tất cả sản phẩm (không lọc trạng thái)
-  getAllProducts: async () => {
+  static async getAllProducts() {
     return await apiCall({ endpoint: "/products/get-all-products" });
-  },
+  }
 
   // Lấy sản phẩm chờ duyệt
-  getPendingProducts: async () => {
+  static async getPendingProducts() {
     return await apiCall({ endpoint: "/products/get-pending-products" });
-  },
+  }
 
   // Lấy sản phẩm đã duyệt
-  getApprovedProducts: async () => {
+  static async getApprovedProducts() {
     return await apiCall({ endpoint: "/products/get-approved-products" });
-  },
+  }
 
   // Lấy sản phẩm bị từ chối
-  getRejectedProducts: async () => {
+  static async getRejectedProducts() {
     return await apiCall({ endpoint: "/products/get-rejected-products" });
-  },
+  }
 
   // Lấy sản phẩm theo ID
-  getProductById: async (id) => {
+  static async getProductById(id) {
     return await apiCall({ endpoint: `/products/${id}` });
-  },
+  }
 
   // Tạo sản phẩm mới
-  createProduct: async (data) => {
+  static async createProduct(data) {
     return await apiCall({
       endpoint: "/products",
       method: "POST",
       data,
     });
-  },
+  }
 
   // Duyệt sản phẩm
-  approveProduct: async (id) => {
+  static async approveProduct(id) {
     return await apiCall({
       endpoint: `/products/approve-product/${id}`,
       method: "PUT",
       data: { status: "approved" },
     });
-  },
+  }
 
   // Từ chối sản phẩm
-  rejectProduct: async (id, reason) => {
+  static async rejectProduct(id, reason) {
     return await apiCall({
       endpoint: `/products/reject-product/${id}`,
       method: "PUT",
@@ -53,39 +53,52 @@ export const ProductAPI = {
         status: "rejected",
         rejectionReason: reason },
     });
-  },
+  }
 
   // Cập nhật sản phẩm
-  updateProduct: async (id, data) => {
+  static async updateProduct(id, data) {
     return await apiCall({
       endpoint: `/products/${id}`,
       method: "PUT",
       data,
     });
-  },
+  }
 
   // Xoá sản phẩm
-  deleteProduct: async (id) => {
+  static async deleteProduct(productId) {
     return await apiCall({
-      endpoint: `/products/${id}`,
-      method: "DELETE",
+      endpoint: `/products/${productId}`,
+      method: 'DELETE',
+      expectedStatusCodes: [200],
     });
-  },
+  }
 
   // Lấy sản phẩm theo shop ID và trạng thái 
-  getProductsByShopId: async (shopId) => {
+  static async getProductsByShopId(shopId) {
     return await apiCall({ endpoint: `/products/shop/${shopId}` });
-  },
+  }
 
-  getApprovedProductsByShopId: async (shopId) => {
+  static async getApprovedProductsByShopId(shopId) {
     return await apiCall({ endpoint: `/products/shop/${shopId}/approved` });
-  },
+  }
 
-  getPendingProductsByShopId: async (shopId) => {
+  static async getPendingProductsByShopId(shopId) {
     return await apiCall({ endpoint: `/products/shop/${shopId}/pending` });
-  },
+  }
 
-  getRejectedProductsByShopId: async (shopId) => {
+  static async getRejectedProductsByShopId(shopId) {
     return await apiCall({ endpoint: `/products/shop/${shopId}/rejected` });
-  },
-};
+  }
+
+  static async getProductsByShop(shopId, status = 'all') {
+    let endpoint = `/products/by-shop/${shopId}`;
+    if (status && status !== 'all') {
+      endpoint += `/${status}`;
+    }
+    return await apiCall({
+      endpoint,
+      method: 'GET',
+      expectedStatusCodes: [200],
+    });
+  }
+}

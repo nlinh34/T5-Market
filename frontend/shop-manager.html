@@ -75,7 +75,9 @@
                 <li class="tab-item">
                     <a href="#" class="tab-link active" data-tab="cuaHang">CỬA HÀNG</a>
                 </li>
-
+                <li class="tab-item">
+                    <a href="#" class="tab-link" data-tab="nhanVien">NHÂN VIÊN</a>
+                </li>
                 <li class="tab-item">
                     <a href="#" class="tab-link" data-tab="danhGia">ĐÁNH GIÁ</a>
                 </li>
@@ -117,18 +119,91 @@
 
                 <!-- Products for Sale Section -->
                 <div class="card" id="productsForSaleCard">
-                    <h3 class="card-title">
-                        <i class="fas fa-box"></i>
-                        Sản phẩm đang bán
-                    </h3>
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-box"></i>
+                            Sản phẩm đang bán
+                        </h3>
+                        <a href="/frontend/post-products.html" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Đăng sản phẩm
+                        </a>
+                    </div>
+                    <div class="product-tabs">
+                        <button class="product-tab-btn active" data-status="all">Tất cả</button>
+                        <button class="product-tab-btn" data-status="approved">Đang hiển thị</button>
+                        <button class="product-tab-btn" data-status="pending">Chờ duyệt</button>
+                        <button class="product-tab-btn" data-status="rejected">Bị từ chối</button>
+                    </div>
                     <div class="products-grid" id="sellerProductsGrid">
                         <!-- Products will be loaded here by JavaScript -->
-                        <div class="empty-state hidden" id="noProductsMessage">
+                    </div>
+                    <div class="empty-state hidden" id="noProductsMessage">
                             <i class="fas fa-box-open"></i>
                             <h3>Chưa có sản phẩm nào được đăng</h3>
                             <p>Bạn chưa đăng sản phẩm nào trong cửa hàng. Hãy bắt đầu đăng tin ngay!</p>
-                            <button class="post-listing-btn" onclick="location.href='/frontend/pages/products/post-products.html'">Đăng tin ngay</button>
                         </div>
+                </div>
+
+                <!-- Staff Management Section -->
+                <div class="card hidden" id="staffManagementCard">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-users"></i>
+                            Quản lý nhân viên
+                        </h3>
+                        <button class="btn btn-primary" id="addStaffBtn">
+                            <i class="fas fa-plus"></i> Thêm nhân viên
+                        </button>
+                    </div>
+                    <div class="staff-list" id="staffList">
+                        <!-- Staff members will be loaded here -->
+                        <div class="empty-state hidden" id="noStaffMessage">
+                            <i class="fas fa-user-plus"></i>
+                            <h3>Chưa có nhân viên nào</h3>
+                            <p>Hãy thêm nhân viên để hỗ trợ bạn quản lý cửa hàng.</p>
+                        </div>
+                        <table class="staff-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên nhân viên</th>
+                                    <th>Vai trò</th>
+                                    <th>Ngày tham gia</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Example Row 1 -->
+                                <tr>
+                                    <td>
+                                        <div class="staff-info">
+                                            <div class="staff-avatar">NV</div>
+                                            <span class="staff-name">Nguyễn Văn A</span>
+                                        </div>
+                                    </td>
+                                    <td>Nhân viên</td>
+                                    <td>18/06/2024</td>
+                                    <td>
+                                        <button class="btn btn-icon" title="Sửa quyền"><i class="fas fa-user-shield"></i></button>
+                                        <button class="btn btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                    </td>
+                                </tr>
+                                <!-- Example Row 2 -->
+                                <tr>
+                                    <td>
+                                        <div class="staff-info">
+                                            <div class="staff-avatar">TB</div>
+                                            <span class="staff-name">Trần Thị B</span>
+                                        </div>
+                                    </td>
+                                    <td>Nhân viên</td>
+                                    <td>15/05/2024</td>
+                                    <td>
+                                        <button class="btn btn-icon" title="Sửa quyền"><i class="fas fa-user-shield"></i></button>
+                                        <button class="btn btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -388,6 +463,80 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary close-button">Hủy</button>
                 <button type="button" class="btn btn-primary" id="confirmEditPoliciesBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div id="addStaffModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tạo tài khoản cho nhân viên</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addStaffForm" novalidate>
+                     <div class="form-group">
+                        <label for="staffFullName">Họ và Tên</label>
+                        <input type="text" id="staffFullName" placeholder="Nhập họ và tên" required>
+                        <span class="error-message" id="staffFullNameError" style="display: none;">Vui lòng nhập họ tên.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffEmail">Email</label>
+                        <input type="email" id="staffEmail" placeholder="Nhập email" required>
+                        <span class="error-message" id="staffEmailError" style="display: none;">Vui lòng nhập email hợp lệ.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPassword">Mật khẩu</label>
+                        <input type="password" id="staffPassword" placeholder="Nhập mật khẩu" required>
+                        <span class="error-message" id="staffPasswordError" style="display: none;">Vui lòng nhập mật khẩu.</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-button">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Permissions Modal -->
+    <div id="editPermissionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chỉnh sửa quyền cho <span id="permissionStaffName"></span></h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editPermissionsForm">
+                    <div class="permissions-grid">
+                        <div class="permission-item">
+                            <label class="switch">
+                                <input type="checkbox" id="permManageProducts">
+                                <span class="slider round"></span>
+                            </label>
+                            <label for="permManageProducts">Quản lý sản phẩm (Đăng, sửa, xóa)</label>
+                        </div>
+                        <div class="permission-item">
+                            <label class="switch">
+                                <input type="checkbox" id="permManageOrders">
+                                <span class="slider round"></span>
+                            </label>
+                            <label for="permManageOrders">Quản lý đơn hàng (Xem, cập nhật trạng thái)</label>
+                        </div>
+                        <div class="permission-item">
+                            <label class="switch">
+                                <input type="checkbox" id="permViewReports">
+                                <span class="slider round"></span>
+                            </label>
+                            <label for="permViewReports">Xem báo cáo & thống kê</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary close-button">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu quyền</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

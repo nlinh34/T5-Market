@@ -23,21 +23,54 @@ async function checkExistingShop() {
                 case 'pending':
                     title = "Yêu cầu của bạn đang chờ duyệt";
                     statusMessage = "Yêu cầu đăng ký cửa hàng của bạn đã được ghi nhận và đang chờ quản trị viên phê duyệt. Vui lòng quay lại sau.";
-                    break;
+                    existingShopMessage.className = 'pending-approval-view';
+                    existingShopMessage.innerHTML = `
+                        <i class="fas fa-hourglass-half pending-icon"></i>
+                        <h3>${title}</h3>
+                        <p>${statusMessage}</p>
+                        <a href="./shop-register.html" class="reload-btn">Tải lại trang</a>
+                    `;
+                    container.innerHTML = '';
+                    container.appendChild(existingShopMessage);
+                    return; // Exit after showing message
+
                 case 'rejected':
-                    title = "Yêu cầu của bạn đã bị từ chối";
-                    statusMessage = "Yêu cầu đăng ký cửa hàng của bạn trước đó đã bị từ chối. Vui lòng liên hệ bộ phận hỗ trợ để biết thêm chi tiết.";
-                    break;
+                    {
+                        title = "Yêu cầu của bạn đã bị từ chối";
+                        const reason = response.data.rejectionReason ? `Lý do: ${response.data.rejectionReason}` : "Vui lòng liên hệ hỗ trợ để biết thêm chi tiết.";
+                        statusMessage = `Yêu cầu đăng ký cửa hàng của bạn đã bị từ chối. ${reason}`;
+                        
+                        existingShopMessage.className = 'rejected-view'; // Use a dedicated class for styling
+                        existingShopMessage.innerHTML = `
+                            <i class="fas fa-times-circle rejected-icon"></i>
+                            <h3>${title}</h3>
+                            <p>${statusMessage}</p>
+                            <button id="create-shop-again-btn" class="retry-btn">Tạo lại yêu cầu</button>
+                        `;
+                        
+                        container.appendChild(existingShopMessage);
+
+                        const createAgainBtn = document.getElementById('create-shop-again-btn');
+                        if (createAgainBtn) {
+                            createAgainBtn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                existingShopMessage.remove(); // Remove message
+                                shopCreationSection.style.display = 'block'; // Show form
+                            });
+                        }
+                        return; // Stop further processing
+                    }
             }
 
+            // This part handles the 'approved' status
+            existingShopMessage.className = 'approved-view';
             existingShopMessage.innerHTML = `
-                <div class="shop-dashboard" style="text-align: center; padding: 40px 20px;">
-                    <i class="fas fa-store" style="font-size: 48px; color: var(--primary-color); margin-bottom: 20px;"></i>
-                    <h3>${title}</h3>
-                    <p style="max-width: 500px; margin: 0 auto 20px auto;">${statusMessage}</p>
-                    <a href="./shop-manager.html" class="manage-shop-btn" style="display: inline-block; text-decoration: none;">Đi tới trang quản lý</a>
-                </div>
+                <i class="fas fa-store approved-icon"></i>
+                <h3>${title}</h3>
+                <p>${statusMessage}</p>
+                <a href="./shop-manager.html" class="manage-shop-btn">Đi tới trang quản lý</a>
             `;
+            container.innerHTML = ''; // Clear container before appending
             container.appendChild(existingShopMessage);
         } else {
             // This case might happen if API returns success: false but not an error (which is unlikely for getMyShop)
@@ -487,6 +520,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Event listener for adding a new custom policy field
+  if (addCustomPolicyBtn) {
+    addCustomPolicyBtn.addEventListener('click', addCustomPolicyField);
+  }
+
   // Initialize policy input group visibility based on toggle state
   handlePolicyToggle(shippingPolicyToggle, shippingPolicyInputGroup);
   handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup);
@@ -647,7 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             try {
-                const response = await ShopAPI.registerShop(shopData);
+                const response = await ShopAPI.requestUpgradeToSeller(shopData);
                 if (response.success) {
                     showNotification('Đăng ký cửa hàng thành công!', 'success');
                     return true; // Indicate success
@@ -725,7 +763,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const backToHomeBtn = document.querySelector(".back-to-home-btn");
   if (backToHomeBtn) {
       backToHomeBtn.addEventListener('click', () => {
-          window.location.href = "../../index.html"; // Redirect to home page
+          window.location.href = "./index.html"; // Redirect to home page
       });
   }
 });
