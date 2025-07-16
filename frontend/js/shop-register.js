@@ -12,6 +12,8 @@ async function checkExistingShop() {
     try {
         const response = await ShopAPI.getMyShop();
         if (response.success && response.data) {
+            window.currentShopId = response.data._id; // Store the shop ID globally
+            console.log(`[checkExistingShop] Shop found. Setting window.currentShopId: ${window.currentShopId}. Shop Status: ${response.data.status}`);
             // Shop exists, hide form and show an informative message
             const existingShopMessage = document.createElement('div');
             existingShopMessage.className = 'has-shop-section'; // Use a class for styling
@@ -56,6 +58,7 @@ async function checkExistingShop() {
                                 e.preventDefault();
                                 existingShopMessage.remove(); // Remove message
                                 shopCreationSection.style.display = 'block'; // Show form
+                                window.currentShopId = null; // Clear shop ID to force re-submission via POST
                             });
                         }
                         return; // Stop further processing
@@ -74,11 +77,15 @@ async function checkExistingShop() {
             container.appendChild(existingShopMessage);
         } else {
             // This case might happen if API returns success: false but not an error (which is unlikely for getMyShop)
+             window.currentShopId = null; // Explicitly clear if no shop data
+             console.log("[checkExistingShop] No shop data returned. Setting window.currentShopId to null.");
              shopCreationSection.style.display = 'block';
         }
     } catch (error) {
         // This is the expected case for a new user (API returns 404 Not Found)
         console.log("No existing shop found for this user. Displaying registration form.");
+        window.currentShopId = null; // Explicitly clear if no shop found
+        console.log("[checkExistingShop] API call failed (no shop found). Setting window.currentShopId to null.");
         shopCreationSection.style.display = 'block';
     }
 }
@@ -188,6 +195,91 @@ document.addEventListener("DOMContentLoaded", () => {
   // New: Step 4 Edit buttons
   const editInfoBtn = document.querySelector("#step4 .btn-edit-info");
   const editPolicyBtn = document.querySelector("#step4 .btn-edit-policy");
+
+  // NEW: registerShopHandler moved outside the event listener
+  const registerShopHandler = async (avatarFile = null) => {
+      let logoUrl = null;
+      if (avatarFile) {
+          try {
+              logoUrl = await new Promise((resolve, reject) => {
+                  const reader = new FileReader();
+                  reader.onload = (e) => resolve(e.target.result);
+                  reader.onerror = (error) => reject(error);
+                  reader.readAsDataURL(avatarFile);
+              });
+          } catch (error) {
+              showNotification('Lỗi đọc ảnh đại diện: ' + error.message, 'error');
+              return false; // Indicate failure
+          }
+      } else if (avatarPreview.src && avatarPreview.src.startsWith("data:image")) {
+          // Use existing data URL if no new file is selected but preview has a data URL
+          logoUrl = avatarPreview.src;
+      }
+
+      const shopData = {
+          name: shopNameInput.value,
+          address: shopAddressInput.value,
+          phone: shopPhoneInput.value,
+          description: shopDescriptionInput.value,
+          // Policies are handled separately, not directly in this step unless it's a new submission
+          logoUrl: logoUrl, // Assign the resolved logoUrl
+      };
+
+      let submissionSuccess = false;
+      try {
+          let response;
+          console.log(`[registerShopHandler] Current window.currentShopId: ${window.currentShopId}`);
+          if (window.currentShopId) {
+              // If shopId exists, it's an update of an existing shop's profile
+              console.log("[registerShopHandler] Calling ShopAPI.updateShopProfile (PUT /shop/profile)");
+              response = await ShopAPI.updateShopProfile(shopData);
+          } else {
+              // New registration or re-submission of rejected shop (policies must be sent here)
+              console.log("[registerShopHandler] Calling ShopAPI.requestUpgradeToSeller (POST /shop)");
+              shopData.policies = collectPolicyData();
+              response = await ShopAPI.requestUpgradeToSeller(shopData);
+          }
+
+          if (response.success) {
+              // Store the shop ID upon successful registration or re-submission
+              if (response.data && response.data._id) {
+                  window.currentShopId = response.data._id;
+              }
+              showNotification('Cập nhật/Đăng ký cửa hàng thành công!', 'success');
+              submissionSuccess = true;
+          } else {
+              // If API returns an error, show it and DO NOT advance step
+              showNotification(response.error || 'Thao tác thất bại.', 'error');
+              submissionSuccess = false;
+          }
+      } catch (error) {
+          console.error("Error during shop submission:", error);
+          let errorMessageText = "Đã xảy ra lỗi không xác định. Vui lòng thử lại.";
+          let messageType = 'error';
+
+          try {
+              // error.message is the raw JSON string from the server
+              const parsedError = JSON.parse(error.message);
+              if (parsedError && parsedError.error) {
+                  errorMessageText = `Thao tác thất bại: ${parsedError.error}`;
+                  if (parsedError.error.includes("Bạn đã gửi yêu cầu hoặc đã có shop.")) {
+                      errorMessageText = "Bạn đã có yêu cầu đăng ký hoặc đã sở hữu một cửa hàng. Không cần đăng ký lại.";
+                      messageType = 'warning';
+                  }
+              }
+          } catch (e) {
+              // If parsing fails, it's not a JSON string. Use the raw message.
+              if (error.message) {
+                  errorMessageText = `Thao tác thất bại: ${error.message}`;
+              }
+          }
+
+          showNotification(errorMessageText, messageType);
+          submissionSuccess = false;
+      }
+
+      return submissionSuccess;
+  };
 
   // Function to update form step and stepper UI
   const updateFormStepUI = () => {
@@ -587,155 +679,100 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (confirmPolicyBtn) {
-    confirmPolicyBtn.addEventListener('click', () => {
-      // Logic to save policies could go here (e.g., to a hidden input or local storage)
-      // For now, simply close the modal
-      policyEditModal.style.display = 'none';
+    confirmPolicyBtn.addEventListener('click', async () => { // Make it async
+      const policies = collectPolicyData();
+      if (!window.currentShopId) {
+          showNotification("Không thể cập nhật chính sách khi chưa có cửa hàng.", "error");
+          return;
+      }
+      try {
+          const response = await ShopAPI.updateShopPolicies({ policies });
+          if (response.success) {
+              showNotification('Cập nhật chính sách thành công!', 'success');
+              // Update summary after successful policy update
+              updateSummary();
+              policyEditModal.style.display = 'none';
+          } else {
+              showNotification(response.error || 'Cập nhật chính sách thất bại.', 'error');
+          }
+      } catch (error) {
+          console.error("Error updating policies:", error);
+          let errorMessageText = "Đã xảy ra lỗi không xác định khi cập nhật chính sách.";
+          try {
+              const parsedError = JSON.parse(error.message);
+              if (parsedError && parsedError.error) {
+                  errorMessageText = `Cập nhật chính sách thất bại: ${parsedError.error}`;
+              }
+          } catch (e) {
+              if (error.message) {
+                  errorMessageText = `Cập nhật chính sách thất bại: ${error.message}`;
+              }
+          }
+          showNotification(errorMessageText, 'error');
+      }
     });
   }
 
   // Event listeners for form navigation buttons
   shopRegisterForm.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('next-step-btn')) {
-      const nextStep = parseInt(event.target.dataset.nextStep);
+    let shouldUpdateUI = false; // Flag to determine if UI update is needed
+    let shouldAdvanceStep = false; // Flag to determine if step should advance
 
-      // Validation for Step 1 (only terms checkbox)
+    if (event.target.classList.contains('next-step-btn')) {
       if (currentStep === 1) {
         if (!acceptTermsCheckbox.checked) {
           showNotification('Vui lòng đồng ý với Điều khoản sử dụng của T5 Market.', 'error');
-          return;
+          return; // Stop here, do not proceed or update UI
         }
-        currentStep++; // Move to next step
-      }
-      // Validation for Step 2 (shop info fields) and API call
-      else if (currentStep === 2) {
+        shouldAdvanceStep = true;
+        shouldUpdateUI = true;
+      } else if (currentStep === 2) {
         let isValid = true;
 
-        // Validate Avatar (only check if file exists, actual loading handled in registerShopHandler)
+        // Validate Avatar
         if (!avatarInput.files || avatarInput.files.length === 0) {
-            // Also check if there's an existing data URL in avatarPreview.src
             if (!(avatarPreview.src && avatarPreview.src.startsWith("data:image"))) {
                 showNotification("Vui lòng chọn ảnh đại diện.", 'warning');
                 isValid = false;
             }
         }
 
-        if (shopNameInput.value.trim() === '') {
-          toggleError(shopNameInput, true, shopNameError);
-          showNotification("Vui lòng nhập tên cửa hàng.", 'warning');
-          isValid = false;
-        } else {
-          toggleError(shopNameInput, false, shopNameError);
-        }
+        // Validate other fields
+        if (shopNameInput.value.trim() === '') { toggleError(shopNameInput, true, shopNameError); showNotification("Vui lòng nhập tên cửa hàng.", 'warning'); isValid = false; }
+        else { toggleError(shopNameInput, false, shopNameError); }
 
-        if (shopDescriptionInput.value.trim() === '') {
-            toggleError(shopDescriptionInput, true, shopDescriptionError);
-            showNotification("Vui lòng nhập mô tả cửa hàng.", 'warning');
-            isValid = false;
-        } else {
-            toggleError(shopDescriptionInput, false, shopDescriptionError);
-        }
+        if (shopDescriptionInput.value.trim() === '') { toggleError(shopDescriptionInput, true, shopDescriptionError); showNotification("Vui lòng nhập mô tả cửa hàng.", 'warning'); isValid = false; }
+        else { toggleError(shopDescriptionInput, false, shopDescriptionError); }
 
-        if (shopAddressInput.value.trim() === '') {
-          toggleError(shopAddressInput, true, addressError);
-          showNotification("Vui lòng nhập địa chỉ cửa hàng.", 'warning');
-          isValid = false;
-        } else {
-          toggleError(shopAddressInput, false, addressError);
-        }
+        if (shopAddressInput.value.trim() === '') { toggleError(shopAddressInput, true, addressError); showNotification("Vui lòng nhập địa chỉ cửa hàng.", 'warning'); isValid = false; }
+        else { toggleError(shopAddressInput, false, addressError); }
 
-        if (shopPhoneInput.value.trim() === '') {
-          toggleError(shopPhoneInput, true, shopPhoneError);
-          showNotification("Vui lòng nhập số điện thoại.", 'warning');
-          isValid = false;
-        } else {
-          toggleError(shopPhoneInput, false, shopPhoneError);
-        }
+        if (shopPhoneInput.value.trim() === '') { toggleError(shopPhoneInput, true, shopPhoneError); showNotification("Vui lòng nhập số điện thoại.", 'warning'); isValid = false; }
+        else { toggleError(shopPhoneInput, false, shopPhoneError); }
 
         if (!isValid) {
-          return;
+          return; // Stop here if validation fails
         }
 
-        const registerShopHandler = async (avatarFile = null) => {
-            let logoUrl = null;
-            if (avatarFile) {
-                try {
-                    logoUrl = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.onerror = (error) => reject(error);
-                        reader.readAsDataURL(avatarFile);
-                    });
-                } catch (error) {
-                    showNotification('Lỗi đọc ảnh đại diện: ' + error.message, 'error');
-                    return false; // Indicate failure
-                }
-            } else if (avatarPreview.src && avatarPreview.src.startsWith("data:image")) {
-                // Use existing data URL if no new file is selected but preview has a data URL
-                logoUrl = avatarPreview.src;
-            }
-
-            const shopData = {
-                name: shopNameInput.value,
-                address: shopAddressInput.value,
-                phone: shopPhoneInput.value,
-                description: shopDescriptionInput.value,
-                policies: collectPolicyData(),
-                logoUrl: logoUrl, // Assign the resolved logoUrl
-            };
-
-            try {
-                const response = await ShopAPI.requestUpgradeToSeller(shopData);
-                if (response.success) {
-                    showNotification('Đăng ký cửa hàng thành công!', 'success');
-                    return true; // Indicate success
-                } else {
-                    // If API returns an error, show it and DO NOT advance step
-                    showNotification(response.error || 'Đăng ký cửa hàng thất bại.', 'error');
-                    return false; // Indicate failure
-                }
-            } catch (error) {
-                console.error("Error registering shop:", error);
-                let errorMessageText = "Đã xảy ra lỗi không xác định. Vui lòng thử lại.";
-                let messageType = 'error';
-
-                try {
-                    // error.message is the raw JSON string from the server
-                    const parsedError = JSON.parse(error.message);
-                    if (parsedError && parsedError.error) {
-                        if (parsedError.error.includes("Bạn đã gửi yêu cầu hoặc đã có shop.")) {
-                            errorMessageText = "Bạn đã có yêu cầu đăng ký hoặc đã sở hữu một cửa hàng. Không cần đăng ký lại.";
-                            messageType = 'warning';
-                        } else {
-                            errorMessageText = `Đăng ký thất bại: ${parsedError.error}`;
-                        }
-                    }
-                } catch (e) {
-                    // If parsing fails, it's not a JSON string. Use the raw message.
-                    if (error.message) {
-                        errorMessageText = `Đăng ký thất bại: ${error.message}`;
-                    }
-                }
-
-                showNotification(errorMessageText, messageType);
-                return false; // Indicate failure
-            }
-        };
-
-        // Call handler, passing the file directly
         const registrationSuccess = await registerShopHandler(avatarInput.files.length > 0 ? avatarInput.files[0] : null);
-
         if (registrationSuccess) {
-            currentStep++; // Only advance step if registerShopHandler explicitly returned true
+          shouldAdvanceStep = true;
         }
-        updateFormStepUI();
+        shouldUpdateUI = true; // Always update UI after attempting registration/update
       }
-    }
-    else if (event.target.classList.contains('prev-step-btn')) {
-      currentStep--; // Go back to the previous step
+      // If currentStep is 3 (Summary), and next-step-btn is clicked, just advance
+      if (shouldAdvanceStep) {
+          currentStep++;
+      }
+
+    } else if (event.target.classList.contains('prev-step-btn')) {
+      currentStep--;
+      shouldUpdateUI = true;
     }
 
-    updateFormStepUI();
+    if (shouldUpdateUI) {
+      updateFormStepUI();
+    }
   });
 
   // Event listeners for Step 3 (formerly Step 4) edit buttons
@@ -753,7 +790,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentStep = 2;
       updateFormStepUI();
       // Open policy modal immediately
-      policyEditModal.style.display = 'block';
+      policyEditModal.style.display = 'flex'; // Use flex to enable centering
       // Scroll to policy section in modal if needed
       policyEditModal.querySelector('.policy-modal-content').scrollIntoView({ behavior: 'smooth' });
     });

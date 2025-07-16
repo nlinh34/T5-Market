@@ -11,9 +11,12 @@
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
 </head>
 <body>
+    <div id="page-loader">
+        <div class="spinner"></div>
+    </div>
     <header-component></header-component>
 
-    <div class="container">
+    <div class="container" style="visibility: hidden;">
         <!-- Shop Header -->
         <div class="shop-header">
             <div class="shop-header-top">
@@ -28,14 +31,14 @@
                             Hoạt động 8 giờ trước
                         </div>
                         <div class="shop-rating">
-                            <div class="stars">
+                            <div class="stars" id="headerShopStars">
                                 <i class="fas fa-star star"></i>
                                 <i class="fas fa-star star"></i>
                                 <i class="fas fa-star star"></i>
                                 <i class="fas fa-star star"></i>
                                 <i class="fas fa-star star"></i>
                             </div>
-                            <span class="rating-text">(5 đánh giá)</span>
+                            <span class="rating-text" id="headerShopRatingText">(... đánh giá)</span>
                         </div>
                         <div class="shop-location">
                             <i class="fas fa-map-marker-alt"></i>
@@ -43,28 +46,19 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="shop-stats">
-                <div class="stat-item">
-                    <div class="stat-label">Sản phẩm</div>
-                    <div class="stat-value" id="shopProductsCount">30</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Đã bán</div>
-                    <div class="stat-value" id="shopSoldCount">4</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Người theo dõi</div>
-                    <div class="stat-value highlight" id="shopFollowersCount">157</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Phản hồi chat</div>
-                    <div class="stat-value" id="shopChatResponse">99%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Tham gia</div>
-                    <div class="stat-value" id="shopJoinedDate">4 năm</div>
+                <div class="shop-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Sản phẩm: </div>
+                        <div class="stat-value" id="shopProductsCount">30</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Đã bán: </div>
+                        <div class="stat-value" id="shopSoldCount">4</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Tham gia: </div>
+                        <div class="stat-value" id="shopJoinedDate">4 năm</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,7 +80,7 @@
 
         <!-- Content Section -->
         <div class="content-section">
-            <div class="main-content">
+            <div class="top-section">
                 <!-- Shop Introduction -->
                 <div class="card" id="shopIntroCard">
                     <h3 class="card-title">
@@ -116,7 +110,29 @@
                         </button>
                     </div>
                 </div>
+                
+                <div class="sidebar">
+                    <!-- Shop Policies -->
+                    <div class="card">
+                        <h3 class="card-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Chính sách cửa hàng
+                        </h3>
+                        <ul class="policy-list" id="shopPoliciesList">
+                            <!-- Policies will be dynamically added here by JS -->
+                        </ul>
+                        <p class="no-policy-message hidden" id="noPolicyMessage">Chưa có chính sách nào được thêm.</p>
+                        <div class="edit-section">
+                            <button class="btn btn-secondary" id="editPoliciesBtn">
+                                <i class="fas fa-edit"></i>
+                                Chỉnh sửa chính sách
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="bottom-section">
                 <!-- Products for Sale Section -->
                 <div class="card" id="productsForSaleCard">
                     <div class="card-header">
@@ -206,24 +222,26 @@
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <div class="sidebar">
-                <!-- Shop Policies -->
-                <div class="card">
-                    <h3 class="card-title">
-                        <i class="fas fa-shield-alt"></i>
-                        Chính sách cửa hàng
-                    </h3>
-                    <ul class="policy-list" id="shopPoliciesList">
-                        <!-- Policies will be dynamically added here by JS -->
-                    </ul>
-                    <p class="no-policy-message hidden" id="noPolicyMessage">Chưa có chính sách nào được thêm.</p>
-                    <div class="edit-section">
-                        <button class="btn btn-secondary" id="editPoliciesBtn">
-                            <i class="fas fa-edit"></i>
-                            Chỉnh sửa chính sách
-                        </button>
+                <!-- Review Content Section -->
+                <div class="card hidden" id="reviewContentCard">
+                    <div class="review-summary">
+                        <div class="overall-rating">
+                            <div class="rating-score" id="overallRatingScore">0.0</div>
+                            <div class="rating-stars" id="overallRatingStars"></div>
+                            <div class="total-reviews" id="overallTotalReviews">(0 đánh giá)</div>
+                        </div>
+                        <div class="review-filters" id="reviewFilters">
+                            <!-- Filter buttons will be loaded by JS -->
+                        </div>
+                    </div>
+                    <div class="review-tabs-container">
+                        <button class="review-tab active" data-tab="all-reviews">TẤT CẢ (<span id="allReviewsCount">0</span>)</button>
+                        <button class="review-tab" data-tab="buyer-reviews">TỪ NGƯỜI MUA (<span id="buyerReviewsCount">0</span>)</button>
+                        <button class="review-tab" data-tab="seller-reviews">TỪ NGƯỜI BÁN (<span id="sellerReviewsCount">0</span>)</button>
+                    </div>
+                    <div class="review-list" id="reviewList">
+                        <!-- Review items will be loaded here by JS -->
                     </div>
                 </div>
             </div>
@@ -523,13 +541,6 @@
                                 <span class="slider round"></span>
                             </label>
                             <label for="permManageOrders">Quản lý đơn hàng (Xem, cập nhật trạng thái)</label>
-                        </div>
-                        <div class="permission-item">
-                            <label class="switch">
-                                <input type="checkbox" id="permViewReports">
-                                <span class="slider round"></span>
-                            </label>
-                            <label for="permViewReports">Xem báo cáo & thống kê</label>
                         </div>
                     </div>
                     <div class="modal-footer">

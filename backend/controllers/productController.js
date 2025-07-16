@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const Shop = require("../models/Shop");
 const { httpStatusCodes } = require("../utils/constants");
 const { Role } = require("../constants/roleEnum");
+const mongoose = require("mongoose"); // Add this line
 
 const createProduct = async (req, res) => {
     try {
@@ -303,7 +304,8 @@ const getProductById = async (req, res) => {
         });
     } catch (error) {
         console.error("❌ Lỗi khi lấy chi tiết sản phẩm:", error);
-        res.status(500).json({ error: "Lỗi server khi lấy chi tiết sản phẩm" });
+        console.log("DEBUG: Full error in getProductById:", error); // Add this line
+        res.status(500).json({ error: `Lỗi server khi lấy chi tiết sản phẩm: ${error.message}` });
     }
 };
 

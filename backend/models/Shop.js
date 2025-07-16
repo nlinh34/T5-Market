@@ -82,7 +82,7 @@ const ShopSchema = new mongoose.Schema(
         permissions: [
           {
             type: String,
-            enum: ['manage_products', 'manage_orders', 'view_reports', 'chat_support'],
+            enum: ['manage_products', 'manage_orders'],
           },
         ],
         joinedAt: {
