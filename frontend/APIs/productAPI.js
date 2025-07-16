@@ -59,7 +59,7 @@ export class ProductAPI {
   static async updateProduct(id, data) {
     return await apiCall({
       endpoint: `/products/${id}`,
-      method: "PUT",
+      method: "PATCH",
       data,
     });
   }

@@ -75,11 +75,15 @@ class Header extends HTMLElement {
             if (shop.status === 'approved') {
                 shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
             } else {
+                // Shop exists but is not approved (e.g., pending, rejected)
                 shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
             }
+        } else {
+            // API call succeeded, but no shop data returned (e.g., success: false from backend, or data is null/undefined)
+            shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
         }
       } catch (error) {
-          // No shop exists, show create link
+          // API call failed (e.g., 404 Not Found from backend, or network error)
           shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
       }
 

@@ -42,8 +42,15 @@ export const apiCall = async ({
       if (expectedStatusCodes.includes(response.status)) {
         return response.json();
       }
-      const errorText = await response.text();
-      throw new Error(errorText || `HTTP error! status: ${response.status}`);
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        // If response is not JSON, fall back to text
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP error! status: ${response.status}`);
+      }
+      throw new Error(errorData.error || errorData.message || `HTTP error! status: ${response.status}`);
     }
 
     return await response.json();
