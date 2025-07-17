@@ -3,38 +3,43 @@ import { apiCall } from "./utils/api.js";
 class CartAPI {
   // Lấy thông tin giỏ hàng
   static async getCart() {
-    return await apiCall("/cart", "GET");
+    return await apiCall({ endpoint: "/cart", method: "GET" });
   }
 
   // Thêm sản phẩm vào giỏ hàng
   static async addProduct(product_id, quantity = 1) {
     try {
-      const response = await apiCall("/cart/add-product", "POST", {
-        product_id,
-        quantity,
+      const payload = { product: product_id, quantity };
+      if (quantity !== 1) payload.quantity = quantity;
+
+      const response = await apiCall({
+        endpoint: "/cart/add",
+        method: "POST",
+        data: payload,
       });
-      // Đảm bảo trả về đúng format response
+
       return {
         success: true,
         data: response,
       };
     } catch (error) {
-      console.error("Add product error:", error);
-      return {
-        success: false,
-        error: error.message || "Không thể thêm vào giỏ hàng",
-      };
-    }
+  console.error("Add product error:", error);
+  return {
+    success: false,
+    error: error.message || JSON.stringify(error) || "Không thể thêm vào giỏ hàng",
+  };
+}
   }
 
   // Thêm combo vào giỏ hàng
   static async addCombo(combo_id, quantity = 1) {
     try {
-      const response = await apiCall("/cart/add-combo", "POST", {
-        combo_id,
-        quantity,
+      const response = await apiCall({
+        endpoint: "/cart/add-combo",
+        method: "POST",
+        data: { combo_id, quantity },
       });
-      // Đảm bảo trả về đúng format response
+
       return {
         success: true,
         data: response,
@@ -51,9 +56,10 @@ class CartAPI {
   // Cập nhật số lượng sản phẩm
   static async updateQuantity(cartItemId, quantity) {
     try {
-      return await apiCall("/cart/update-product-quantity", "PUT", {
-        cart_item_id: cartItemId,
-        quantity,
+      return await apiCall({
+        endpoint: "/cart/update-product-quantity",
+        method: "PUT",
+        data: { cart_item_id: cartItemId, quantity },
       });
     } catch (error) {
       console.error("Update quantity error:", error);
@@ -64,10 +70,10 @@ class CartAPI {
   // Xóa sản phẩm khỏi giỏ hàng
   static async removeProduct(cartItemId) {
     try {
-      const response = await apiCall(
-        `/cart/remove-product/${cartItemId}`,
-        "DELETE"
-      );
+      const response = await apiCall({
+        endpoint: `/cart/remove-product/${cartItemId}`,
+        method: "DELETE",
+      });
       return response;
     } catch (error) {
       console.error("Remove product error:", error);
@@ -78,8 +84,10 @@ class CartAPI {
   // Áp dụng voucher
   static async addVoucher(voucher_code) {
     try {
-      const response = await apiCall("/cart/add-voucher", "POST", {
-        voucher_code,
+      const response = await apiCall({
+        endpoint: "/cart/add-voucher",
+        method: "POST",
+        data: { voucher_code },
       });
       return {
         success: true,
@@ -95,8 +103,10 @@ class CartAPI {
   // Áp dụng voucher bằng ID
   static async addVoucherById(voucher_id) {
     try {
-      const response = await apiCall("/cart/add-voucher", "POST", {
-        voucher_id,
+      const response = await apiCall({
+        endpoint: "/cart/add-voucher",
+        method: "POST",
+        data: { voucher_id },
       });
       return {
         success: true,
@@ -114,7 +124,10 @@ class CartAPI {
   // Xóa toàn bộ giỏ hàng
   static async clearCart() {
     try {
-      const response = await apiCall("/cart/clear", "DELETE");
+      const response = await apiCall({
+        endpoint: "/cart/clear",
+        method: "DELETE",
+      });
       return {
         success: true,
         data: response,
