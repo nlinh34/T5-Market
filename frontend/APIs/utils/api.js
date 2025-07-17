@@ -38,22 +38,17 @@ export const apiCall = async ({
     console.log("Calling API: ", url);
     const response = await fetch(url, config);
 
+    const responseData = await response.json();
+
     if (!response.ok) {
       if (expectedStatusCodes.includes(response.status)) {
-        return response.json();
+        return responseData;
       }
-      let errorData;
-      try {
-        errorData = await response.json();
-      } catch (e) {
-        // If response is not JSON, fall back to text
-        const errorText = await response.text();
-        throw new Error(errorText || `HTTP error! status: ${response.status}`);
-      }
-      throw new Error(errorData.error || errorData.message || `HTTP error! status: ${response.status}`);
+      throw new Error(responseData.error || responseData.message || `HTTP error! status: ${response.status}`);
     }
 
-    return await response.json();
+    return responseData;
+
   } catch (error) {
     if (error instanceof Error) {
       console.error("API call error message:", error.message);

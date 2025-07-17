@@ -75,15 +75,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function attachAddToCartEvents() {
-  const buttons = document.querySelectorAll(".add-to-cart-btn");
-  buttons.forEach(button => {
-    button.addEventListener("click", () => {
-      const productId = button.getAttribute("data-id");
-      if (!productId) return;
-      addToCart(productId);
+    const buttons = document.querySelectorAll(".add-to-cart-btn");
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const productId = button.getAttribute("data-id");
+        if (!productId) return;
+        addToCart(productId);
+      });
     });
-  });
-}
+  }
 
 
 
@@ -131,10 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
       <div class="card-content">
+        <h4 class="product-name">${product.name}</h4>
         <div class="price-wrapper">
           <span class="current-price">$${product.price.toFixed(2)}</span>
         </div>
-        <h4 class="product-name">${product.name}</h4>
         <div class="rating">
           ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
           <span>${(product.rating || 4.33).toFixed(2)}</span>
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-   function loadAllProducts() {
+  function loadAllProducts() {
     container.innerHTML = "Đang tải sản phẩm...";
     ProductAPI.getAllProducts().then(res => {
       renderProducts(res.data);

@@ -79,15 +79,15 @@ export class ProductAPI {
   }
 
   static async getApprovedProductsByShopId(shopId) {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/approved` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/approved` });
   }
 
   static async getPendingProductsByShopId(shopId) {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/pending` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/pending` });
   }
 
   static async getRejectedProductsByShopId(shopId) {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/rejected` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/rejected` });
   }
 
   static async getProductsByShop(shopId, status = 'all') {

@@ -32,9 +32,9 @@ body {
 }
 
 .main-image img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
 }
 
 .thumbnail-container {
@@ -120,11 +120,6 @@ body {
     gap: 15px;
 }
 
-.current-price {
-    font-size: 22px;
-    font-weight: 700;
-    color: #e74c3c;
-}
 
 .old-price {
     text-decoration: line-through;
@@ -542,62 +537,7 @@ body {
     margin-top: 40px;
 }
 
-.product-card {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    position: relative;
-}
 
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-.product-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #e74c3c;
-    color: white;
-    padding: 3px 10px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    z-index: 1;
-}
-
-.product-image {
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f9f9f9;
-    position: relative;
-}
-
-.product-image img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.product-actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 5px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.product-card:hover .product-actions {
-    opacity: 1;
-}
 
 .quick-view, .add-to-wishlist {
     width: 30px;
@@ -635,15 +575,14 @@ body {
     min-height: 40px;
 }
 
-.product-price {
-    margin-bottom: 15px;
-}
-
-/* .current-price {
+.current-price {
+    font-size: 13px;
+    color: #e91e63;
     font-weight: 700;
-    color: #e74c3c;
-    font-size: 20px;
-} */
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
+    flex-shrink: 0;
+}
 
 .old-price {
     text-decoration: line-through;
@@ -652,11 +591,228 @@ body {
     margin-left: 5px;
 }
 
-.product-card .btn {
-    width: 100%;
+
+.action-btn {
+    background: #f5f5f5;
+    color: #ccc;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.action-icons {
+    transform: translateX(20px);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.action-btn:hover {
+    /* background: #ff8400; */
+    color: #fff;
+}
+
+.new-product-card:hover .action-icons {
+    opacity: 1;
+    pointer-events: auto;
+    animation: slideInRightToLeft 0.3s ease-in-out;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    background: #2e8b57;
+
+    padding: 12px 0 10px 0;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(30px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 2;
+}
+
+
+.new-product-card {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     padding: 10px;
-    font-size: 0.9rem;
-    border-radius: 0;
+    /* Reduced padding */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    min-height: 300px;
+}
+
+.new-product-card .product-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+    /* Ensure it takes full available height */
+    text-align: left;
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    justify-content: space-between;
+    /* Distribute content evenly vertically */
+}
+
+.new-product-card:hover .action-icons {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* .select-options {
+    opacity: 0;
+    border: #000 solid 1px;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+} */
+
+.new-product-card:hover  {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    border: #000 solid 1px;
+}
+.new-product-card:hover .select-options {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.card-top {
+    position: relative;
+    background: #ffffff;
+    padding: 10px;
+    text-align: center;
+}
+
+.card-top img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.like-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #fff;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.action-icons {
+    position: absolute;
+    top: 52px;
+    right: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.card-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.price-wrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 0.95rem;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.discount {
+    color: red;
+    font-size: 0.75rem;
+    background: #ffe6e6;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0;
+    /* Ensures no margin-bottom */
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    /* Ensure it behaves as a block for truncation */
+    width: 100%;
+    /* Ensure it takes full width for truncation */
+    min-width: 0;
+    flex-shrink: 0;
+    line-height: 1.2em;
+    /* Strict line height */
+    max-height: 1.2em;
+    /* Ensures single line height */
+}
+
+
+
+.rating {
+    font-size: 0.85rem;
+    color: #ff8400;
+}
+
+.rating span {
+    color: #333;
+    margin-left: 5px;
+}
+
+.store {
+    font-size: 0.8rem;
+    color: #444;
+}
+
+.stock {
+    font-size: 0.8rem;
+    color: red;
 }
 
 /* ===== DETAILED REVIEWS ===== */
