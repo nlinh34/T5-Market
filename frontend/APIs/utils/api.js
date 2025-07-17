@@ -28,7 +28,7 @@ export const apiCall = async ({
     };
 
     if (data && ["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-      
+
       config.body = JSON.stringify(data);
     }
 
@@ -55,7 +55,12 @@ export const apiCall = async ({
 
     return await response.json();
   } catch (error) {
-    console.error("API call error:", error);
+    if (error instanceof Error) {
+      console.error("API call error message:", error.message);
+    } else {
+      console.error("API call unknown error:", error);
+    }
     throw error;
+
   }
 };
