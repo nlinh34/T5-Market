@@ -31,27 +31,6 @@ class CartAPI {
 }
   }
 
-  // Thêm combo vào giỏ hàng
-  static async addCombo(combo_id, quantity = 1) {
-    try {
-      const response = await apiCall({
-        endpoint: "/cart/add-combo",
-        method: "POST",
-        data: { combo_id, quantity },
-      });
-
-      return {
-        success: true,
-        data: response,
-      };
-    } catch (error) {
-      console.error("Add product error:", error);
-      return {
-        success: false,
-        error: error.message || "Không thể thêm vào giỏ hàng",
-      };
-    }
-  }
 
   // Cập nhật số lượng sản phẩm
   static async updateQuantity(cartItemId, quantity) {
