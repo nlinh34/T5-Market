@@ -4,10 +4,14 @@ const mongoose = require("mongoose")
 
 // Thêm vào giỏ hàng
 exports.addToCart = async (req, res) => {
+  console.log("🟢 Controller chạy vào đây rồi");
   try {
     if (!req.user || !req.user.userId) {
       return res.status(401).json({ success: false, message: "Chưa đăng nhập hoặc token không hợp lệ" });
     }
+
+    console.log("🔑 req.user:", req.user);
+    console.log("📦 req.body:", req.body);
 
     let userId = req.user.userId;
 
