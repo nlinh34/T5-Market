@@ -23,21 +23,22 @@ const protect = async (req, res, next) => {
         .json({ error: "Người dùng không tồn tại" });
     }
 
-    
     req.user = {
       userId: user._id,
       fullName: user.fullName,
       email: user.email,
       phone: user.phone,
-      role: user.role, // ✅ Gán role từ token
+      role: user.role,
     };
     next();
   } catch (error) {
+    console.error("❌ Lỗi trong middleware protect:", error); // ✅ Thêm log tại đây
     return res
       .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Lỗi server" });
+      .json({ error: "Lỗi server", message: error.message }); // ✅ Trả về message cụ thể
   }
 };
+
 
 
 const authenticateUser = async (req, res, next) => {
