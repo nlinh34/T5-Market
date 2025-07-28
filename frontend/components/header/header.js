@@ -1,5 +1,6 @@
 import { ShopAPI } from '../../APIs/shopAPI.js';
 import { Role } from '../../APIs/utils/roleEnum.js';
+import { UserAPI } from '../../APIs/userAPI.js';
 
 class Header extends HTMLElement {
   constructor() {
@@ -39,7 +40,14 @@ class Header extends HTMLElement {
         <!-- Account Dropdown -->
         <div class="account-dropdown">
           <button class="account-toggle">
-            <i class="fas fa-user"></i> Tài khoản <span class="arrow">▼</span>
+            <div class="user-info" id="loggedInUserDisplay" style="display: none;">
+              <img src="" alt="Avatar" class="user-avatar" id="userAvatar">
+              <span class="username" id="usernameDisplay"></span>
+            </div>
+            <div class="logged-out-info" id="loggedOutUserDisplay">
+              <i class="fas fa-user"></i> Tài khoản
+            </div>
+            <span class="arrow">▼</span>
           </button>
           <div class="account-menu hidden" id="accountMenu"></div>
         </div>
@@ -64,8 +72,39 @@ class Header extends HTMLElement {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
     const menu = this.querySelector("#accountMenu");
+    const userAvatar = this.querySelector("#userAvatar");
+    const usernameDisplay = this.querySelector("#usernameDisplay");
+    const loggedInUserDisplay = this.querySelector("#loggedInUserDisplay");
+    const loggedOutUserDisplay = this.querySelector("#loggedOutUserDisplay");
 
     if (token && user) {
+      // If user object from localStorage is missing avatarUrl or fullName, fetch full user data
+      if (!user.avatarUrl || !user.fullName) {
+        try {
+          const response = await UserAPI.getCurrentUser();
+          if (response.success && response.data) {
+            localStorage.setItem("user", JSON.stringify(response.data)); // Update localStorage with full user data
+            user.avatarUrl = response.data.avatarUrl; // Update current user object
+            user.fullName = response.data.fullName;   // Update current user object
+          }
+        } catch (error) {
+          console.error("Error fetching current user data:", error);
+          // Handle error, e.g., clear localStorage and force re-login
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "./login.html";
+          return; // Stop execution if an error occurs
+        }
+      }
+
+      if (userAvatar && usernameDisplay) {
+        userAvatar.src = user.avatarUrl || "./assests/images/default-product.png"; // Use user.avatarUrl
+        usernameDisplay.textContent = user.fullName || "Tài khoản"; // Use user.fullName
+      }
+      if (loggedInUserDisplay && loggedOutUserDisplay) {
+        loggedInUserDisplay.style.display = 'flex';
+        loggedOutUserDisplay.style.display = 'none';
+      }
 
       let shopLinkHtml = '';
       try {
@@ -91,9 +130,7 @@ class Header extends HTMLElement {
       let html = `
         <a href="./favorites.html"><i class="fa fa-heart"></i>Mục yêu thích</a>
         <a href="./order-detail.html"><i class="fa fa-tasks"></i>Lịch Sử Mua Hàng</a>
-        <a href="./account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
         ${shopLinkHtml}
-        <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
       `;
 
       if ([Role.ADMIN, Role.MANAGER, Role.MOD].includes(user.role)) {
@@ -108,7 +145,10 @@ class Header extends HTMLElement {
         `
       }
 
-      
+      html += `
+        <a href="./account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
+        <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
+      `;
 
       menu.innerHTML = html;
 
@@ -123,6 +163,10 @@ class Header extends HTMLElement {
         <a href="./login.html">Đăng nhập</a>
         <a href="./register.html">Đăng ký</a>
       `;
+      if (loggedInUserDisplay && loggedOutUserDisplay) {
+        loggedInUserDisplay.style.display = 'none';
+        loggedOutUserDisplay.style.display = 'flex';
+      }
     }
   }
 

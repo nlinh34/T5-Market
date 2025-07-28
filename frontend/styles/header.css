@@ -165,6 +165,35 @@ header {
     /* Changed from black to white */
 }
 
+.logged-out-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logged-out-info .fas.fa-user {
+    font-size: 14px;
+    color: white;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+.username {
+    font-weight: 500;
+}
+
 .account-toggle .account-avatar {
     width: 30px;
     /* Adjust avatar size as needed */
