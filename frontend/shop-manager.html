@@ -145,8 +145,20 @@
                         </a>
                     </div>
                     <div class="product-tabs">
-                        <button class="product-tab-btn active" data-status="all">Tất cả</button>
-                        <button class="product-tab-btn" data-status="approved">Đang hiển thị</button>
+                        <input type="text" id="productSearchInput" placeholder="Tìm kiếm sản phẩm..." class="product-search-input">
+                        <div class="custom-select-wrapper">
+                            <div class="custom-select" id="productSortSelectCustom">
+                                <div class="select-selected" id="selectSelectedSort">Mới nhất</div>
+                                <div class="select-items select-hide">
+                                    <div data-value="createdAt-desc">Mới nhất</div>
+                                    <div data-value="createdAt-asc">Cũ nhất</div>
+                                    <div data-value="price-asc">Giá: Thấp đến Cao</div>
+                                    <div data-value="price-desc">Giá: Cao đến Thấp</div>
+                                    <div data-value="sold_count-desc">Bán chạy nhất</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="product-tab-btn active" data-status="approved">Đang hiển thị</button>
                         <button class="product-tab-btn" data-status="pending">Chờ duyệt</button>
                         <button class="product-tab-btn" data-status="rejected">Bị từ chối</button>
                     </div>

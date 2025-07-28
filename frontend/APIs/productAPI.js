@@ -90,11 +90,24 @@ export class ProductAPI {
     return await apiCall({ endpoint: `/products/by-shop/${shopId}/rejected` });
   }
 
-  static async getProductsByShop(shopId, status = 'all') {
+  static async getProductsByShop(shopId, status = 'all', searchTerm = '', sortBy = 'createdAt-desc') {
     let endpoint = `/products/by-shop/${shopId}`;
+    const queryParams = new URLSearchParams();
+
     if (status && status !== 'all') {
-      endpoint += `/${status}`;
+      queryParams.append('status', status);
     }
+    if (searchTerm) {
+      queryParams.append('keyword', searchTerm);
+    }
+    if (sortBy) {
+      queryParams.append('sortBy', sortBy);
+    }
+
+    if (queryParams.toString()) {
+      endpoint += `?${queryParams.toString()}`;
+    }
+
     return await apiCall({
       endpoint,
       method: 'GET',

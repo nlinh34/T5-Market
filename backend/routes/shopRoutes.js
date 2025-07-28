@@ -29,7 +29,7 @@ router.get("/get-approved-shops", protect, getApprovedShops);
 router.put("/approve-shop/:id", protect, authorize(Role.ADMIN), approveShop);
 router.put("/reject-shop/:id", protect, authorize(Role.ADMIN), rejectShop);
 router.get("/:shopId/details-with-products", getShopWithProducts);
-router.get("/:shopId/reviews", protect, getShopRating);
+router.get("/:shopId/reviews", getShopRating);
 
 // Staff management routes
 router.route("/my-shop/staff")
