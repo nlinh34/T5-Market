@@ -7,9 +7,9 @@ class CartAPI {
   }
 
   // Thêm sản phẩm vào giỏ hàng
-  static async addProduct(product_id, quantity = 1) {
+  static async addProduct(productId, quantity = 1) {
     try {
-      const payload = { product: product_id, quantity };
+      const payload = { product: productId, quantity };
       if (quantity !== 1) payload.quantity = quantity;
 
       const response = await apiCall({
