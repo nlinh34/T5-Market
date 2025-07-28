@@ -199,13 +199,27 @@ const getShopWithProducts = async (req, res) => {
       .populate("seller", "fullName")
       .lean();
 
-    // Tính toán các chỉ số
+    // Tính toán các chỉ số sản phẩm và lấy đánh giá
     const soldCount = products.reduce((acc, product) => acc + (product.sold_count || 0), 0);
+
+    const productIds = products.map(p => p._id); // Lấy IDs từ các sản phẩm đã duyệt
     
+    let averageRating = 0;
+    let totalReviews = 0;
+
+    if (productIds.length > 0) {
+      const reviews = await Review.find({ product: { $in: productIds } });
+      totalReviews = reviews.length;
+      const sumRating = reviews.reduce((sum, r) => sum + r.rating, 0);
+      averageRating = totalReviews > 0 ? sumRating / totalReviews : 0;
+    }
+
     const shopWithStats = {
       ...shop,
       product_count: products.length,
       sold_count: soldCount,
+      averageRating: parseFloat(averageRating.toFixed(1)),
+      totalReviews: totalReviews,
     };
 
     res.status(200).json({

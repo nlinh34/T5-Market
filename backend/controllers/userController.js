@@ -46,6 +46,7 @@ const handleSignIn = async(req, res) => {
                 email: user.email,
                 phone: user.phone,
                 role: Number(user.role),
+                avatarUrl: user.avatarUrl, // Add avatarUrl here
             },
             message: "Đăng nhập thành công",
         });
@@ -104,6 +105,7 @@ const handleSignUp = async(req, res) => {
                 email: newUser.email,
                 phone: newUser.phone,
                 role: newUser.role,
+                avatarUrl: newUser.avatarUrl, // Add avatarUrl here for signup as well
             },
             message: "Đăng ký thành công",
         });

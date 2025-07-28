@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         `;
         sellerInfo.querySelector('.seller-avatar img').src = data.shop.logoUrl || './images/avatar/default-avatar.jpg';
         sellerInfo.querySelector('.seller-actions').innerHTML = `
-            <button class="btn btn-primary" style="background: green">Xem cửa hàng</button>
+            <button class="btn btn-primary" style="background: green" onclick="window.location.href='shop.html?id=${data.shop._id}'">Xem cửa hàng</button>
             <button class="btn-report">Báo cáo</button>
         `;
 

@@ -313,11 +313,30 @@ const getProductById = async (req, res) => {
 const getAllProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
+        const { keyword, sortBy, status } = req.query; // Thêm keyword và sortBy
 
-        const products = await Product.find({ shop: shopId })
+        let query = { shop: shopId };
+        if (status && status !== 'all') { // Lọc theo trạng thái nếu có
+            query.status = status;
+        }
+
+        if (keyword) {
+            query.name = { $regex: keyword, $options: 'i' }; // Tìm kiếm theo tên sản phẩm (không phân biệt chữ hoa, chữ thường)
+        }
+
+        let sortOptions = {};
+        if (sortBy) {
+            const [field, order] = sortBy.split('-');
+            sortOptions[field] = order === 'asc' ? 1 : -1;
+        } else {
+            sortOptions = { createdAt: -1 }; // Mặc định sắp xếp mới nhất
+        }
+
+        const products = await Product.find(query)
             .populate("category", "name")
             .populate("createdBy", "name")
-            .populate("shop", "name logoUrl address status owner shopStatus createdAt");
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt")
+            .sort(sortOptions); // Áp dụng sắp xếp
 
         res.status(200).json({ success: true, data: products });
     } catch (error) {

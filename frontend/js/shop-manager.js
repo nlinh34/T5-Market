@@ -682,22 +682,109 @@ function loadShopContent() {
 
 async function loadProductsForSaleContent() {
     const productTabs = document.querySelector('.product-tabs');
+    const productSearchInput = document.getElementById('productSearchInput'); // New
+    const productSortSelectCustom = document.getElementById('productSortSelectCustom'); // New custom select wrapper
+    const selectSelectedSort = document.getElementById('selectSelectedSort'); // New custom select chosen value
+    const selectItems = productSortSelectCustom ? productSortSelectCustom.querySelector('.select-items') : null; // New custom select options container
+
     if (!productTabs) return;
 
+    // Event listener for tab clicks (existing)
     productTabs.addEventListener('click', (e) => {
         if (e.target.matches('.product-tab-btn')) {
             productTabs.querySelector('.active').classList.remove('active');
             e.target.classList.add('active');
             const status = e.target.dataset.status;
-            renderSellerProducts(status);
+            // Pass current search and sort values when switching tabs
+            const searchTerm = productSearchInput ? productSearchInput.value : '';
+            const sortBy = selectSelectedSort ? selectSelectedSort.dataset.value : 'createdAt-desc'; // New
+            renderSellerProducts(status, searchTerm, sortBy);
         }
     });
 
-    // Initial load
-    renderSellerProducts('all');
+    // New Event listener for search input (existing)
+    if (productSearchInput) {
+        let searchTimeout; // Define a timeout variable for debouncing
+        productSearchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout); // Clear previous timeout
+            searchTimeout = setTimeout(() => {
+                const activeTab = productTabs.querySelector('.product-tab-btn.active').dataset.status;
+                const searchTerm = productSearchInput.value;
+                const sortBy = selectSelectedSort ? selectSelectedSort.dataset.value : 'createdAt-desc'; // New
+                renderSellerProducts(activeTab, searchTerm, sortBy);
+            }, 300); // 300ms debounce time
+        });
+    }
+
+    // Custom dropdown logic (replaces old select change listener)
+    if (productSortSelectCustom && selectSelectedSort && selectItems) {
+        // Set initial selected value based on the first option or a default
+        const initialSelectedOption = selectItems.querySelector('[data-value="createdAt-desc"]');
+        if (initialSelectedOption) {
+            selectSelectedSort.textContent = initialSelectedOption.textContent;
+            selectSelectedSort.dataset.value = initialSelectedOption.dataset.value;
+            initialSelectedOption.classList.add('same-as-selected'); // Mark as selected
+        }
+
+        selectSelectedSort.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent document click from closing immediately
+            closeAllSelect(this);
+            selectItems.classList.toggle('select-hide');
+            this.classList.toggle('select-arrow-active');
+        });
+
+        // Handle clicks on custom select options
+        selectItems.querySelectorAll('div').forEach(function(item) {
+            item.addEventListener('click', function() {
+                const prevSelected = selectItems.querySelector('.same-as-selected');
+                if (prevSelected) {
+                    prevSelected.classList.remove('same-as-selected');
+                }
+                this.classList.add('same-as-selected');
+
+                selectSelectedSort.textContent = this.textContent;
+                selectSelectedSort.dataset.value = this.dataset.value; // Store actual value
+
+                // Trigger product re-render
+                const activeTab = productTabs.querySelector('.product-tab-btn.active').dataset.status;
+                const searchTerm = productSearchInput ? productSearchInput.value : '';
+                const sortBy = this.dataset.value; // Use the value from the clicked item
+                renderSellerProducts(activeTab, searchTerm, sortBy);
+
+                selectItems.classList.add('select-hide'); // Hide dropdown
+                selectSelectedSort.classList.remove('select-arrow-active');
+            });
+        });
+    }
+
+    function closeAllSelect(elmnt) {
+        const arrNo = [];
+        const x = document.getElementsByClassName("select-items");
+        const y = document.getElementsByClassName("select-selected");
+        for (let i = 0; i < y.length; i++) {
+            if (elmnt == y[i]) {
+                arrNo.push(i)
+            } else {
+                y[i].classList.remove("select-arrow-active");
+            }
+        }
+        for (let i = 0; i < x.length; i++) {
+            if (arrNo.indexOf(i)) {
+                x[i].classList.add("select-hide");
+            }
+        }
+    }
+
+    // Close all custom selects when clicking elsewhere on the document
+    document.addEventListener('click', closeAllSelect);
+
+    // Initial load with potential default search/sort
+    // const initialSortBy = productSortSelect ? productSortSelect.value : 'createdAt-desc'; // Old
+    const initialSortBy = selectSelectedSort ? selectSelectedSort.dataset.value : 'createdAt-desc'; // New
+    renderSellerProducts('approved', '', initialSortBy);
 }
 
-async function renderSellerProducts(status) {
+async function renderSellerProducts(status, searchTerm = '', sortBy = 'createdAt-desc') {
     const sellerProductsGrid = document.getElementById("sellerProductsGrid");
     const noProductsMessage = document.getElementById("noProductsMessage");
 
@@ -707,28 +794,19 @@ async function renderSellerProducts(status) {
     noProductsMessage.classList.add("hidden");
 
     try {
-        const response = await ProductAPI.getProductsByShop(currentShopData._id, status);
+        // Pass search term and sort by to the API call
+        const response = await ProductAPI.getProductsByShop(currentShopData._id, status, searchTerm, sortBy);
 
         if (response.success && response.data && response.data.length > 0) {
             sellerProductsGrid.innerHTML = '';
+            noProductsMessage.classList.add("hidden"); // Ensure message is hidden when products are present
             response.data.forEach(product => {
                     const productCard = document.createElement("div");
                     productCard.className = "product-card";
                 productCard.dataset.productId = product._id;
                 
-                const getStatusInfo = (status) => {
-                    switch (status) {
-                        case 'approved': return { text: 'Đang bán', class: 'status-approved' };
-                        case 'pending': return { text: 'Chờ duyệt', class: 'status-pending' };
-                        case 'rejected': return { text: 'Bị từ chối', class: 'status-rejected' };
-                        default: return { text: 'Không xác định', class: 'status-unknown' };
-                    }
-                };
-                const statusInfo = getStatusInfo(product.status);
-
                     productCard.innerHTML = `
-                    <div class="product-status-badge ${statusInfo.class}">${statusInfo.text}</div>
-                    <img src="${product.images[0] || './assests/images/default-product.png'}" alt="${product.name}" class="product-img">
+                    <img src="${product.images[0] || './assests/images/default-product.png'}" alt="${product.name}" class="product-img" loading="lazy">
                         <div class="product-info">
                                 <h4 class="product-name">${product.name}</h4>
                             <p class="product-price">${formatCurrency(product.price)}</p>
@@ -741,13 +819,17 @@ async function renderSellerProducts(status) {
                     `;
                     sellerProductsGrid.appendChild(productCard);
                 });
-            } else {
+            // Update shop stats after products are loaded
+            updateShopStats(response.data); // Pass products data
+        } else {
             sellerProductsGrid.innerHTML = '';
-                noProductsMessage.classList.remove("hidden");
+            noProductsMessage.classList.remove("hidden");
+            updateShopStats([]); // Pass empty array if no products
         }
     } catch (error) {
         console.error(`Error loading products for status ${status}:`, error);
         sellerProductsGrid.innerHTML = '<div class="error-state">Lỗi tải sản phẩm. Vui lòng thử lại.</div>';
+        updateShopStats([]); // Pass empty array on error
     }
 
     // Add event listeners after rendering
@@ -897,29 +979,21 @@ function renderReviewList(reviews) {
     });
 }
 
-async function updateShopStats() {
-    // Update stats with real data from backend
-    if (!currentShopData) return;
-
+async function updateShopStats(productsData) { // Accept productsData as parameter
     const shopProductsCountElement = document.getElementById("shopProductsCount");
     const shopSoldCountElement = document.getElementById("shopSoldCount");
 
-    if (shopProductsCountElement && shopSoldCountElement) {
-        try {
-            const response = await ProductAPI.getProductsByShop(currentShopData._id, 'all');
-            if(response.success && response.data) {
-                shopProductsCountElement.textContent = response.data.length;
-                const totalSoldCount = response.data.reduce((acc, product) => acc + (product.sold_count || 0), 0);
-                shopSoldCountElement.textContent = totalSoldCount;
-            } else {
-                shopProductsCountElement.textContent = 0;
-                shopSoldCountElement.textContent = 0;
-            }
-        } catch (error) {
-            console.error("Error fetching product count or sold count:", error);
-            shopProductsCountElement.textContent = "N/A";
-            shopSoldCountElement.textContent = "N/A";
-        }
+    if (!shopProductsCountElement || !shopSoldCountElement) return;
+
+    // Use provided productsData instead of making a new API call
+    if(productsData) {
+        shopProductsCountElement.textContent = productsData.length;
+        const totalSoldCount = productsData.reduce((acc, product) => acc + (product.sold_count || 0), 0);
+        shopSoldCountElement.textContent = totalSoldCount;
+    } else {
+        // Fallback if productsData is not provided (though it should be now)
+        shopProductsCountElement.textContent = 0;
+        shopSoldCountElement.textContent = 0;
     }
 }
 
