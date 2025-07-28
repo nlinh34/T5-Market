@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const Shop = require("../models/Shop");
 const { httpStatusCodes } = require("../utils/constants");
 const { Role } = require("../constants/roleEnum");
+const mongoose = require("mongoose"); // Add this line
 
 const createProduct = async (req, res) => {
     try {
@@ -203,7 +204,7 @@ const rejectProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
     try {
         const products = await Product.find()
-            .populate("shop", "name")
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt")
             .populate("category", "name")
             .populate("createdBy", "name");
 
@@ -229,7 +230,7 @@ const getPendingProducts = async (req, res) => {
         const products = await Product.find({ status: "pending" })
             .populate("createdBy", "fullName email")
             .populate("category", "name")
-            .populate("shop", "name");
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt");
 
         res.status(200).json({
             success: true,
@@ -247,7 +248,7 @@ const getApprovedProducts = async (req, res) => {
         const products = await Product.find({ status: "approved" })
             .populate("createdBy", "fullName email")
             .populate("category", "name")
-            .populate("shop", "name");
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt");
 
         res.status(200).json({
             success: true,
@@ -263,7 +264,7 @@ const getApprovedProducts = async (req, res) => {
 const getRejectedProducts = async (req, res) => {
     try {
         const rejectedProducts = await Product.find({ status: "rejected" })
-            .populate("shop", "name")
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt")
             .populate("seller", "name email") // hoặc createdBy nếu bạn muốn hiển thị người tạo bài
             .populate("category", "name");
 
@@ -290,7 +291,7 @@ const getProductById = async (req, res) => {
 
         const product = await Product.findById(id)
             .populate("createdBy", "fullName email")
-            .populate("shop", "name")
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt")
             .populate("category", "name");
 
         if (!product) {
@@ -303,7 +304,8 @@ const getProductById = async (req, res) => {
         });
     } catch (error) {
         console.error("❌ Lỗi khi lấy chi tiết sản phẩm:", error);
-        res.status(500).json({ error: "Lỗi server khi lấy chi tiết sản phẩm" });
+        console.log("DEBUG: Full error in getProductById:", error); // Add this line
+        res.status(500).json({ error: `Lỗi server khi lấy chi tiết sản phẩm: ${error.message}` });
     }
 };
 
@@ -311,11 +313,30 @@ const getProductById = async (req, res) => {
 const getAllProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
+        const { keyword, sortBy, status } = req.query; // Thêm keyword và sortBy
 
-        const products = await Product.find({ shop: shopId })
+        let query = { shop: shopId };
+        if (status && status !== 'all') { // Lọc theo trạng thái nếu có
+            query.status = status;
+        }
+
+        if (keyword) {
+            query.name = { $regex: keyword, $options: 'i' }; // Tìm kiếm theo tên sản phẩm (không phân biệt chữ hoa, chữ thường)
+        }
+
+        let sortOptions = {};
+        if (sortBy) {
+            const [field, order] = sortBy.split('-');
+            sortOptions[field] = order === 'asc' ? 1 : -1;
+        } else {
+            sortOptions = { createdAt: -1 }; // Mặc định sắp xếp mới nhất
+        }
+
+        const products = await Product.find(query)
             .populate("category", "name")
             .populate("createdBy", "name")
-            .populate("shop", "name");
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt")
+            .sort(sortOptions); // Áp dụng sắp xếp
 
         res.status(200).json({ success: true, data: products });
     } catch (error) {
@@ -335,7 +356,7 @@ const getApprovedProductsByShopId = async (req, res) => {
         })
             .populate("category", "name")
             .populate("createdBy", "name")
-            .populate("shop", "name");
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt");
   
 
         if (products.length === 0) {
@@ -363,7 +384,7 @@ const getPendingProductsByShopId = async (req, res) => {
         })
             .populate("category", "name")
             .populate("createdBy", "name")
-            .populate("shop", "name");
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt");
 
         if (products.length === 0) {
             return res.status(200).json({
@@ -389,7 +410,7 @@ const getRejectedProductsByShopId = async (req, res) => {
         })
             .populate("category", "name")
             .populate("createdBy", "name")
-            .populate("shop", "name");
+            .populate("shop", "name logoUrl address status owner shopStatus createdAt")
 
         if (products.length === 0) {
             return res.status(200).json({

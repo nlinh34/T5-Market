@@ -59,7 +59,7 @@ export class ProductAPI {
   static async updateProduct(id, data) {
     return await apiCall({
       endpoint: `/products/${id}`,
-      method: "PUT",
+      method: "PATCH",
       data,
     });
   }
@@ -79,22 +79,35 @@ export class ProductAPI {
   }
 
   static async getApprovedProductsByShopId(shopId) {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/approved` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/approved` });
   }
 
   static async getPendingProductsByShopId(shopId) {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/pending` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/pending` });
   }
 
   static async getRejectedProductsByShopId(shopId) {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/rejected` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/rejected` });
   }
 
-  static async getProductsByShop(shopId, status = 'all') {
+  static async getProductsByShop(shopId, status = 'all', searchTerm = '', sortBy = 'createdAt-desc') {
     let endpoint = `/products/by-shop/${shopId}`;
+    const queryParams = new URLSearchParams();
+
     if (status && status !== 'all') {
-      endpoint += `/${status}`;
+      queryParams.append('status', status);
     }
+    if (searchTerm) {
+      queryParams.append('keyword', searchTerm);
+    }
+    if (sortBy) {
+      queryParams.append('sortBy', sortBy);
+    }
+
+    if (queryParams.toString()) {
+      endpoint += `?${queryParams.toString()}`;
+    }
+
     return await apiCall({
       endpoint,
       method: 'GET',

@@ -4,16 +4,37 @@ const mongoose = require("mongoose")
 
 // Thêm vào giỏ hàng
 exports.addToCart = async (req, res) => {
+  console.log("🟢 Controller chạy vào đây rồi");
   try {
-    const userId = req.user.userId;
-    const { product, quantity } = req.body;
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ success: false, message: "Chưa đăng nhập hoặc token không hợp lệ" });
+    }
 
-    if (!product || !quantity) {
-      return res.status(400).json({ success: false, message: "Thiếu thông tin sản phẩm hoặc số lượng" });
+    console.log("🔑 req.user:", req.user);
+    console.log("📦 req.body:", req.body);
+
+    let userId = req.user.userId;
+
+    // Nếu userId là chuỗi thì chuyển sang ObjectId
+    if (typeof userId === "string") {
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ success: false, message: "ID user không hợp lệ" });
+      }
+      userId = new mongoose.Types.ObjectId(userId);
+    }
+
+    const { product, quantity = 1 } = req.body;
+
+    if (!product) {
+      return res.status(400).json({ success: false, message: "Thiếu ID sản phẩm" });
     }
 
     if (!mongoose.Types.ObjectId.isValid(product)) {
       return res.status(400).json({ success: false, message: "ID sản phẩm không hợp lệ" });
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      return res.status(400).json({ success: false, message: "Số lượng không hợp lệ" });
     }
 
     const productExists = await Product.findById(product);
@@ -42,7 +63,7 @@ exports.addToCart = async (req, res) => {
     res.status(200).json({ success: true, message: "Đã thêm vào giỏ hàng", data: cart });
   } catch (error) {
     console.error("❌ Lỗi thêm giỏ hàng:", error);
-    res.status(500).json({ success: false, message: "Lỗi server" });
+    res.status(500).json({ success: false, message: "Lỗi server", error: error.message });
   }
 };
 
@@ -65,7 +86,7 @@ exports.getCart = async (req, res) => {
 
     res.json({ success: true, cart: { items: itemsWithSubtotal, total } });
   } catch (err) {
-    console.error("❌ Lỗi khi lấy giỏ hàng:", err.message); 
+    console.error("❌ Lỗi khi lấy giỏ hàng:", err.message);
     res.status(500).json({ success: false, message: "Lỗi khi lấy giỏ hàng" });
   }
 };

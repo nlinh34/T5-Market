@@ -28,7 +28,7 @@ export const apiCall = async ({
     };
 
     if (data && ["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-      
+
       config.body = JSON.stringify(data);
     }
 
@@ -38,17 +38,24 @@ export const apiCall = async ({
     console.log("Calling API: ", url);
     const response = await fetch(url, config);
 
+    const responseData = await response.json();
+
     if (!response.ok) {
       if (expectedStatusCodes.includes(response.status)) {
-        return response.json();
+        return responseData;
       }
-      const errorText = await response.text();
-      throw new Error(errorText || `HTTP error! status: ${response.status}`);
+      throw new Error(responseData.error || responseData.message || `HTTP error! status: ${response.status}`);
     }
 
-    return await response.json();
+    return responseData;
+
   } catch (error) {
-    console.error("API call error:", error);
+    if (error instanceof Error) {
+      console.error("API call error message:", error.message);
+    } else {
+      console.error("API call unknown error:", error);
+    }
     throw error;
+
   }
 };

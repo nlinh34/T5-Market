@@ -36,7 +36,7 @@ connectDatabase()
     app.use("/cart", cartRoutes);
     app.use("/order", orderRoutes);
     app.use("/shop", shopRoutes);
-    app.use("/review", reviewRoutes)
+    app.use("/reviews", reviewRoutes)
 
     app.use((err, req, res, next) => {
       console.error(err.stack);

@@ -3,8 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Arial", sans-serif;
-    /* border: none !important; */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     outline: none !important;
 }
 
@@ -111,7 +110,6 @@ section {
 
 /* Header Styles */
 header {
-    background-color: #2e8b57;
     color: white;
     padding: 15px 0;
     position: fixed;
@@ -355,17 +353,11 @@ nav ul li a.active {
 .product-card img {
     width: 100%;
     aspect-ratio: 1/1;
-
     object-fit: cover;
-
     background-color: white;
     border-radius: 20px;
-
-    padding: 10px;
     border: 1px solid #f0f0f0;
-
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
     margin-bottom: 10px;
     transition: all 0.3s ease;
 }
@@ -1044,7 +1036,7 @@ nav ul li a.active {
 .card-top img {
     width: 100%;
     aspect-ratio: 1 / 1;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .like-btn {

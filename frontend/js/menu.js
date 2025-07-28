@@ -1,6 +1,7 @@
-// menu.js - ĐÃ SỬA HOÀN CHỈNH
 import { ProductAPI } from "../APIs/productAPI.js";
 import { CategoryAPI } from "../APIs/categoryAPI.js";
+import CartAPI from "../APIs/cartAPI.js";
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".product-grid");
@@ -52,6 +53,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const fallbackImg = "https://t4.ftcdn.net/jpg/05/82/98/21/360_F_582982149_kN0XAeccaysWXvcHr4s3bhitFSVU8rlP.jpg";
 
+
+  async function addToCart(productId) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("⚠️ Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+
+    try {
+      const result = await CartAPI.addProduct(productId, 1);
+      if (result.success) {
+        alert("✅ Đã thêm sản phẩm vào giỏ hàng!");
+      } else {
+        alert("❌ Thêm thất bại: " + (result.error || "Lỗi không xác định"));
+      }
+    } catch (err) {
+      console.error("Lỗi thêm vào giỏ hàng:", err);
+      alert("❌ Có lỗi xảy ra khi thêm vào giỏ hàng.");
+    }
+  }
+
+  function attachAddToCartEvents() {
+    const buttons = document.querySelectorAll(".add-to-cart-btn");
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const productId = button.getAttribute("data-id");
+        if (!productId) return;
+        addToCart(productId);
+      });
+    });
+  }
+
+
+
   function renderProducts(products) {
     const container = document.querySelector('.product-grid');
     container.innerHTML = "";
@@ -89,16 +124,17 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
             <i class="fa-regular fa-eye"></i>
           </button>
-          <button class="action-btn" title="Thêm vào giỏ hàng" onclick="window.location.href='../cart/cart.html?id=${product._id}'">
+          <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
             <i class="fa-solid fa-cart-shopping"></i>
           </button>
+
         </div>
       </div>
       <div class="card-content">
+        <h4 class="product-name">${product.name}</h4>
         <div class="price-wrapper">
           <span class="current-price">$${product.price.toFixed(2)}</span>
         </div>
-        <h4 class="product-name">${product.name}</h4>
         <div class="rating">
           ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
           <span>${(product.rating || 4.33).toFixed(2)}</span>
@@ -162,12 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = "Đang tải sản phẩm...";
     ProductAPI.getAllProducts().then(res => {
       renderProducts(res.data);
+      attachAddToCartEvents(); // Gắn event cho nút thêm giỏ hàng sau khi render
     }).catch(err => {
       container.innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
       console.error("Lỗi lấy sản phẩm:", err);
     });
   }
-
   loadCategorySidebar();
   loadAllProducts();
 });

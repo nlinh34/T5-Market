@@ -377,40 +377,104 @@ function attachEventListeners(shop) {
 }
 
 async function initializeShopData() {
-    try {
-        showLoading();
-        const response = await ShopAPI.getMyShop();
-        hideLoading();
+    const pageLoader = document.getElementById('page-loader');
+    const pageContainer = document.querySelector('.container');
 
-        if (response.success && response.data) {
-            const shop = response.data;
-            if (shop.status === 'approved') {
-                const user = JSON.parse(localStorage.getItem('user'));
-                // Nếu role chưa được cập nhật, thì cập nhật và tải lại
-                if (user && ![Role.SELLER, Role.STAFF].includes(user.role)) {
-                    const freshUserResponse = await UserAPI.getCurrentUser();
-                    if (freshUserResponse.success) {
-                        localStorage.setItem('user', JSON.stringify(freshUserResponse.data));
-                        // Tải lại trang để header cập nhật đúng
-                        window.location.reload();
-                        return; // Dừng thực thi để trang tải lại
-                    }
-                }
-                // Nếu vai trò đã đúng, tiếp tục hiển thị trang
-                populateShopData(shop);
-                attachEventListeners(shop);
-            } else {
-                const statusMessage = shop.status === 'pending'
-                    ? 'Cửa hàng của bạn đang chờ duyệt. Vui lòng quay lại sau.'
-                    : 'Yêu cầu mở cửa hàng của bạn đã bị từ chối.';
+    try {
+        const userResponse = await UserAPI.getCurrentUser();
+        if (!userResponse.success) {
+            // If user data cannot be fetched, redirect to login or show error
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <h1>Lỗi xác thực</h1>
+                    <p>Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.</p>
+                    <a href="./login.html">Đăng nhập</a>
+                </div>`;
+            return;
+        }
+        const currentUser = userResponse.data;
+        localStorage.setItem('user', JSON.stringify(currentUser)); // Ensure local storage is up-to-date
+
+        const shopResponse = await ShopAPI.getMyShop();
+
+        if (shopResponse.success && shopResponse.data) {
+            const shop = shopResponse.data;
+
+            // Handle shop status first
+            if (shop.status === 'pending') {
                 document.body.innerHTML = `
                     <div style="text-align: center; padding: 50px;">
                         <h1>Thông báo</h1>
-                        <p>${statusMessage}</p>
+                        <p>Cửa hàng của bạn đang chờ duyệt. Vui lòng quay lại sau.</p>
                         <a href="./index.html">Quay về trang chủ</a>
                     </div>`;
+                return;
+            } else if (shop.status === 'rejected') {
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 50px;">
+                        <h1>Thông báo</h1>
+                        <p>Yêu cầu mở cửa hàng của bạn đã bị từ chối.</p>
+                        <p>Lý do: ${shop.rejectionReason || 'Không có lý do cụ thể.'}</p>
+                        <a href="./index.html">Quay về trang chủ</a>
+                    </div>`;
+                return;
+            }
+
+            // If shop is approved, proceed to check user's role and status
+            if (shop.status === 'approved') {
+                if (currentUser.role === Role.STAFF) {
+                    if (currentUser.status === 'pending') {
+                        document.body.innerHTML = `
+                            <div style="text-align: center; padding: 50px;">
+                                <h1>Thông báo</h1>
+                                <p>Tài khoản nhân viên của bạn đang chờ quản trị viên duyệt. Vui lòng quay lại sau.</p>
+                                <a href="./index.html">Quay về trang chủ</a>
+                            </div>`;
+                        return;
+                    } else if (currentUser.status === 'rejected') {
+                        document.body.innerHTML = `
+                            <div style="text-align: center; padding: 50px;">
+                                <h1>Thông báo</h1>
+                                <p>Tài khoản nhân viên của bạn đã bị từ chối.</p>
+                                <a href="./index.html">Quay về trang chủ</a>
+                            </div>`;
+                        return;
+                    }
+                    // If staff account is approved, continue to load shop data
+                } else if (currentUser.role === Role.CUSTOMER) {
+                    // This scenario might happen if a CUSTOMER tries to access shop-manager.html
+                    // and then their role in the DB becomes SELLER/STAFF because shop was approved.
+                    // This is handled by the initial freshUserResponse and setting localStorage.
+                    // If after all checks, they are still CUSTOMER but shop is approved,
+                    // it means they are not the owner/staff, redirect them.
+                    document.body.innerHTML = `
+                        <div style="text-align: center; padding: 50px;">
+                            <h1>Truy cập bị từ chối</h1>
+                            <p>Bạn không có quyền truy cập trang quản lý cửa hàng.</p>
+                            <a href="./index.html">Quay về trang chủ</a>
+                        </div>`;
+                    return;
+                }
+                
+                // If shop is approved and user is SELLER or approved STAFF, populate data
+                populateShopData(shop);
+                attachEventListeners(shop);
+                await loadShopContent();
+
+                // Run data fetching in parallel
+                await Promise.all([
+                    updateShopStats(),
+                    (async () => {
+                        const ratingResponse = await ShopAPI.getShopRating(shop._id);
+                        if (ratingResponse.success) {
+                            updateShopHeaderRating(ratingResponse.data);
+                        }
+                    })()
+                ]);
+
             }
         } else {
+            // No shop found for the user (owner or staff)
             document.body.innerHTML = `
                 <div style="text-align: center; padding: 50px;">
                     <h1>Bạn chưa có cửa hàng</h1>
@@ -420,8 +484,21 @@ async function initializeShopData() {
         }
     } catch (error) {
         console.error("Initialization failed:", error);
-        hideLoading();
-        document.body.innerHTML = "<h1>Đã có lỗi xảy ra khi tải dữ liệu.</h1>";
+        // More specific error message for debug
+        document.body.innerHTML = `
+            <div style="text-align: center; padding: 50px;">
+                <h1>Đã có lỗi xảy ra khi tải dữ liệu.</h1>
+                <p>Chi tiết lỗi: ${error.message || 'Không xác định'}</p>
+                <a href="./index.html">Quay về trang chủ</a>
+            </div>`;
+    } finally {
+        if (pageLoader) {
+            pageLoader.style.opacity = '0';
+            setTimeout(() => pageLoader.style.display = 'none', 300);
+        }
+        if (pageContainer) {
+            pageContainer.style.visibility = 'visible';
+        }
     }
 }
 
@@ -431,6 +508,31 @@ function showLoading() {
 
 function hideLoading() {
     // ... existing code ...
+}
+
+function updateShopHeaderRating({ averageRating = 0, totalReviews = 0 }) {
+    const starsContainer = document.getElementById('headerShopStars');
+    const ratingText = document.getElementById('headerShopRatingText');
+
+    if (!starsContainer || !ratingText) {
+        console.error("Header rating elements not found!");
+        return;
+    }
+
+    starsContainer.innerHTML = ''; // Clear current stars
+    const roundedRating = Math.round(averageRating);
+
+    for (let i = 1; i <= 5; i++) {
+        const starIcon = document.createElement('i');
+        starIcon.classList.add('fas', 'fa-star', 'star');
+        // Stars will be colored by default CSS, we only need to dull the non-rated ones
+        if (i > roundedRating) {
+            starIcon.style.color = '#e0e0e0';
+        }
+        starsContainer.appendChild(starIcon);
+    }
+    
+    ratingText.textContent = `${averageRating.toFixed(1)} (${totalReviews} đánh giá)`;
 }
 
 function populateShopData(shop) {
@@ -540,23 +642,37 @@ function handleTabSwitch(tabName) {
     const shopIntroCard = document.getElementById('shopIntroCard');
     const productsForSaleCard = document.getElementById('productsForSaleCard');
     const staffManagementCard = document.getElementById('staffManagementCard');
+    const reviewContentCard = document.getElementById('reviewContentCard');
+    
+    // Get the new section containers
+    const topSection = document.querySelector('.top-section');
+    const bottomSection = document.querySelector('.bottom-section');
 
     // Hide all main content cards first
     if(shopIntroCard) shopIntroCard.classList.add('hidden');
     if(productsForSaleCard) productsForSaleCard.classList.add('hidden');
     if(staffManagementCard) staffManagementCard.classList.add('hidden');
+    if(reviewContentCard) reviewContentCard.classList.add('hidden');
+
+    // Hide sections by default
+    if (topSection) topSection.classList.add('hidden');
+    if (bottomSection) bottomSection.classList.add('hidden');
 
     if (tabName === 'cuaHang') {
+        if (topSection) topSection.classList.remove('hidden');
+        if (bottomSection) bottomSection.classList.remove('hidden');
         if(shopIntroCard) shopIntroCard.classList.remove('hidden');
         if(productsForSaleCard) productsForSaleCard.classList.remove('hidden');
-                loadProductsForSaleContent();
+        loadProductsForSaleContent();
     } else if (tabName === 'nhanVien') {
+        if (bottomSection) bottomSection.classList.remove('hidden');
         if(staffManagementCard) staffManagementCard.classList.remove('hidden');
         loadStaffContent();
+    } else if (tabName === 'danhGia') {
+        if (bottomSection) bottomSection.classList.remove('hidden');
+        if(reviewContentCard) reviewContentCard.classList.remove('hidden');
+        loadReviewsContent();
     }
-     else if (tabName === 'danhGia') {
-                loadReviewsContent();
-        }
 }
 
 function loadShopContent() {
@@ -566,22 +682,109 @@ function loadShopContent() {
 
 async function loadProductsForSaleContent() {
     const productTabs = document.querySelector('.product-tabs');
+    const productSearchInput = document.getElementById('productSearchInput'); // New
+    const productSortSelectCustom = document.getElementById('productSortSelectCustom'); // New custom select wrapper
+    const selectSelectedSort = document.getElementById('selectSelectedSort'); // New custom select chosen value
+    const selectItems = productSortSelectCustom ? productSortSelectCustom.querySelector('.select-items') : null; // New custom select options container
+
     if (!productTabs) return;
 
+    // Event listener for tab clicks (existing)
     productTabs.addEventListener('click', (e) => {
         if (e.target.matches('.product-tab-btn')) {
             productTabs.querySelector('.active').classList.remove('active');
             e.target.classList.add('active');
             const status = e.target.dataset.status;
-            renderSellerProducts(status);
+            // Pass current search and sort values when switching tabs
+            const searchTerm = productSearchInput ? productSearchInput.value : '';
+            const sortBy = selectSelectedSort ? selectSelectedSort.dataset.value : 'createdAt-desc'; // New
+            renderSellerProducts(status, searchTerm, sortBy);
         }
     });
 
-    // Initial load
-    renderSellerProducts('all');
+    // New Event listener for search input (existing)
+    if (productSearchInput) {
+        let searchTimeout; // Define a timeout variable for debouncing
+        productSearchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout); // Clear previous timeout
+            searchTimeout = setTimeout(() => {
+                const activeTab = productTabs.querySelector('.product-tab-btn.active').dataset.status;
+                const searchTerm = productSearchInput.value;
+                const sortBy = selectSelectedSort ? selectSelectedSort.dataset.value : 'createdAt-desc'; // New
+                renderSellerProducts(activeTab, searchTerm, sortBy);
+            }, 300); // 300ms debounce time
+        });
+    }
+
+    // Custom dropdown logic (replaces old select change listener)
+    if (productSortSelectCustom && selectSelectedSort && selectItems) {
+        // Set initial selected value based on the first option or a default
+        const initialSelectedOption = selectItems.querySelector('[data-value="createdAt-desc"]');
+        if (initialSelectedOption) {
+            selectSelectedSort.textContent = initialSelectedOption.textContent;
+            selectSelectedSort.dataset.value = initialSelectedOption.dataset.value;
+            initialSelectedOption.classList.add('same-as-selected'); // Mark as selected
+        }
+
+        selectSelectedSort.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent document click from closing immediately
+            closeAllSelect(this);
+            selectItems.classList.toggle('select-hide');
+            this.classList.toggle('select-arrow-active');
+        });
+
+        // Handle clicks on custom select options
+        selectItems.querySelectorAll('div').forEach(function(item) {
+            item.addEventListener('click', function() {
+                const prevSelected = selectItems.querySelector('.same-as-selected');
+                if (prevSelected) {
+                    prevSelected.classList.remove('same-as-selected');
+                }
+                this.classList.add('same-as-selected');
+
+                selectSelectedSort.textContent = this.textContent;
+                selectSelectedSort.dataset.value = this.dataset.value; // Store actual value
+
+                // Trigger product re-render
+                const activeTab = productTabs.querySelector('.product-tab-btn.active').dataset.status;
+                const searchTerm = productSearchInput ? productSearchInput.value : '';
+                const sortBy = this.dataset.value; // Use the value from the clicked item
+                renderSellerProducts(activeTab, searchTerm, sortBy);
+
+                selectItems.classList.add('select-hide'); // Hide dropdown
+                selectSelectedSort.classList.remove('select-arrow-active');
+            });
+        });
+    }
+
+    function closeAllSelect(elmnt) {
+        const arrNo = [];
+        const x = document.getElementsByClassName("select-items");
+        const y = document.getElementsByClassName("select-selected");
+        for (let i = 0; i < y.length; i++) {
+            if (elmnt == y[i]) {
+                arrNo.push(i)
+            } else {
+                y[i].classList.remove("select-arrow-active");
+            }
+        }
+        for (let i = 0; i < x.length; i++) {
+            if (arrNo.indexOf(i)) {
+                x[i].classList.add("select-hide");
+            }
+        }
+    }
+
+    // Close all custom selects when clicking elsewhere on the document
+    document.addEventListener('click', closeAllSelect);
+
+    // Initial load with potential default search/sort
+    // const initialSortBy = productSortSelect ? productSortSelect.value : 'createdAt-desc'; // Old
+    const initialSortBy = selectSelectedSort ? selectSelectedSort.dataset.value : 'createdAt-desc'; // New
+    renderSellerProducts('approved', '', initialSortBy);
 }
 
-async function renderSellerProducts(status) {
+async function renderSellerProducts(status, searchTerm = '', sortBy = 'createdAt-desc') {
     const sellerProductsGrid = document.getElementById("sellerProductsGrid");
     const noProductsMessage = document.getElementById("noProductsMessage");
 
@@ -591,31 +794,23 @@ async function renderSellerProducts(status) {
     noProductsMessage.classList.add("hidden");
 
     try {
-        const response = await ProductAPI.getProductsByShop(currentShopData._id, status);
+        // Pass search term and sort by to the API call
+        const response = await ProductAPI.getProductsByShop(currentShopData._id, status, searchTerm, sortBy);
 
         if (response.success && response.data && response.data.length > 0) {
             sellerProductsGrid.innerHTML = '';
+            noProductsMessage.classList.add("hidden"); // Ensure message is hidden when products are present
             response.data.forEach(product => {
                     const productCard = document.createElement("div");
                     productCard.className = "product-card";
                 productCard.dataset.productId = product._id;
                 
-                const getStatusInfo = (status) => {
-                    switch (status) {
-                        case 'approved': return { text: 'Đang bán', class: 'status-approved' };
-                        case 'pending': return { text: 'Chờ duyệt', class: 'status-pending' };
-                        case 'rejected': return { text: 'Bị từ chối', class: 'status-rejected' };
-                        default: return { text: 'Không xác định', class: 'status-unknown' };
-                    }
-                };
-                const statusInfo = getStatusInfo(product.status);
-
                     productCard.innerHTML = `
-                    <div class="product-status-badge ${statusInfo.class}">${statusInfo.text}</div>
-                    <img src="${product.images[0] || './assests/images/default-product.png'}" alt="${product.name}" class="product-img">
+                    <img src="${product.images[0] || './assests/images/default-product.png'}" alt="${product.name}" class="product-img" loading="lazy">
                         <div class="product-info">
                                 <h4 class="product-name">${product.name}</h4>
                             <p class="product-price">${formatCurrency(product.price)}</p>
+                            <p class="product-posted-date"><i class="fas fa-clock"></i> ${formatTimeAgo(product.createdAt)}</p>
                             </div>
                     <div class="product-actions">
                         <button class="btn btn-secondary btn-edit-product"><i class="fas fa-edit"></i> Sửa</button>
@@ -624,13 +819,17 @@ async function renderSellerProducts(status) {
                     `;
                     sellerProductsGrid.appendChild(productCard);
                 });
-            } else {
+            // Update shop stats after products are loaded
+            updateShopStats(response.data); // Pass products data
+        } else {
             sellerProductsGrid.innerHTML = '';
-                noProductsMessage.classList.remove("hidden");
+            noProductsMessage.classList.remove("hidden");
+            updateShopStats([]); // Pass empty array if no products
         }
     } catch (error) {
         console.error(`Error loading products for status ${status}:`, error);
         sellerProductsGrid.innerHTML = '<div class="error-state">Lỗi tải sản phẩm. Vui lòng thử lại.</div>';
+        updateShopStats([]); // Pass empty array on error
     }
 
     // Add event listeners after rendering
@@ -652,7 +851,7 @@ async function renderSellerProducts(status) {
 async function handleEditProduct(productId) {
     console.log("Edit product with ID:", productId);
     // Redirect to product posting/editing page with product ID
-    window.location.href = `/frontend/pages/products/post-products.html?id=${productId}`;
+    window.location.href = `/frontend/post-products.html?id=${productId}`;
 }
 
 async function handleDeleteProduct(productId) {
@@ -673,14 +872,129 @@ async function handleDeleteProduct(productId) {
     }
 }
 
-function loadReviewsContent() {
+async function loadReviewsContent() {
     console.log("Loading reviews content...");
-    // Implementation for reviews content
+    if (!currentShopData) return;
+
+    const reviewList = document.getElementById('reviewList');
+    reviewList.innerHTML = '<p>Đang tải đánh giá...</p>';
+    
+    try {
+        const response = await ShopAPI.getShopRating(currentShopData._id);
+        if (response.success) {
+            const { averageRating, totalReviews, reviews, reviewCriteria } = response.data;
+            
+            renderReviewSummary(averageRating, totalReviews, reviewCriteria);
+            renderReviewList(reviews);
+
+            document.getElementById('allReviewsCount').textContent = totalReviews;
+            document.getElementById('buyerReviewsCount').textContent = totalReviews; // Assuming all are from buyers for now
+            document.getElementById('sellerReviewsCount').textContent = 0;
+
+        } else {
+            reviewList.innerHTML = `<p>Lỗi khi tải đánh giá: ${response.error}</p>`;
+        }
+    } catch (error) {
+        console.error("Error loading reviews:", error);
+        reviewList.innerHTML = '<p>Đã xảy ra lỗi khi tải đánh giá.</p>';
+    }
 }
 
-function updateShopStats() {
-    // Update stats with real data from backend
-    // This is placeholder implementation
+function renderReviewSummary(averageRating, totalReviews, reviewCriteria) {
+    document.getElementById('overallRatingScore').textContent = averageRating.toFixed(1);
+    const starsContainer = document.getElementById('overallRatingStars');
+    starsContainer.innerHTML = '';
+    const roundedRating = Math.round(averageRating);
+    for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('i');
+        star.className = `fas fa-star ${i <= roundedRating ? 'filled' : ''}`;
+        starsContainer.appendChild(star);
+    }
+    document.getElementById('overallTotalReviews').textContent = `(${totalReviews} đánh giá)`;
+
+    const filtersContainer = document.getElementById('reviewFilters');
+    filtersContainer.innerHTML = '';
+    for (const [criteria, count] of Object.entries(reviewCriteria)) {
+        const filterBtn = document.createElement('button');
+        filterBtn.className = 'filter-btn';
+        filterBtn.textContent = `${criteria} (${count})`;
+        filtersContainer.appendChild(filterBtn);
+    }
+}
+
+function renderReviewList(reviews) {
+    const reviewList = document.getElementById('reviewList');
+    reviewList.innerHTML = '';
+
+    if (reviews.length === 0) {
+        reviewList.innerHTML = '<p>Chưa có đánh giá nào.</p>';
+        return;
+    }
+
+    reviews.forEach(review => {
+        const reviewItem = document.createElement('div');
+        reviewItem.className = 'review-item';
+
+        const userAvatar = review.user.avatar || './assests/images/default-user.png';
+        const productName = review.product ? review.product.name : 'Sản phẩm không tồn tại';
+        const productPrice = review.product ? formatCurrency(review.product.price) : 'N/A';
+        const productImage = review.product && review.product.images && review.product.images.length > 0 ? review.product.images[0] : './assests/images/default-product.png';
+
+        let criteriaTagsHTML = '';
+        if(review.criteria && review.criteria.length > 0) {
+            criteriaTagsHTML = review.criteria.map(crit => `<span class="criteria-tag">${crit}</span>`).join('');
+        }
+        
+        let starsHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            starsHTML += `<i class="fas fa-star ${i <= review.rating ? 'filled' : ''}"></i>`;
+        }
+
+        reviewItem.innerHTML = `
+            <div class="reviewer-avatar">
+                <img src="${userAvatar}" alt="${review.user.fullName}">
+            </div>
+            <div class="review-content">
+                <div class="reviewer-name">${review.user.fullName}</div>
+                <div class="review-criteria-tags">
+                    ${criteriaTagsHTML}
+                </div>
+                <div class="review-meta">
+                    <div class="stars">${starsHTML}</div>
+                    <span>|</span>
+                    <span>${formatTimeAgo(review.createdAt)}</span>
+                </div>
+                <div class="review-product">
+                    <div class="review-product-image">
+                        <img src="${productImage}" alt="${productName}">
+                    </div>
+                    <div class="review-product-details">
+                        <div class="review-product-name">${productName}</div>
+                        <div class="review-product-price">${productPrice}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        reviewList.appendChild(reviewItem);
+    });
+}
+
+async function updateShopStats(productsData) { // Accept productsData as parameter
+    const shopProductsCountElement = document.getElementById("shopProductsCount");
+    const shopSoldCountElement = document.getElementById("shopSoldCount");
+
+    if (!shopProductsCountElement || !shopSoldCountElement) return;
+
+    // Use provided productsData instead of making a new API call
+    if(productsData) {
+        shopProductsCountElement.textContent = productsData.length;
+        const totalSoldCount = productsData.reduce((acc, product) => acc + (product.sold_count || 0), 0);
+        shopSoldCountElement.textContent = totalSoldCount;
+    } else {
+        // Fallback if productsData is not provided (though it should be now)
+        shopProductsCountElement.textContent = 0;
+        shopSoldCountElement.textContent = 0;
+    }
 }
 
 let currentlyEditingStaffId = null;
@@ -914,7 +1228,6 @@ function handleOpenEditPermissionsModal(staffMember) {
     const permissionMap = {
         'manage_products': 'permManageProducts',
         'manage_orders': 'permManageOrders',
-        'view_reports': 'permViewReports',
     };
 
     staffMember.permissions.forEach(permission => {
@@ -935,7 +1248,6 @@ async function handleUpdatePermissions(e) {
     const permissions = [];
     if (document.getElementById('permManageProducts').checked) permissions.push('manage_products');
     if (document.getElementById('permManageOrders').checked) permissions.push('manage_orders');
-    if (document.getElementById('permViewReports').checked) permissions.push('view_reports');
 
     try {
         const response = await ShopAPI.updateStaffPermissions(currentlyEditingStaffId, permissions);

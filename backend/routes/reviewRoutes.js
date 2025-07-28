@@ -5,7 +5,6 @@ const {
   getReviewsByProduct
 } = require("../controllers/reviewController");
 const { protect } = require("../middlewares/authMiddleware");
-const { canEditReview } = require("../middlewares/reviewAuth.js");
 
 router.post("/", protect, createReview);
 router.get("/:productId", getReviewsByProduct);
