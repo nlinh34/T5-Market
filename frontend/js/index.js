@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function renderProductsPagination(currentPage, totalProducts) {
         const totalPages = Math.ceil(totalProducts / productsPerPage);
-        document.getElementById('current-products-page').textContent = currentPage;
+        document.getElementById('current-products-page').textContent = `${currentPage} / ${totalPages}`;
 
         const prevButton = document.getElementById('prev-products-page');
         const nextButton = document.getElementById('next-products-page');
