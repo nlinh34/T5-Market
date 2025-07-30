@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Function to get product ID from URL
     function getProductIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
-        return params.get('id') || window.location.pathname.split('/').pop();
+        const id = params.get('id');
+        return /^[0-9a-fA-F]{24}$/.test(id) ? id : null; // validate ObjectId luôn
     }
 
     // Function to fetch product data
@@ -222,19 +223,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('Cart updated');
     }
 
-    // Fetch and populate product data
+    //Lấy sp từ shop
     const productId = getProductIdFromUrl();
     if (productId) {
         const productData = await fetchProductData(productId);
         updateProductUI(productData);
 
-        // === Bắt đầu phần mới: Load sản phẩm khác từ shop ===
         if (productData && productData.shop && productData.shop._id) {
             loadOtherProductsFromShop(productData.shop._id, productData._id);
         }
-        // === Kết thúc phần mới ===
 
-        // 👉 Thêm phần này để xử lý hiển thị động
+        if (productData && productData.category && productData.category._id) {
+            loadSimilarProducts(productData.category._id, productData._id);
+        }
+
         const detailSection = document.getElementById("productDetail");
         const loadingIndicator = document.getElementById("loadingIndicator");
 
@@ -330,6 +332,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     if (productId) {
         loadReviews(productId);
+    } else {
+        displayNotFoundCard();
     }
 
     // Hàm mới: Load sản phẩm khác từ shop
@@ -390,5 +394,60 @@ document.addEventListener('DOMContentLoaded', async function() {
             grid.innerHTML = "<p>Không thể tải sản phẩm từ người bán.</p>";
         }
     }
+    // Hàm mới: Load sản phẩm tương tự theo danh mục
+    async function loadSimilarProducts(categoryId, currentProductId) {
+        const container = document.querySelector(".similar-products-grid");
+        if (!container) return;
+
+        container.innerHTML = "<p>Đang tải sản phẩm tương tự...</p>";
+
+        try {
+            const res = await ProductAPI.getProductsByCategory(categoryId); // 💡 Bạn cần có API này
+            if (!res.success || !Array.isArray(res.data)) {
+                container.innerHTML = "<p>Không có sản phẩm tương tự để hiển thị.</p>";
+                return;
+            }
+
+            const similarProducts = res.data.filter(p => p._id !== currentProductId);
+            if (similarProducts.length === 0) {
+                container.innerHTML = "<p>Không tìm thấy sản phẩm tương tự.</p>";
+                return;
+            }
+
+            container.innerHTML = similarProducts.map(product => `
+            <div class="new-product-card">
+                <div class="card-top">
+                    <img src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
+                    <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                    <div class="action-icons">
+                        <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                        <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h4 class="product-name">${product.name}</h4>
+                    <div class="price-wrapper">
+                        <span class="current-price">${formatPrice(product.price)}</span>
+                    </div>
+                    <div class="rating">
+                        ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
+                        <span>${(product.rating || 4.3).toFixed(2)}</span>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+
+        } catch (error) {
+            console.error("Lỗi khi tải sản phẩm tương tự:", error);
+            container.innerHTML = "<p>Không thể tải sản phẩm tương tự.</p>";
+        }
+    }
 
 });
+

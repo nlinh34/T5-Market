@@ -192,9 +192,6 @@ body {
     text-align: center;
     color: #000;
     font-size: 1.8rem;
-    /* Reduced font size */
-    margin-bottom: 2.5rem;
-    /* Increased margin-bottom */
     font-weight: 700;
     /* Made font bolder */
     letter-spacing: 0.05em;
@@ -662,8 +659,11 @@ body {
 .container {
     width: 90%;
     max-width: 1200px;
-    margin: 0 auto;
+    margin-left:  auto;
+    margin-right: auto;
 }
+
+
 
 
 /* Header */
@@ -1486,7 +1486,6 @@ nav ul li a.active {
 
 .section-title {
     text-align: center;
-    margin-bottom: 40px;
     font-size: 1.6rem;
     color: #000;
 }
