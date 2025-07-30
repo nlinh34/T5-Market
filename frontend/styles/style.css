@@ -2097,7 +2097,7 @@ nav ul li a.active {
 
 .featured-product-img {
     width: 100%;
-    height: 250px;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
@@ -2221,6 +2221,11 @@ nav ul li a.active {
         width: 100%;
         height: 45px;
     }
+    .product-img,
+    .featured-product-img {
+        height: auto;
+        /* Ensure height is auto for aspect-ratio to work */
+    }
 }
 
 @media (max-width: 480px) {
@@ -2234,7 +2239,8 @@ nav ul li a.active {
         gap: 1rem;
     }
     .featured-product-img {
-        height: 200px;
+        height: auto;
+        /* Ensure height is auto for aspect-ratio to work */
     }
     .featured-badge {
         top: 10px;
@@ -2903,64 +2909,72 @@ nav ul li a.active {
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-    /* Slightly reduced margin */
-    gap: 8px;
-    /* Reduced gap */
+    /* Reduced margin for more compactness */
+    gap: 6px;
+    /* Reduced gap between elements for compactness */
 }
 
 .page-btn {
-    background-color: #ffeb3b;
-    /* Brighter yellow */
-    color: #333;
-    /* Darker text for contrast */
-    border: 1px solid #ffdd00;
-    /* Lighter border */
+    background-color: #ffffff;
+    /* White background */
+    color: #555;
+    /* Soft gray text */
+    border: 1px solid #e0e0e0;
+    /* Very light gray border */
     padding: 6px 12px;
-    /* Smaller padding */
+    /* Reduced padding for compactness */
     border-radius: 4px;
     /* Slightly less rounded */
     cursor: pointer;
     font-size: 0.9rem;
     /* Smaller font size */
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
+    /* Faster transitions */
+    box-shadow: none;
+    /* Removed shadow */
 }
 
 .page-btn:hover:not(:disabled) {
-    background-color: #fff059;
-    /* Lighter yellow on hover */
+    background-color: #f5f5f5;
+    /* Very light gray on hover */
     transform: translateY(-1px);
     /* Subtle lift */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    /* Very subtle shadow on hover */
 }
 
 .page-btn:disabled {
-    background-color: #e0e0e0;
+    background-color: #fafafa;
     /* Lighter disabled color */
-    color: #999;
+    color: #ccc;
     /* Lighter text color */
     cursor: not-allowed;
-    border: 1px solid #d0d0d0;
+    border: 1px solid #f0f0f0;
+    /* Lighter border */
+    box-shadow: none;
+    /* No shadow for disabled buttons */
 }
 
 #current-products-page {
-    font-size: 0.95rem;
-    /* Slightly smaller font */
+    font-size: 0.9rem;
+    /* Smaller font size */
     font-weight: 600;
-    /* Slightly less bold */
-    color: #444;
-    /* Slightly lighter text */
-    padding: 4px 8px;
-    /* Smaller padding */
-    border: 1px solid #ccc;
-    /* Lighter border */
+    /* Less bold */
+    color: #777;
+    /* Softer text color */
+    padding: 6px 10px;
+    /* Reduced padding for compactness */
+    border: 1px solid #e0e0e0;
+    /* Light border */
     border-radius: 4px;
-    /* Slightly less rounded */
-    min-width: 28px;
+    /* Consistent border-radius */
+    min-width: 35px;
     /* Adjusted min-width */
     text-align: center;
-    background-color: #f9f9f9;
-    /* Light background */
+    background-color: #ffffff;
+    /* White background */
+    box-shadow: none;
+    /* Removed shadow */
 }
 
 
@@ -2971,31 +2985,74 @@ nav ul li a.active {
         flex-wrap: wrap;
         justify-content: center;
         margin-top: 15px;
-        /* Further reduced margin */
-        gap: 6px;
-        /* Further reduced gap */
+        gap: 5px;
     }
     .page-btn {
         padding: 5px 10px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
     #current-products-page {
-        font-size: 0.9rem;
-        padding: 3px 7px;
+        font-size: 0.85rem;
+        padding: 4px 8px;
     }
 }
 
 @media (max-width: 480px) {
     .pagination {
-        gap: 5px;
+        gap: 4px;
     }
     .page-btn {
-        padding: 4px 8px;
-        font-size: 0.75rem;
+        padding: 3px 7px;
+        font-size: 0.7rem;
     }
     #current-products-page {
-        font-size: 0.8rem;
-        padding: 2px 6px;
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+}
+
+
+/* Notification Styles */
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification.success {
+    background-color: #4CAF50;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+
+/* Responsive adjustments for notifications */
+
+@media (max-width: 600px) {
+    .notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 10px 15px;
+        font-size: 0.9em;
+        text-align: center;
     }
 }
 

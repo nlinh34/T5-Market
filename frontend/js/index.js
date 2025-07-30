@@ -5,9 +5,20 @@ import { ProductAPI } from "../APIs/productAPI.js"; // Added import for ProductA
 import { ShopAPI } from "../APIs/shopAPI.js"; // Import ShopAPI
 
 let currentProductsPage = 1;
-const productsPerPage = 9; // Changed from 6 to 9
+const productsPerPage = 8; // Or 9, based on your local file's current state
+let allApprovedProducts = []; // Biến để lưu trữ tất cả sản phẩm đã duyệt
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Hàm cắt chuỗi theo số từ - DI CHUYỂN VÀO ĐÂY
+    function truncateWords(text, numWords) {
+        if (!text) return "N/A";
+        const words = text.split(' ');
+        if (words.length > numWords) {
+            return words.slice(0, numWords).join(' ') + '...';
+        }
+        return text;
+    }
+
     console.log("DOM loaded, starting to load categories...");
 
     async function addToCart(productId) {
@@ -201,20 +212,29 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        const html = products.map(product => `
+        const html = products.map(product => {
+            console.log("Product data in renderProducts:", product); // Debug log
+            console.log("Shop address in renderProducts:", product && product.shop && product.shop.address); // Debug log (fixed syntax)
+
+            const productName = truncateWords(product.name, 3);
+            const sellerName = truncateWords(product.shop.name || 'N/A', 2);
+            const productLocation = truncateWords(product.shop.address || 'N/A', 2);
+
+            return `
             <div class="product-card" data-id="${product._id}">
                 <img src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="product-img" loading="lazy"/>
                 <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
+                    <h3 class="product-name">${productName}</h3>
                     <p class="product-price">${product.price.toLocaleString()} VND</p>
                     <p class="product-posted-date">Ngày đăng: ${formatDate(product.createdAt)}</p>
                     <div class="product-seller-info">
-                        <span class="seller-name-display"><i class="fas fa-user"></i> ${product.shop.name || 'N/A'}</span>
-                        <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
+                        <span class="seller-name-display"><i class="fas fa-user"></i> ${sellerName}</span>
+                        <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${productLocation}</span>
                     </div>
                 </div>
             </div>
-        `).join("");
+        `;
+        }).join("");
 
         grid.innerHTML = html;
 
@@ -230,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function renderProductsPagination(currentPage, totalProducts) {
         const totalPages = Math.ceil(totalProducts / productsPerPage);
-        document.getElementById('current-products-page').textContent = currentPage;
+        document.getElementById('current-products-page').textContent = `${currentPage} / ${totalPages}`;
 
         const prevButton = document.getElementById('prev-products-page');
         const nextButton = document.getElementById('next-products-page');
@@ -310,23 +330,32 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
-        const html = uniqueProducts.map(product => `
+        const html = uniqueProducts.map(product => {
+            console.log("Product data in renderFeaturedProducts:", product); // Debug log
+            console.log("Shop address in renderFeaturedProducts:", product && product.shop && product.shop.address); // Debug log (fixed syntax)
+
+            const featuredProductName = truncateWords(product.name, 3);
+            const featuredSellerName = truncateWords(product.shop.name || 'N/A', 2);
+            const featuredProductLocation = truncateWords(product.shop.address || 'N/A', 2);
+
+            return `
             <div class="featured-product-card" data-id="${product._id}">
                 <div class="featured-badge">
                     <i class="fas fa-star"></i> Nổi bật
                 </div>
                 <img src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="featured-product-img" loading="lazy"/>
                 <div class="featured-product-info">
-                    <h3 class="featured-product-name">${product.name}</h3>
+                    <h3 class="featured-product-name">${featuredProductName}</h3>
                     <p class="featured-product-price">${product.price.toLocaleString()} VND</p>
                     <p class="featured-product-posted-date">Ngày đăng: ${formatDate(product.createdAt)}</p>
                     <div class="featured-product-seller-info">
-                        <span class="seller-name-display"><i class="fas fa-user"></i> ${product.shop.name || 'N/A'}</span>
-                        <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${product.seller.address || 'N/A'}</span>
+                        <span class="seller-name-display"><i class="fas fa-user"></i> ${featuredSellerName}</span>
+                        <span class="product-location-display"><i class="fas fa-map-marker-alt"></i> ${featuredProductLocation}</span>
                     </div>
                 </div>
             </div>
-        `).join("");
+        `;
+        }).join("");
 
         featuredGrid.innerHTML = html;
         document.querySelectorAll(".featured-product-card").forEach((card) => {
