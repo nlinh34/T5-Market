@@ -32,10 +32,10 @@ const protect = async (req, res, next) => {
     };
     next();
   } catch (error) {
-    console.error("❌ Lỗi trong middleware protect:", error); // ✅ Thêm log tại đây
+    console.error("❌ Lỗi trong middleware protect:", error); 
     return res
       .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Lỗi server", message: error.message }); // ✅ Trả về message cụ thể
+      .json({ error: "Lỗi server", message: error.message }); 
   }
 };
 
