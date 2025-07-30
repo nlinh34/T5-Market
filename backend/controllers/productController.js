@@ -4,7 +4,7 @@ const { httpStatusCodes } = require("../utils/constants");
 const { Role } = require("../constants/roleEnum");
 const mongoose = require("mongoose"); // Add this line
 
-const createProduct = async (req, res) => {
+const createProduct = async(req, res) => {
     try {
         const userId = req.user.userId;
         const { name, price, description, images, category, isAvailable } = req.body;
@@ -48,6 +48,7 @@ const createProduct = async (req, res) => {
         await product.save();
 
         return res.status(httpStatusCodes.CREATED).json({
+            success: true, // Thêm thuộc tính success: true
             message: "Sản phẩm đã được tạo, đang chờ duyệt",
             data: product,
         });
@@ -60,7 +61,7 @@ const createProduct = async (req, res) => {
 };
 
 
-const updateProduct = async (req, res) => {
+const updateProduct = async(req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.userId.toString();
@@ -112,7 +113,7 @@ const updateProduct = async (req, res) => {
 };
 
 
-const deleteProduct = async (req, res) => {
+const deleteProduct = async(req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.userId.toString();
@@ -148,7 +149,7 @@ const deleteProduct = async (req, res) => {
 };
 
 
-const approveProduct = async (req, res) => {
+const approveProduct = async(req, res) => {
     try {
         const { id } = req.params;
         const userRole = req.user.role;
@@ -175,7 +176,7 @@ const approveProduct = async (req, res) => {
 };
 
 
-const rejectProduct = async (req, res) => {
+const rejectProduct = async(req, res) => {
     try {
         const { id } = req.params;
         const { reason } = req.body;
@@ -201,7 +202,7 @@ const rejectProduct = async (req, res) => {
     }
 };
 
-const getAllProducts = async (req, res) => {
+const getAllProducts = async(req, res) => {
     try {
         const products = await Product.find()
             .populate("shop", "name logoUrl address status owner shopStatus createdAt")
@@ -225,7 +226,7 @@ const getAllProducts = async (req, res) => {
     }
 };
 
-const getPendingProducts = async (req, res) => {
+const getPendingProducts = async(req, res) => {
     try {
         const products = await Product.find({ status: "pending" })
             .populate("createdBy", "fullName email")
@@ -243,7 +244,7 @@ const getPendingProducts = async (req, res) => {
 };
 
 
-const getApprovedProducts = async (req, res) => {
+const getApprovedProducts = async(req, res) => {
     try {
         const products = await Product.find({ status: "approved" })
             .populate("createdBy", "fullName email")
@@ -261,7 +262,7 @@ const getApprovedProducts = async (req, res) => {
 };
 
 
-const getRejectedProducts = async (req, res) => {
+const getRejectedProducts = async(req, res) => {
     try {
         const rejectedProducts = await Product.find({ status: "rejected" })
             .populate("shop", "name logoUrl address status owner shopStatus createdAt")
@@ -280,7 +281,7 @@ const getRejectedProducts = async (req, res) => {
     }
 };
 
-const getProductById = async (req, res) => {
+const getProductById = async(req, res) => {
     try {
         const { id } = req.params;
 
@@ -310,7 +311,7 @@ const getProductById = async (req, res) => {
 };
 
 
-const getAllProductsByShopId = async (req, res) => {
+const getAllProductsByShopId = async(req, res) => {
     try {
         const { shopId } = req.params;
         const { keyword, sortBy, status } = req.query; // Thêm keyword và sortBy
@@ -346,18 +347,18 @@ const getAllProductsByShopId = async (req, res) => {
 };
 
 
-const getApprovedProductsByShopId = async (req, res) => {
+const getApprovedProductsByShopId = async(req, res) => {
     try {
         const { shopId } = req.params;
 
         const products = await Product.find({
-            shop: shopId,
-            status: "approved",
-        })
+                shop: shopId,
+                status: "approved",
+            })
             .populate("category", "name")
             .populate("createdBy", "name")
             .populate("shop", "name logoUrl address status owner shopStatus createdAt");
-  
+
 
         if (products.length === 0) {
             return res.status(200).json({
@@ -374,14 +375,14 @@ const getApprovedProductsByShopId = async (req, res) => {
 };
 
 
-const getPendingProductsByShopId = async (req, res) => {
+const getPendingProductsByShopId = async(req, res) => {
     try {
         const { shopId } = req.params;
 
         const products = await Product.find({
-            shop: shopId,
-            status: "pending",
-        })
+                shop: shopId,
+                status: "pending",
+            })
             .populate("category", "name")
             .populate("createdBy", "name")
             .populate("shop", "name logoUrl address status owner shopStatus createdAt");
@@ -400,14 +401,14 @@ const getPendingProductsByShopId = async (req, res) => {
 };
 
 
-const getRejectedProductsByShopId = async (req, res) => {
+const getRejectedProductsByShopId = async(req, res) => {
     try {
         const { shopId } = req.params;
 
         const products = await Product.find({
-            shop: shopId,
-            status: "rejected",
-        })
+                shop: shopId,
+                status: "rejected",
+            })
             .populate("category", "name")
             .populate("createdBy", "name")
             .populate("shop", "name logoUrl address status owner shopStatus createdAt")

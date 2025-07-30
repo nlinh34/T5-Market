@@ -1,7 +1,7 @@
 import { ReviewAPI } from "../APIs/reviewAPI.js";
 import { ProductAPI } from "../APIs/productAPI.js";
 
-document.addEventListener('DOMContentLoaded', async function () {
+document.addEventListener('DOMContentLoaded', async function() {
     // Function to get product ID from URL
     function getProductIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const thumbnails = document.querySelectorAll('.thumbnail');
     const mainImage = document.getElementById('mainImage');
     thumbnails.forEach(thumb => {
-        thumb.addEventListener('click', function () {
+        thumb.addEventListener('click', function() {
             thumbnails.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             mainImage.src = this.getAttribute('data-image');
@@ -129,14 +129,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     const quantityInput = document.querySelector('.quantity-input');
 
     if (minusBtn && plusBtn && quantityInput) {
-        minusBtn.addEventListener('click', function () {
+        minusBtn.addEventListener('click', function() {
             let currentValue = parseInt(quantityInput.value);
             if (currentValue > 1) {
                 quantityInput.value = currentValue - 1;
             }
         });
 
-        plusBtn.addEventListener('click', function () {
+        plusBtn.addEventListener('click', function() {
             let currentValue = parseInt(quantityInput.value);
             quantityInput.value = currentValue + 1;
         });
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const tabPanes = document.querySelectorAll('.tab-pane');
 
     tabHeaders.forEach((header, index) => {
-        header.addEventListener('click', function () {
+        header.addEventListener('click', function() {
             tabHeaders.forEach(h => h.classList.remove('active'));
             tabPanes.forEach(p => p.classList.remove('active'));
             this.classList.add('active');
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const stars = document.querySelectorAll('.rating-input i');
 
     stars.forEach(star => {
-        star.addEventListener('click', function () {
+        star.addEventListener('click', function() {
             const rating = parseInt(this.getAttribute('data-rating'));
             stars.forEach((s, i) => {
                 if (i < rating) {
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         reviews.forEach((review) => {
             const date = new Date(review.createdAt).toLocaleDateString("vi-VN");
-            const userName = review.user?.fullName || "Người dùng";
+            const userName = review.user ? .fullName || "Người dùng";
             const ratingStars = renderStars(review.rating);
             const comment = review.comment || "";
 
@@ -316,9 +316,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const reviews = res.data || [];
         const totalReviews = reviews.length;
-        const avgRating = totalReviews
-            ? reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
-            : 0;
+        const avgRating = totalReviews ?
+            reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews :
+            0;
 
         reviewsSummaryEl.innerHTML = `
             <span class="avg-rating">${avgRating.toFixed(1)}</span>
