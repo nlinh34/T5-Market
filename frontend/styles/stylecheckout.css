@@ -294,3 +294,255 @@
   font-size: 17px;
   color: #e53935;
 }
+
+/* General Layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    margin-top: 100px;
+}
+
+.checkout-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Form Section */
+.checkout-form-section {
+    flex: 2; /* Takes 2 parts of available space */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 300px; /* Ensures it doesn't get too small */
+}
+
+.checkout-form-section h2, .checkout-form-section h3 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group textarea {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.payment-method label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: normal;
+}
+
+.payment-method input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.1);
+}
+
+.submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* Order Summary Section */
+.order-summary-section {
+    flex: 1; /* Takes 1 part of available space */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 300px; /* Ensures it doesn't get too small */
+}
+
+.order-summary-section h2 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+     text-align: center;
+}
+
+/* Styling for grouped store sections */
+.checkout-store-section {
+    background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 15px; /* Space between store groups */
+    overflow: hidden; /* Ensures border-radius applies correctly */
+}
+
+.checkout-store-info {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    font-weight: bold;
+    color: #333;
+    font-size: 1rem;
+}
+
+.checkout-store-info .fas.fa-store {
+    margin-right: 8px;
+    color: #666; /* Icon color */
+}
+
+
+
+/* Styling for individual product items within a store group */
+.checkout-order-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px dashed #eee; /* ĐÂY LÀ ĐƯỜNG KẺ PHÂN CÁCH GIỮA CÁC SẢN PHẨM */
+}
+
+.checkout-order-item:last-child {
+    border-bottom: none; /* KHÔNG CÓ ĐƯỜNG KẺ CHO SẢN PHẨM CUỐI CÙNG TRONG NHÓM */
+}
+
+.checkout-order-item .item-image {
+    position: relative;
+    width: 70px; /* Smaller image for checkout summary */
+    height: 70px;
+    flex-shrink: 0; /* Prevent shrinking */
+    margin-right: 15px;
+}
+
+.checkout-order-item .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.checkout-order-item .item-image .quantity-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 7px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.checkout-order-item .item-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.checkout-order-item .item-name {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.checkout-order-item .item-total {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #007bff;
+    text-align: right; /* Căn phải tổng tiền của sản phẩm */
+    margin-left: auto; /* Đẩy tổng tiền sang phải */
+}
+
+/* Summary Details */
+.summary-details {
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    margin-top: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.summary-row.total-amount {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #dc3545; /* Màu đỏ cho tổng cuối cùng */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .checkout-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .checkout-form-section,
+    .order-summary-section {
+        flex: none;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+/* -------------- */
+.form-group.payment-method {
+    display: flex; /* Dùng flexbox để các item nằm trên một hàng */
+    flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ chỗ */
+    gap: 20px; /* Khoảng cách giữa các lựa chọn */
+    margin-bottom: 15px; /* Giữ khoảng cách dưới nhóm */
+}
+
+.payment-method label {
+    /* Đảm bảo mỗi label là một flex item */
+    display: flex;
+    align-items: center;
+    margin-bottom: 0; /* Loại bỏ margin-bottom cũ để flexbox quản lý khoảng cách */
+    font-weight: normal;
+    flex-shrink: 0; /* Ngăn không cho label bị co lại quá mức */
+}
+
+.payment-method input[type="radio"] { /* Đã thêm selector đúng */
+    margin-right: 10px;
+    transform: scale(1.1);
+    outline: none; /* Loại bỏ outline mặc định */
+}

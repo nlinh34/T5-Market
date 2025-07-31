@@ -2,7 +2,7 @@ const Product = require("../models/Product");
 const Shop = require("../models/Shop");
 const { httpStatusCodes } = require("../utils/constants");
 const { Role } = require("../constants/roleEnum");
-const mongoose = require("mongoose"); // Add this line
+const mongoose = require("mongoose"); 
 
 const createProduct = async (req, res) => {
     try {
@@ -31,7 +31,7 @@ const createProduct = async (req, res) => {
             });
         }
 
-        // 👉 Xác định seller chính là chủ shop
+        // Xác định seller chính là chủ shop
         const product = new Product({
             name,
             price,
@@ -58,7 +58,6 @@ const createProduct = async (req, res) => {
         });
     }
 };
-
 
 const updateProduct = async (req, res) => {
     try {
@@ -94,7 +93,7 @@ const updateProduct = async (req, res) => {
             }
         }
 
-        product.updatedAt = new Date(); // nếu bạn có trường này trong schema
+        product.updatedAt = new Date(); 
 
         // Nếu sửa => trạng thái trở lại pending để duyệt lại
         product.status = "pending";
@@ -110,7 +109,6 @@ const updateProduct = async (req, res) => {
         res.status(500).json({ error: "Lỗi hệ thống khi cập nhật sản phẩm" });
     }
 };
-
 
 const deleteProduct = async (req, res) => {
     try {
@@ -147,7 +145,6 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-
 const approveProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -173,7 +170,6 @@ const approveProduct = async (req, res) => {
         res.status(500).json({ error: "Lỗi duyệt sản phẩm" });
     }
 };
-
 
 const rejectProduct = async (req, res) => {
     try {
@@ -242,7 +238,6 @@ const getPendingProducts = async (req, res) => {
     }
 };
 
-
 const getApprovedProducts = async (req, res) => {
     try {
         const products = await Product.find({ status: "approved" })
@@ -259,7 +254,6 @@ const getApprovedProducts = async (req, res) => {
         res.status(500).json({ error: "Lỗi server khi lấy sản phẩm đã duyệt" });
     }
 };
-
 
 const getRejectedProducts = async (req, res) => {
     try {
@@ -309,7 +303,6 @@ const getProductById = async (req, res) => {
     }
 };
 
-
 const getAllProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
@@ -345,7 +338,6 @@ const getAllProductsByShopId = async (req, res) => {
     }
 };
 
-
 const getApprovedProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
@@ -373,7 +365,6 @@ const getApprovedProductsByShopId = async (req, res) => {
     }
 };
 
-
 const getPendingProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
@@ -399,7 +390,6 @@ const getPendingProductsByShopId = async (req, res) => {
     }
 };
 
-
 const getRejectedProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
@@ -424,8 +414,6 @@ const getRejectedProductsByShopId = async (req, res) => {
         res.status(500).json({ error: "Lỗi hệ thống" });
     }
 };
-
-
 
 module.exports = {
     createProduct,
