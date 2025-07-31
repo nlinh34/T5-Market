@@ -2,7 +2,7 @@ const Product = require("../models/Product");
 const Shop = require("../models/Shop");
 const { httpStatusCodes } = require("../utils/constants");
 const { Role } = require("../constants/roleEnum");
-const mongoose = require("mongoose"); // Add this line
+const mongoose = require("mongoose"); 
 
 const createProduct = async(req, res) => {
     try {
@@ -31,7 +31,7 @@ const createProduct = async(req, res) => {
             });
         }
 
-        // 👉 Xác định seller chính là chủ shop
+        // Xác định seller chính là chủ shop
         const product = new Product({
             name,
             price,
@@ -59,7 +59,6 @@ const createProduct = async(req, res) => {
         });
     }
 };
-
 
 const updateProduct = async(req, res) => {
     try {
@@ -95,7 +94,7 @@ const updateProduct = async(req, res) => {
             }
         }
 
-        product.updatedAt = new Date(); // nếu bạn có trường này trong schema
+        product.updatedAt = new Date(); 
 
         // Nếu sửa => trạng thái trở lại pending để duyệt lại
         product.status = "pending";
@@ -147,7 +146,6 @@ const deleteProduct = async(req, res) => {
         res.status(500).json({ error: "Lỗi hệ thống khi xóa sản phẩm" });
     }
 };
-
 
 const approveProduct = async(req, res) => {
     try {
@@ -242,6 +240,7 @@ const getPendingProducts = async(req, res) => {
         res.status(500).json({ error: "Lỗi server khi lấy sản phẩm chờ duyệt" });
     }
 };
+
 
 
 const getApprovedProducts = async(req, res) => {
@@ -425,8 +424,6 @@ const getRejectedProductsByShopId = async(req, res) => {
         res.status(500).json({ error: "Lỗi hệ thống" });
     }
 };
-
-
 
 module.exports = {
     createProduct,

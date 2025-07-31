@@ -4,18 +4,13 @@ const mongoose = require("mongoose")
 
 // Thêm vào giỏ hàng
 exports.addToCart = async (req, res) => {
-  console.log("🟢 Controller chạy vào đây rồi");
   try {
     if (!req.user || !req.user.userId) {
       return res.status(401).json({ success: false, message: "Chưa đăng nhập hoặc token không hợp lệ" });
     }
 
-    console.log("🔑 req.user:", req.user);
-    console.log("📦 req.body:", req.body);
-
     let userId = req.user.userId;
 
-    // Nếu userId là chuỗi thì chuyển sang ObjectId
     if (typeof userId === "string") {
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ success: false, message: "ID user không hợp lệ" });
@@ -67,27 +62,44 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-
 exports.getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ user: req.user.userId }).populate("items.product", "name price images");
+    const cart = await Cart.findOne({ user: req.user.userId })
+      .populate("items.product", "name price images")
+      .populate("shop", "name");
+
     if (!cart) return res.json({ success: true, cart: { items: [], total: 0 } });
 
     const itemsWithSubtotal = cart.items.map(item => {
+      const product = item.product;
       const subtotal = item.product.price * item.quantity;
+      // Fallback nếu product.shop bị null
+      const safeProduct = {
+        ...product._doc,
+        shop: product.shop || { name: "Không xác định" }
+      };
+
       return {
-        product: item.product,
+        product: safeProduct,
         quantity: item.quantity,
         subtotal
       };
     });
-
     const total = itemsWithSubtotal.reduce((sum, item) => sum + item.subtotal, 0);
 
-    res.json({ success: true, cart: { items: itemsWithSubtotal, total } });
+    res.json({
+      success: true,
+      cart: {
+        items: itemsWithSubtotal,
+        total
+      }
+    });
   } catch (err) {
     console.error("❌ Lỗi khi lấy giỏ hàng:", err.message);
-    res.status(500).json({ success: false, message: "Lỗi khi lấy giỏ hàng" });
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy giỏ hàng"
+    });
   }
 };
 

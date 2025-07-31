@@ -70,8 +70,6 @@ a:hover {
     color: rgb(255, 255, 255);
 }
 
-
-
 .buton:hover {
     background-color: rgb(128, 0, 0);
     transform: translateY(-2px);
@@ -300,7 +298,6 @@ nav ul li a.active {
 .product-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-
     gap: 20px;
 }
 
@@ -329,11 +326,8 @@ nav ul li a.active {
 .product-card {
     background-color: #fff;
     border-radius: 18px;
-
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12), 0 1.5px 6px rgba(0, 0, 0, 0.08);
-
     border: 1.5px solid #f0f0f0;
-
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -392,7 +386,6 @@ nav ul li a.active {
 
 .product-info h3 {
     font-size: 1rem;
-
     color: #333;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -428,7 +421,6 @@ nav ul li a.active {
 .product-info .price {
     font-weight: bold;
     color: #e74c3c;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -549,11 +541,10 @@ nav ul li a.active {
 }
 
 .action-btn:hover {
-    /* background: #2e8b57; */
-    /* color: #fff; */
     background-color: #ffffff;
     transform: translateY(-2px);
 }
+
 .action-btn:hover .fa-eye {
     color: #02e2ff;
 }
@@ -628,7 +619,6 @@ nav ul li a.active {
     color: white;
     padding-top: 40px;
 }
-
 
 .footer-container {
     display: grid;
@@ -819,7 +809,6 @@ nav ul li a.active {
 }
 
 .ad-content h4 {
-
     color: #2c3e50;
     font-size: 1.2rem;
     font-weight: 600;
@@ -835,11 +824,8 @@ nav ul li a.active {
 .ad-price {
     font-weight: bold;
     color: #e74c3c;
-
     font-size: 1.2rem;
 }
-
-
 
 .sidebar .ad-banner {
     padding: 20px;
@@ -958,7 +944,6 @@ nav ul li a.active {
 }
 
 .action-btn:hover {
-    /* background: #ff8400; */
     color: #fff;
 }
 
@@ -974,7 +959,6 @@ nav ul li a.active {
     align-items: center;
     gap: 18px;
     background: #2e8b57;
-
     padding: 12px 0 10px 0;
     border-bottom-left-radius: 18px;
     border-bottom-right-radius: 18px;
@@ -1138,8 +1122,6 @@ nav ul li a.active {
     transform: translateY(10px);
 }
 
-
-
 .ad-slider-wrapper {
     overflow: hidden;
     position: relative;
@@ -1222,8 +1204,105 @@ nav ul li a.active {
     margin-left: 0;
 }
 
-
 .overlay .btn:hover {
     background-color: #e67700;
     transform: translateY(-2px);
+}
+
+.category-filter-list {
+    list-style: none;
+    padding: 0;
+}
+
+.category-filter-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.category-filter-list li:hover {
+    background: #e6f3ff;
+}
+
+.category-filter-list img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.category-filter-list label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.category-filter-list input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.category-filter-list span {
+    font-size: 1rem;
+    color: #333;
+}
+
+.ad-banner {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.ad-banner img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+/* CSS cho bộ lọc giá */
+.price-filter {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 5px;
+}
+
+.price-filter h5 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.price-filter input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.price-filter .price-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.price-filter button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.price-filter button:hover {
+    background: #0056b3;
 }

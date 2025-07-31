@@ -8,17 +8,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="./styles/header.css" />
   <link rel="stylesheet" href="./styles/menu1.css">
-
   <script src="./components/header/header.js" type="module"></script>
-
 </head>
 <style>
   body {
     padding-top: 30px;
-    /* Đẩy nội dung xuống dưới header */
   }
 </style>
-
 <body>
   <!-- Header -->
   <header-component></header-component>
@@ -46,28 +42,55 @@
         <ul class="category-filter-list"> 
           <!-- Checkbox danh mục sẽ được render ở đây bằng JS -->
         </ul>
+<!-- Bộ lọc giá -->
+        <div class="price-filter">
+          <h5>Khoảng giá (VND)</h5>
+          <div>
+            <label for="minPrice">Giá tối thiểu:</label>
+            <input type="range" id="minPrice" min="0" max="10000000" value="0" step="100000">
+            <span id="minPriceValue">0 VND</span>
+          </div>
+          <div>
+            <label for="maxPrice">Giá tối đa:</label>
+            <input type="range" id="maxPrice" min="0" max="10000000" value="10000000" step="100000">
+            <span id="maxPriceValue">10,000,000 VND</span>
+          </div>
+          <button id="applyPriceFilter">Áp dụng</button>
+        </div>
 
-        <div class="ad-banner">
-          <img src="./assests/images/laptop.jpg" alt="Khuyến mãi Laptop">
-          <h3>Giảm giá 50% Laptop Gaming</h3>
-          <p>Chỉ trong tuần này - Ưu đãi có hạn</p>
-          <a href="#" class="ad-link">Xem ngay</a>
+       <div style="position: relative; width: 100%; max-width: 600px; height: 300px; overflow: hidden; border-radius: 12px;">
+          <img src="./assests/images/laptop.jpg" alt="Khuyến mãi Laptop"
+              style="width: 100%; height: 100%; object-fit: cover;" />
+          <div style="
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              padding: 12px 16px;
+              background: rgba(0, 0, 0, 0.4);
+              backdrop-filter: blur(6px);
+              -webkit-backdrop-filter: blur(6px);
+              color: white;
+            ">
+            <p style="margin: 4px 0 0; font-size: 24px; font-weight: bold;">Giảm giá <span style="font-size: 28px;">50%</span> Laptop Gaming</p>
+            <p style="margin: 4px 0 0; font-size: 11px;">Chỉ trong tuần này - Ưu đãi có hạn</p>
+            <a href="#" style="
+                display: inline-block;
+                margin-top: 6px;
+                font-size: 11px;
+                background-color: #FFD700;
+                color: black;
+                padding: 4px 10px;
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: 600;
+              ">Xem ngay</a>
+          </div>
         </div>
       </aside>
 
-      <!-- Khu vực sản phẩm -->
       <div class="product-area">
         <h2 class="product-title">Danh mục sản phẩm</h2>
-
-        <!-- Quảng cáo ngang trên cùng -->
-        <div class="ad-banner">
-          <img src="./assests/images/khuyenmai.webp" alt="Ưu đãi khách hàng mới">
-          <h3>Ưu đãi đặc biệt cho khách hàng mới</h3>
-          <p>Giảm thêm 10% khi mua từ 2 sản phẩm trở lên</p>
-          <a href="#" class="ad-link">Mua ngay</a>
-        </div>
-
-
         <div class="product-grid"></div>
 
         <!-- Quảng cáo dạng lưới giữa sản phẩm -->
