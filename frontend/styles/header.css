@@ -1,4 +1,4 @@
-header{
+header {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -14,7 +14,7 @@ header{
   margin-left: 20px;
 }
 
-.logo-img{
+.logo-img {
   width: 50px;
 }
 
@@ -31,19 +31,19 @@ header{
   font-weight: 500;
 }
 
-.category:hover{
+.category:hover {
   color: #dddddd;
   border-radius: 5px;
 }
-
 
 .search {
   display: flex;
   align-items: center;
   margin: 0 20px;
+  position: relative; /* Thêm để làm tham chiếu cho popup */
 }
 
-.search input{
+.search input {
   outline: none;
   padding: 5px 10px;
   width: 350px;
@@ -52,7 +52,7 @@ header{
   height: 40px;
 }
 
-.search button{
+.search button {
   padding: 0 15px;
   border: #000;
   border-radius: 0 4px 4px 0;
@@ -60,14 +60,14 @@ header{
   cursor: pointer;
 }
 
-.search button:hover{
+.search button:hover {
   background: #262626;
   color: white;
   transition: ease-in;
   transition-duration: 0.2s;
 }
 
-.menu{
+.menu {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -75,37 +75,37 @@ header{
   gap: 50px;
 }
 
-.menu a{
+.menu a {
   text-decoration: none;
   color: white;
   font-size: 16px;
   font-weight: 500;
 }
 
-.menu a:hover{
+.menu a:hover {
   color: #dddddd;
 }
 
-.cart{
+.cart {
   display: flex;
   align-items: center;
 }
 
-.cart-icon{
+.cart-icon {
   color: white;
   font-size: large;
 }
 
-.cart-icon:hover{
+.cart-icon:hover {
   color: #dddddd;
 }
 
-.post-btn{
+.post-btn {
   display: flex;
-  align-items: center;   /* Căn giữa theo chiều dọc */
-  justify-content: center; /* Căn giữa theo chiều ngang */
+  align-items: center;
+  justify-content: center;
   padding: 7px 15px;
-  background-color: #00b894; /* Màu xanh giống hình */
+  background-color: #00b894;
   color: white;
   border: none;
   border-radius: 6px;
@@ -113,22 +113,22 @@ header{
   cursor: pointer;
 }
 
-.post-btn a{
+.post-btn a {
   color: white;
   text-decoration: none;
 }
 
-.post-btn:hover{
-  background-color: #00b893c2; 
+.post-btn:hover {
+  background-color: #00b893c2;
   transition: 0.1s;
 }
 
 .logout-btn {
   display: flex;
-  align-items: center;   /* Căn giữa theo chiều dọc */
-  justify-content: center; /* Căn giữa theo chiều ngang */
+  align-items: center;
+  justify-content: center;
   padding: 7px 15px;
-  background-color: #d70044; /* Màu xanh giống hình */
+  background-color: #d70044;
   color: white;
   border: none;
   border-radius: 6px;
@@ -181,10 +181,113 @@ header{
   background-color: #f0f0f0;
 }
 
-.account-menu a i{
+.account-menu a i {
   margin-right: 10px;
 }
 
 .hidden {
   display: none;
+}
+
+/* CSS cho Search Popup */
+.search-popup {
+  position: absolute;
+  top: calc(100% + 5px); /* Đặt ngay dưới ô tìm kiếm với khoảng cách 5px */
+  left: calc(50% - 30%); /* Căn giữa popup theo chiều ngang */
+  width: 100%; /* Chiều rộng bằng form tìm kiếm */
+  max-width: 400px; /* Giới hạn chiều rộng để khớp với input + button */
+  background: transparent; /* Không cần nền mờ vì không che toàn màn hình */
+  z-index: 2000;
+}
+
+.popup-content {
+  background: #fff;
+  border-radius: 6px;
+  max-height: 60vh; /* Giới hạn chiều cao để tránh tràn màn hình */
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: #282828; /* Màu nền giống header */
+  color: #fff;
+  border-radius: 6px 6px 0 0;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.close-popup {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.close-popup:hover {
+  color: #dddddd;
+}
+
+.popup-body {
+  padding: 10px 15px;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.search-result-content {
+  flex: 1;
+}
+
+.search-result-content h4 {
+  margin: 0 0 5px;
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.search-result-content .price {
+  color: #00b894;
+  font-weight: bold;
+  margin: 0 0 5px;
+  font-size: 0.9rem;
+}
+
+.search-result-content .view-details {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background: #007bff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.search-result-content .view-details:hover {
+  background: #0056b3;
 }

@@ -5,7 +5,48 @@ export const ProductAPI = {
   getAllProducts: async () => {
     return await apiCall({ endpoint: "/products/get-all-products" });
   },
+  getAllProducts: async () => {
+    return await apiCall({
+      endpoint: "/products/get-all-products",
+    });
+  },
 
+  getAllProductsByFilter: async ({ categoryIds, minPrice, maxPrice }) => {
+    try {
+      let endpoint = "/products/get-all-products";
+      const queryParams = [];
+
+      if (categoryIds && categoryIds.length > 0) {
+        queryParams.push(`category=${categoryIds.join(",")}`);
+      }
+      if (minPrice) {
+        queryParams.push(`minPrice=${minPrice}`);
+      }
+      if (maxPrice) {
+        queryParams.push(`maxPrice=${maxPrice}`);
+      }
+
+      if (queryParams.length > 0) {
+        endpoint += `?${queryParams.join("&")}`;
+      }
+
+      return await apiCall({
+        endpoint,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  searchProductsByName: async (name) => {
+    try {
+      return await apiCall({
+        endpoint: `/products/get-all-products?name=${encodeURIComponent(name)}`,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
   // Lấy sản phẩm chờ duyệt
   getPendingProducts: async () => {
     return await apiCall({ endpoint: "/products/get-pending-products" });
@@ -49,9 +90,10 @@ export const ProductAPI = {
     return await apiCall({
       endpoint: `/products/reject-product/${id}`,
       method: "PUT",
-      data: { 
+      data: {
         status: "rejected",
-        rejectionReason: reason },
+        rejectionReason: reason
+      },
     });
   },
 

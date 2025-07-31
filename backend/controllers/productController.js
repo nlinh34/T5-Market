@@ -202,7 +202,24 @@ const rejectProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find()
+        const { name, minPrice, maxPrice } = req.query;
+
+        const filter = {};
+
+        if (name) {
+            filter.name = { $regex: name, $options: "i" }; 
+        }
+        if (minPrice || maxPrice) {
+            filter.price = {};
+            if (minPrice) {
+                filter.price.$gte = Number(minPrice);
+            }
+            if (maxPrice) {
+                filter.price.$lte = Number(maxPrice);
+            }
+        }
+
+        const products = await Product.find(filter)
             .populate("shop", "name")
             .populate("category", "name")
             .populate("createdBy", "name");
@@ -213,9 +230,10 @@ const getAllProducts = async (req, res) => {
                 data: [],
             });
         }
+
         return res.status(200).json({
             success: true,
-            message: "Lấy danh sách tất cả sản phẩm thành công.",
+            message: "Lấy danh sách sản phẩm thành công.",
             data: products,
         });
     } catch (error) {
@@ -223,6 +241,7 @@ const getAllProducts = async (req, res) => {
         return res.status(500).json({ error: "Lỗi hệ thống." });
     }
 };
+
 
 const getPendingProducts = async (req, res) => {
     try {

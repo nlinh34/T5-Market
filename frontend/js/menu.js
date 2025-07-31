@@ -1,20 +1,31 @@
-// menu.js - ĐÃ SỬA HOÀN CHỈNH
 import { ProductAPI } from "../APIs/productAPI.js";
 import { CategoryAPI } from "../APIs/categoryAPI.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".product-grid");
-
   const mobileMenuBtn = document.getElementById("mobileMenuBtn");
   const navLinks = document.getElementById("navLinks");
   const slider = document.querySelector('.ad-slider');
   const slides = document.querySelectorAll('.ad-slide');
+  const minPriceInput = document.getElementById("minPrice");
+  const maxPriceInput = document.getElementById("maxPrice");
+  const minPriceValue = document.getElementById("minPriceValue");
+  const maxPriceValue = document.getElementById("maxPriceValue");
+  const applyPriceFilterBtn = document.getElementById("applyPriceFilter");
   let currentIndex = 0;
+
+  function formatPriceVND(price) {
+    return price.toLocaleString('vi-VN') + ' VND';
+  }
+
+  function updatePriceValues() {
+    minPriceValue.textContent = formatPriceVND(parseInt(minPriceInput.value));
+    maxPriceValue.textContent = formatPriceVND(parseInt(maxPriceInput.value));
+  }
 
   function nextSlide() {
     currentIndex++;
     slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-
     if (currentIndex === slides.length) {
       setTimeout(() => {
         slider.style.transition = 'none';
@@ -40,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (navLinks) navLinks.classList.remove("active");
     });
   });
+
   function validateImageUrl(url, fallbackUrl) {
     return new Promise((resolve) => {
       const img = new Image();
@@ -49,13 +61,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-
   const fallbackImg = "https://t4.ftcdn.net/jpg/05/82/98/21/360_F_582982149_kN0XAeccaysWXvcHr4s3bhitFSVU8rlP.jpg";
 
   function renderProducts(products) {
-    const container = document.querySelector('.product-grid');
     container.innerHTML = "";
-
     if (!products || products.length === 0) {
       container.innerHTML = "<p>Không có sản phẩm nào.</p>";
       return;
@@ -67,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
       container.insertAdjacentHTML("beforeend", productCardHTML);
 
       const imgCandidate = product.images && product.images.length > 0 ? product.images[0] : null;
-
       if (imgCandidate) {
         validateImageUrl(imgCandidate, fallbackImg).then(validUrl => {
           const imgEl = document.getElementById(imgElId);
@@ -96,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="card-content">
         <div class="price-wrapper">
-          <span class="current-price">$${product.price.toFixed(2)}</span>
+          <span class="current-price">${formatPriceVND(product.price)}</span>
         </div>
         <h4 class="product-name">${product.name}</h4>
         <div class="rating">
@@ -109,22 +117,19 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   }
 
-
-
   async function handleFilter() {
     const checked = document.querySelectorAll(".category-filter:checked");
     const selectedIds = [...checked].map(cb => cb.value);
+    const minPrice = parseInt(minPriceInput.value);
+    const maxPrice = parseInt(maxPriceInput.value);
 
     container.innerHTML = "Đang lọc sản phẩm...";
-
     try {
-      let url = "http://localhost:5000/products";
-      if (selectedIds.length > 0) {
-        url += `?category=${selectedIds.join(",")}`;
-      }
-
-      const res = await fetch(url);
-      const result = await res.json();
+      const result = await ProductAPI.getAllProductsByFilter({
+        categoryIds: selectedIds,
+        minPrice: minPrice,
+        maxPrice: maxPrice
+      });
       renderProducts(result.data);
     } catch (err) {
       container.innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
@@ -143,7 +148,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const html = categories.map(c => `
         <li>
           <label>
-            <input type="checkbox" class="category-filter" value="${c._id}" /> ${c.name}
+            <input type="checkbox" class="category-filter" value="${c._id}" />
+            <span>${c.name}</span>
           </label>
         </li>
       `).join("");
@@ -167,6 +173,16 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Lỗi lấy sản phẩm:", err);
     });
   }
+
+  // Cập nhật giá trị hiển thị khi thay đổi range
+  minPriceInput.addEventListener("input", updatePriceValues);
+  maxPriceInput.addEventListener("input", updatePriceValues);
+
+  // Xử lý sự kiện khi nhấn nút áp dụng
+  applyPriceFilterBtn.addEventListener("click", handleFilter);
+
+  // Khởi tạo giá trị hiển thị ban đầu
+  updatePriceValues();
 
   loadCategorySidebar();
   loadAllProducts();
