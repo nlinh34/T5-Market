@@ -4,6 +4,7 @@ header {
     justify-content: center;
     gap: 35px;
     background-color: #282828;
+    margin-bottom: 0;
 }
 
 .logo {

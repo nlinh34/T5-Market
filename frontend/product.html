@@ -6,53 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apple MusicBook Pro v4i - T5 Market</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="./styles/product-detail.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
     <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/product-detail.css">
     <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/footer.css" />
     <script src="./components/header/header.js" type="module"></script>
     <script src="./js/index.js" type="module"></script>
 </head>
-<style>
-    body {
-        padding-top: 110px;
-    }
-</style>
-
 <body>
     <!-- Header -->
     <header-component></header-component>
 
     <!-- Product Section -->
     <section class="product-detail" id="productDetail" style="display: none;">
+        <div class="breadcrumb"></div>
         <div class="container">
             <div class="product-content">
                 <div class="product-gallery">
-                    <div class="main-image">
-                        <img src="./assests/images/laptop.jpg" alt="Apple MusicBook Pro v4i" id="mainImage">
+                    <div class="image-slider-wrapper">
+                        <button id="prevImage" class="slider-arrow left"><i class="fas fa-chevron-left"></i></button>
+
+                        <img id="mainImage" src="./images/default.jpg" class="main-product-image" />
+
+                        <button id="nextImage" class="slider-arrow right"><i class="fas fa-chevron-right"></i></button>
+
+                        <div id="imageIndex" class="image-index-overlay">1/1</div>
                     </div>
-                    <!-- <div class="thumbnail-container">
-                        <div class="thumbnail active" data-image="../img/pd6.jpg">
-                            <img src="../images/product/pd6.jpg" alt="Thumbnail 1">
-                        </div>
-                        <div class="thumbnail" data-image="../img/pd6-2.jpg">
-                            <img src="../images/product/pd6-2.jpg" alt="Thumbnail 2">
-                        </div>
-                        <div class="thumbnail" data-image="../img/pd6-3.jpg">
-                            <img src="../images/product/pd6-3.jpg" alt="Thumbnail 3">
-                        </div>
-                        <div class="thumbnail" data-image="../img/pd6-4.jpg">
-                            <img src="../images/product/pd6-4.jpg" alt="Thumbnail 4">
-                        </div>
-                    </div> -->
+                    <!-- Thumbnail nằm dưới -->
+                    <div id="thumbnailContainer" class="thumbnail-container"></div>
                 </div>
 
                 <div class="product-info">
-                    <div class="breadcrumb">
-                        <a href="#">Điện tử</a> &gt; <a href="#">Laptop</a> &gt; <a href="#">Apple</a>
-                    </div>
-                    
                     <h1>2020 Apple MusicBook Pro v4i Apple MI Chrp (13-inch, 8GB RAM, 256GB SSD Storage)</h1>
+                    <div class="product-category"></div>
                     <div class="product-meta">
                         <span class="current-price">44.032.983 VND</span>
                         <span class="stock in-stock"><i class="fas fa-check-circle"></i> Còn hàng</span>
@@ -63,24 +50,28 @@
                     <div class="product-meta">
                         <span class="time"><i class="fas fa-clock"></i> Đăng 2 ngày trước</span>
                     </div>
-                    <button class="btn buy-now" style="width: 546px;">Thêm vào giỏ hàng</button>
+                    <button class="btn buy-now" style="width: 100%;">Thêm vào giỏ hàng</button>
             
                     <!-- Seller Info -->
-                    <div class="seller-info" style="margin-top:40px;">
+                    <div class="seller-info" style="margin-top:20px;">
                         <div class="seller-header">
                             <div class="seller-avatar">
                                 <img src="../images/avatar/default-avatar.jpg" alt="Nguyễn Văn A">
                             </div>
                             <div>
-                                <div class="seller-name">Nguyễn Văn A</div>
-                                <div class="seller-status verified">Đã xác thực</div>
+                                <div class="name-shop">
+                                    <div class="seller-name">Nguyễn Văn A</div>
+                                    <div class="seller-status verified">Đã xác thực</div>
+                                </div>
+                                <div class="seller-meta">
+                                    <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
+                                    <span><i class="fas fa-star"></i> 4.8 (56 đánh giá)</span>
+                                    <span><i class="fas fa-clock"></i> Tham gia 1 năm trước</span>
+                                </div>
                             </div>
+                            
                         </div>
-                        <div class="seller-meta">
-                            <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
-                            <span><i class="fas fa-star"></i> 4.8 (56 đánh giá)</span>
-                            <span><i class="fas fa-clock"></i> Tham gia 1 năm trước</span>
-                        </div>
+                        
                         <div class="seller-actions">
                             <button class="btn btn-primary" style="background: green">Xem cửa hàng</button>
                             <button class="btn-report">Báo cáo</button>
@@ -89,104 +80,13 @@
                 </div>
             </div>
 
-            <div class="product-tabs">
-                <ul class="tabs-header">
-                    <li class="active" data-tab="description">Mô tả sản phẩm</li>
-                </ul>
-                <div class="tabs-content">
-                    <div class="tab-pane active" id="description">
-                        <h3>Apple MusicBook Pro v4i với chip Apple M1</h3>
-                        <p>MacBook Pro 13 inch với chip M1 là một bước nhảy vọt về hiệu năng. CPU 8 lõi nhanh hơn tới
-                            2.8x, GPU 7 lõi nhanh hơn tới 5x và Neural Engine tiên tiến cho phép học máy nhanh hơn tới
-                            11x so với thế hệ trước. Với thời lượng pin lên đến 20 giờ, đây là chiếc MacBook Pro có thời
-                            lượng pin dài nhất từ trước đến nay.</p>
-                        <p>Màn hình Retina tuyệt đẹp với dải màu rộng P3 mang đến hình ảnh sống động và chi tiết ấn
-                            tượng. Thiết kế hoàn toàn bằng nhôm nguyên khối bền bỉ với trọng lượng chỉ 1.4 kg, dễ dàng
-                            mang theo mọi lúc mọi nơi.</p>
-                        <p>Bàn phím Magic Keyboard với cơ chế cắt kéo thoải mái cho trải nghiệm gõ phím tuyệt vời. Touch
-                            Bar và Touch ID tích hợp giúp thao tác nhanh chóng và bảo mật cao.</p>
-                    </div>
-                    <div class="tab-pane" id="specs">
-                        <table class="specs-table">
-                            <tr>
-                                <th>Thương hiệu</th>
-                                <td>Apple</td>
-                            </tr>
-                            <tr>
-                                <th>Model</th>
-                                <td>MacBook Pro 13" M1 2020</td>
-                            </tr>
-                            <tr>
-                                <th>Kích thước màn hình</th>
-                                <td>13.3 inch</td>
-                            </tr>
-                            <tr>
-                                <th>Độ phân giải</th>
-                                <td>2560 x 1600 (Retina)</td>
-                            </tr>
-                            <tr>
-                                <th>CPU</th>
-                                <td>Apple M1 Chip 8-core (4 hiệu năng + 4 tiết kiệm điện)</td>
-                            </tr>
-                            <tr>
-                                <th>GPU</th>
-                                <td>Apple 7-core GPU</td>
-                            </tr>
-                            <tr>
-                                <th>RAM</th>
-                                <td>8GB unified memory</td>
-                            </tr>
-                            <tr>
-                                <th>Ổ cứng</th>
-                                <td>256GB SSD</td>
-                            </tr>
-                            <tr>
-                                <th>Hệ điều hành</th>
-                                <td>macOS</td>
-                            </tr>
-                            <tr>
-                                <th>Cổng kết nối</th>
-                                <td>2 x Thunderbolt / USB 4, Jack 3.5mm</td>
-                            </tr>
-                            <tr>
-                                <th>Pin</th>
-                                <td>Lên đến 20 giờ</td>
-                            </tr>
-                            <tr>
-                                <th>Trọng lượng</th>
-                                <td>1.4 kg</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="tab-pane" id="reviews">
-                        <div class="review-form">
-                            <h3>Viết đánh giá</h3>
-                            <form>
-                                <div class="form-group">
-                                    <label for="review-name">Tên của bạn</label>
-                                    <input type="text" id="review-name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="review-email">Email</label>
-                                    <input type="email" id="review-email" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Đánh giá của bạn</label>
-                                    <div class="rating-input">
-                                        <i class="far fa-star" data-rating="1"></i>
-                                        <i class="far fa-star" data-rating="2"></i>
-                                        <i class="far fa-star" data-rating="3"></i>
-                                        <i class="far fa-star" data-rating="4"></i>
-                                        <i class="far fa-star" data-rating="5"></i>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="review-comment">Bình luận</label>
-                                    <textarea id="review-comment" rows="5" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
-                            </form>
-                        </div>
+            <div class="tabs-box">
+                <div class="product-tabs">
+                    <ul class="tabs-header">
+                        <li class="active" data-tab="description">Mô tả sản phẩm</li>
+                    </ul>
+                    <div class="tabs-content">
+                        <div class="tab-pane active" id="description"></div>
                     </div>
                 </div>
             </div>
@@ -195,152 +95,19 @@
 
     <!-- Seller Products -->
     <section class="seller-products container">
-        <div class="container">
-            <h2 class="section-title">Sản phẩm khác từ người bán</h2>
-            <p class="section-subtitle">Khám phá các sản phẩm khác từ Nguyễn Văn A</p>
-
+            <h3 class="section-title">Sản phẩm khác từ người bán</h3>
             <div class="products-grid"></div>
-        </div>
     </section>
 
     <!-- Related Products -->
     <section class="related-products container">
-        <div class="container">
             <h2 class="section-title">Sản phẩm tương tự</h2>
-            <p class="section-subtitle">Khám phá các sản phẩm cùng danh mục</p>
-
-            <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-badge">-15%</div>
-                    <div class="product-image">
-                        <img src="../images/product/pd1.jpg" alt="MacBook Air M1">
-                        <div class="product-actions">
-                            <button class="quick-view"><i class="fas fa-eye"></i></button>
-                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">Apple MacBook Air M1 2020 13"</h3>
-                        <div class="product-price">
-                            <span class="current-price">32.990.000 VND</span>
-                            <span class="old-price">38.990.000 VND</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-badge">Mới</div>
-                    <div class="product-image">
-                        <img src="../images/product/pd2.jpg" alt="MacBook Pro M2">
-                        <div class="product-actions">
-                            <button class="quick-view"><i class="fas fa-eye"></i></button>
-                            <button class="add-to-wishlist"><i class="far fa-heart"></i></button>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">Apple MacBook Pro M2 2022 13"</h3>
-                        <div class="product-price">
-                            <span class="current-price">49.990.000 VND</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary add-to-cart">Thêm vào giỏ</button>
-                                    </div>
-            </div>
-        </div>
+            <div class="products-grid"></div>
     </section>
 
-    <!-- Detailed Reviews Section -->
-    <section class="detailed-reviews">
-        <div class="container">
-            <h2 class="section-title">Đánh giá chi tiết</h2>
-            <div class="reviews-summary">
-                <div class="overall-rating">
-                    <div class="rating-score">4.8<span>/5</span></div>
-                    <div class="rating-stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <div class="total-reviews">56 đánh giá</div>
-                </div>
-                <div class="rating-bars">
-                    <div class="rating-bar">
-                        <span>5 sao</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 80%"></div>
-                        </div>
-                        <span>45</span>
-                    </div>
-                    <div class="rating-bar">
-                        <span>4 sao</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 15%"></div>
-                        </div>
-                        <span>8</span>
-                    </div>
-                    <div class="rating-bar">
-                        <span>3 sao</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 3%"></div>
-                        </div>
-                        <span>2</span>
-                    </div>
-                    <div class="rating-bar">
-                        <span>2 sao</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 1%"></div>
-                        </div>
-                        <span>1</span>
-                    </div>
-                    <div class="rating-bar">
-                        <span>1 sao</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 1%"></div>
-                        </div>
-                        <span>0</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="review-filters">
-                <button class="filter-btn active">Tất cả</button>
-                <button class="filter-btn">5 sao (45)</button>
-                <button class="filter-btn">4 sao (8)</button>
-                <button class="filter-btn">3 sao (2)</button>
-                <button class="filter-btn">2 sao (1)</button>
-                <button class="filter-btn">1 sao (0)</button>
-                <button class="filter-btn">Có hình ảnh (12)</button>
-            </div>
-
-            <div class="review-list" id="review-list"></div>
-
-            <div class="pagination">
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">3</button>
-                <button class="page-btn">4</button>
-                <button class="page-btn">5</button>
-                <button class="page-btn next">Tiếp <i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-    </section>
-
-    <section class="detailed-reviews">
-    <div class="container">
-        <h2 class="section-title">Đánh giá chi tiết</h2>
-        <div id="reviews-summary"></div>
-        <div id="review-list" class="review-list"></div>
-    </div>
-    </section>
-    <!-- FAQ Section -->
-    
 
     <!-- Footer -->
     <footer class="main-footer">
-        <div class="container">
             <div class="footer-container">
                 <div class="footer-column footer-about">
                     <h3>Về T5Market</h3>
@@ -386,7 +153,6 @@
                         <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
                     </ul>
                 </div>
-            </div>
         </div>
 
         <div class="footer-bottom">

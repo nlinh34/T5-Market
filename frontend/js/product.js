@@ -1,7 +1,7 @@
 import { ReviewAPI } from "../APIs/reviewAPI.js";
 import { ProductAPI } from "../APIs/productAPI.js";
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     // Function to get product ID from URL
     function getProductIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Function to fetch product data
     async function fetchProductData(productId) {
         try {
-            const response = await fetch(`http://localhost:5000/products/${productId}`);
+            const response = await fetch(`https://t5-market.onrender.com/products/${productId}`);
             if (!response.ok) throw new Error('Failed to fetch product data');
             const result = await response.json();
             if (!result.success) throw new Error('API returned unsuccessful response');
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Function to format price in VND
     function formatPrice(price) {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' VND';
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' đ';
     }
 
     // Function to calculate days ago
@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         `;
     }
 
+
     function updateProductUI(data) {
         if (!data) {
             displayNotFoundCard();
@@ -57,21 +58,71 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Update page title
         document.title = `${data.name} - T5 Market`;
+        const images = data.images || [];
+        let currentImageIndex = 0;
 
-        // Update product image
-        const mainImage = document.getElementById('mainImage');
-        mainImage.src = data.images[0] || './assests/images/default-product.jpg';
-        mainImage.alt = data.name;
+        const mainImage = document.getElementById("mainImage");
+        const imageIndexEl = document.getElementById("imageIndex");
+        const prevBtn = document.getElementById("prevImage");
+        const nextBtn = document.getElementById("nextImage");
+        const thumbnailContainer = document.getElementById("thumbnailContainer");
 
-        // Update breadcrumb
+        // Load ảnh đầu tiên
+        if (images.length > 0) {
+            mainImage.src = images[0];
+            imageIndexEl.textContent = `1/${images.length}`;
+        }
+
+        // Tạo thumbnails
+        thumbnailContainer.innerHTML = images.map((img, index) => `
+    <img src="${img}" data-index="${index}" class="product-thumbnail ${index === 0 ? 'active' : ''}" />
+`).join("");
+
+        // Click thumbnail
+        thumbnailContainer.querySelectorAll(".product-thumbnail").forEach(img => {
+            img.addEventListener("click", () => {
+                currentImageIndex = parseInt(img.getAttribute("data-index"));
+                updateMainImage();
+            });
+        });
+
+        // Nút trái/phải
+        prevBtn.addEventListener("click", () => {
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+                updateMainImage();
+            }
+        });
+
+        nextBtn.addEventListener("click", () => {
+            if (currentImageIndex < images.length - 1) {
+                currentImageIndex++;
+                updateMainImage();
+            }
+        });
+
+        function updateMainImage() {
+            mainImage.src = images[currentImageIndex];
+            imageIndexEl.textContent = `${currentImageIndex + 1}/${images.length}`;
+            thumbnailContainer.querySelectorAll(".product-thumbnail").forEach((img, idx) => {
+                img.classList.toggle("active", idx === currentImageIndex);
+            });
+        }
         const breadcrumb = document.querySelector('.breadcrumb');
-        breadcrumb.innerHTML = `
-            <a href="#">${data.category.name}</a> > <a href="#">${data.category.name}</a> > <a href="#">${data.name}</a>
-        `;
+        if (breadcrumb) {
+            breadcrumb.innerHTML = `
+        <a href="./index.html">Trang chủ</a> › 
+        <span>${data.category.name}</span> › 
+        <span>${data.name}</span>
+    `;
+        }
+
 
         // Update product name
         document.querySelector('h1').textContent = data.name;
-
+        document.querySelector('.product-category').innerHTML = `
+            <span class="pro-category">${data.category.name}</span>
+        `;
         // Update product meta (price, stock, location, time)
         const productMeta = document.querySelectorAll('.product-meta');
         productMeta[0].innerHTML = `
@@ -93,7 +144,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         const joinDate = data.shop.createdAt || data.shop.joinDate;
         const daysJoined = joinDate ? daysAgo(joinDate) : 'N/A';
         sellerInfo.querySelector('.seller-name').textContent = data.shop.name;
-        sellerInfo.querySelector('.seller-status').textContent = data.shop.status;
+        const statusEl = sellerInfo.querySelector('.seller-status');
+        if (data.shop.status === "approved") {
+            statusEl.innerHTML = `<i class="fas fa-check-circle" style="color: green; margin-right: 5px;"></i>`;
+        } else {
+            statusEl.textContent = "";
+        }
         sellerInfo.querySelector('.seller-meta').innerHTML = `
             <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
               <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0'} (${data.totalReviews} đánh giá)</span>
@@ -117,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const thumbnails = document.querySelectorAll('.thumbnail');
     const mainImage = document.getElementById('mainImage');
     thumbnails.forEach(thumb => {
-        thumb.addEventListener('click', function() {
+        thumb.addEventListener('click', function () {
             thumbnails.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             mainImage.src = this.getAttribute('data-image');
@@ -130,14 +186,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     const quantityInput = document.querySelector('.quantity-input');
 
     if (minusBtn && plusBtn && quantityInput) {
-        minusBtn.addEventListener('click', function() {
+        minusBtn.addEventListener('click', function () {
             let currentValue = parseInt(quantityInput.value);
             if (currentValue > 1) {
                 quantityInput.value = currentValue - 1;
             }
         });
 
-        plusBtn.addEventListener('click', function() {
+        plusBtn.addEventListener('click', function () {
             let currentValue = parseInt(quantityInput.value);
             quantityInput.value = currentValue + 1;
         });
@@ -148,7 +204,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const tabPanes = document.querySelectorAll('.tab-pane');
 
     tabHeaders.forEach((header, index) => {
-        header.addEventListener('click', function() {
+        header.addEventListener('click', function () {
             tabHeaders.forEach(h => h.classList.remove('active'));
             tabPanes.forEach(p => p.classList.remove('active'));
             this.classList.add('active');
@@ -160,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const stars = document.querySelectorAll('.rating-input i');
 
     stars.forEach(star => {
-        star.addEventListener('click', function() {
+        star.addEventListener('click', function () {
             const rating = parseInt(this.getAttribute('data-rating'));
             stars.forEach((s, i) => {
                 if (i < rating) {
@@ -233,6 +289,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             loadOtherProductsFromShop(productData.shop._id, productData._id);
         }
 
+        const sellerTitle = document.querySelector(".seller-products .section-title");
+        if (sellerTitle && productData?.shop?.name) {
+            sellerTitle.textContent = `Sản phẩm khác của ${productData.shop.name}`;
+        }
         if (productData && productData.category && productData.category._id) {
             loadSimilarProducts(productData.category._id, productData._id);
         }
@@ -279,7 +339,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         reviews.forEach((review) => {
             const date = new Date(review.createdAt).toLocaleDateString("vi-VN");
-            const userName = review.user ? .fullName || "Người dùng";
+            const userName = review.user?.fullName || "Người dùng"
             const ratingStars = renderStars(review.rating);
             const comment = review.comment || "";
 
@@ -376,9 +436,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         </div>
                     </div>
                     <div class="product-info">
-                        <h4 class="product-name">${product.name}</h4>
+                        <h3 class="product-name">${product.name}</h3>
                         <div class="price-wrapper">
-                            <span class="current-price">$${product.price.toFixed(2)}</span>
+                            <span class="current-price-card">${product.price.toLocaleString("vi-VN")} VNĐ</span>
                         </div>
                         <div class="rating">
                             ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}

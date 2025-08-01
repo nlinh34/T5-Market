@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const res = await fetch("http://localhost:5000/products/approved");
+    const res = await fetch("https://t5-market.onrender.com/products/approved");
     const result = await res.json();
     const allProducts = result.data;
 

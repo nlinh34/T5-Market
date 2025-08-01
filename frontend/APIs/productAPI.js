@@ -88,7 +88,7 @@ export const ProductAPI = {
   updateProduct: async (id, data) => {
     return await apiCall({
       endpoint: `/products/${id}`,
-      method: "PUT",
+      method: "PATCH",
       data,
     });
   },
@@ -103,19 +103,19 @@ export const ProductAPI = {
 
   // Lấy sản phẩm theo shop ID và trạng thái 
   getProductsByShopId: async (shopId) => {
-    return await apiCall({ endpoint: `/products/shop/${shopId}` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}` });
   },
 
   getApprovedProductsByShopId: async (shopId) => {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/approved` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/approved` });
   },
 
   getPendingProductsByShopId: async (shopId) => {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/pending` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/pending` });
   },
 
   getRejectedProductsByShopId: async (shopId) => {
-    return await apiCall({ endpoint: `/products/shop/${shopId}/rejected` });
+    return await apiCall({ endpoint: `/products/by-shop/${shopId}/rejected` });
   },
 
   getProductsByShop: async (shopId, status = 'all', searchTerm = '', sortBy = 'createdAt-desc') => {

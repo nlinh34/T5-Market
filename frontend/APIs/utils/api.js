@@ -38,8 +38,20 @@ export const apiCall = async ({
     console.log("Calling API: ", url);
     const response = await fetch(url, config);
 
-    const responseData = await response.json();
-
+    let responseData;
+    try {
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        const text = await response.text();
+        console.error("❌ Server trả về không phải JSON:\n", text);
+        throw new Error("Phản hồi không hợp lệ từ server.");
+      }
+    } catch (parseError) {
+      console.error("❌ Lỗi khi parse JSON từ server:", parseError);
+      throw new Error("Phản hồi từ server không phải JSON.");
+    }
     if (!response.ok) {
       if (expectedStatusCodes.includes(response.status)) {
         return responseData;
