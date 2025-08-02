@@ -186,100 +186,103 @@ document.addEventListener("DOMContentLoaded", () => {
   let customPolicyCount = 0;
   const MAX_CUSTOM_POLICIES = 4; // Limit to 4 custom policies
 
-  // New: Choose Package Modal Elements
-  // const choosePackageModal = document.getElementById("choosePackageModal");
-  // const choosePackageCloseBtn = document.querySelector(".choose-package-close");
-  // const packageRadios = document.querySelectorAll('input[name="package"]');
-  // const confirmPackageBtn = document.querySelector(".confirm-package-btn");
 
-  // New: Step 4 Edit buttons
   const editInfoBtn = document.querySelector("#step4 .btn-edit-info");
   const editPolicyBtn = document.querySelector("#step4 .btn-edit-policy");
 
-  // NEW: registerShopHandler moved outside the event listener
-  const registerShopHandler = async (avatarFile = null) => {
-      let logoUrl = null;
-      if (avatarFile) {
-          try {
-              logoUrl = await new Promise((resolve, reject) => {
-                  const reader = new FileReader();
-                  reader.onload = (e) => resolve(e.target.result);
-                  reader.onerror = (error) => reject(error);
-                  reader.readAsDataURL(avatarFile);
-              });
-          } catch (error) {
-              showNotification('Lỗi đọc ảnh đại diện: ' + error.message, 'error');
-              return false; // Indicate failure
-          }
-      } else if (avatarPreview.src && avatarPreview.src.startsWith("data:image")) {
-          // Use existing data URL if no new file is selected but preview has a data URL
-          logoUrl = avatarPreview.src;
-      }
+  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dipcjvi8x/image/upload";
+const CLOUDINARY_UPLOAD_PRESET = "t5market_assets";
 
-      const shopData = {
-          name: shopNameInput.value,
-          address: shopAddressInput.value,
-          phone: shopPhoneInput.value,
-          description: shopDescriptionInput.value,
-          // Policies are handled separately, not directly in this step unless it's a new submission
-          logoUrl: logoUrl, // Assign the resolved logoUrl
-      };
+const registerShopHandler = async (avatarFile = null) => {
+    let logoUrl = null;
 
-      let submissionSuccess = false;
-      try {
-          let response;
-          console.log(`[registerShopHandler] Current window.currentShopId: ${window.currentShopId}`);
-          if (window.currentShopId) {
-              // If shopId exists, it's an update of an existing shop's profile
-              console.log("[registerShopHandler] Calling ShopAPI.updateShopProfile (PUT /shop/profile)");
-              response = await ShopAPI.updateShopProfile(shopData);
-          } else {
-              // New registration or re-submission of rejected shop (policies must be sent here)
-              console.log("[registerShopHandler] Calling ShopAPI.requestUpgradeToSeller (POST /shop)");
-              shopData.policies = collectPolicyData();
-              response = await ShopAPI.requestUpgradeToSeller(shopData);
-          }
+    if (avatarFile) {
+        try {
+            const compressedBase64 = await new Promise((resolve, reject) => {
+                new Compressor(avatarFile, {
+                    quality: 0.6,
+                    maxWidth: 400,
+                    convertSize: 500000,
+                    success(result) {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = (err) => reject(err);
+                        reader.readAsDataURL(result);
+                    },
+                    error(err) {
+                        reject(err);
+                    }
+                });
+            });
 
-          if (response.success) {
-              // Store the shop ID upon successful registration or re-submission
-              if (response.data && response.data._id) {
-                  window.currentShopId = response.data._id;
-              }
-              showNotification('Cập nhật/Đăng ký cửa hàng thành công!', 'success');
-              submissionSuccess = true;
-          } else {
-              // If API returns an error, show it and DO NOT advance step
-              showNotification(response.error || 'Thao tác thất bại.', 'error');
-              submissionSuccess = false;
-          }
-      } catch (error) {
-          console.error("Error during shop submission:", error);
-          let errorMessageText = "Đã xảy ra lỗi không xác định. Vui lòng thử lại.";
-          let messageType = 'error';
+            // Upload lên Cloudinary
+            const formData = new FormData();
+            formData.append("file", compressedBase64);
+            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
-          try {
-              // error.message is the raw JSON string from the server
-              const parsedError = JSON.parse(error.message);
-              if (parsedError && parsedError.error) {
-                  errorMessageText = `Thao tác thất bại: ${parsedError.error}`;
-                  if (parsedError.error.includes("Bạn đã gửi yêu cầu hoặc đã có shop.")) {
-                      errorMessageText = "Bạn đã có yêu cầu đăng ký hoặc đã sở hữu một cửa hàng. Không cần đăng ký lại.";
-                      messageType = 'warning';
-                  }
-              }
-          } catch (e) {
-              // If parsing fails, it's not a JSON string. Use the raw message.
-              if (error.message) {
-                  errorMessageText = `Thao tác thất bại: ${error.message}`;
-              }
-          }
+            const uploadResponse = await fetch(CLOUDINARY_URL, {
+                method: "POST",
+                body: formData
+            });
 
-          showNotification(errorMessageText, messageType);
-          submissionSuccess = false;
-      }
+            const uploadData = await uploadResponse.json();
 
-      return submissionSuccess;
-  };
+            if (!uploadData.secure_url) throw new Error("Không upload được ảnh logo.");
+            logoUrl = uploadData.secure_url;
+        } catch (error) {
+            showNotification("❌ Upload ảnh logo thất bại: " + error.message, "error");
+            return false;
+        }
+    } else if (avatarPreview.src && !avatarPreview.src.startsWith("data:image")) {
+        logoUrl = avatarPreview.src;
+    }
+
+    const shopData = {
+        name: shopNameInput.value,
+        address: shopAddressInput.value,
+        phone: shopPhoneInput.value,
+        description: shopDescriptionInput.value,
+        logoUrl: logoUrl || "", // có thể là null nếu không upload mới
+    };
+
+    let submissionSuccess = false;
+    try {
+        let response;
+        if (window.currentShopId) {
+            response = await ShopAPI.updateShopProfile(shopData);
+        } else {
+            shopData.policies = collectPolicyData();
+            response = await ShopAPI.requestUpgradeToSeller(shopData);
+        }
+
+        if (response.success) {
+            if (response.data && response.data._id) {
+                window.currentShopId = response.data._id;
+            }
+            showNotification("✅ Cập nhật/Đăng ký cửa hàng thành công!", "success");
+            submissionSuccess = true;
+        } else {
+            showNotification(response.error || "❌ Thao tác thất bại.", "error");
+        }
+    } catch (error) {
+        console.error("Lỗi submit shop:", error);
+        let message = "❌ Lỗi không xác định.";
+        try {
+            const parsed = JSON.parse(error.message);
+            if (parsed?.error) {
+                message = `❌ ${parsed.error}`;
+            }
+        } catch (_) {
+            if (error.message) {
+                message = `❌ ${error.message}`;
+            }
+        }
+        showNotification(message, "error");
+    }
+
+    return submissionSuccess;
+};
+
 
   // Function to update form step and stepper UI
   const updateFormStepUI = () => {

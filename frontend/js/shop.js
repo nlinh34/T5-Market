@@ -73,7 +73,7 @@ function renderShopDetails(shop, shopRating) {
     const shopAvatarElement = document.getElementById('shopAvatar');
     if (shopAvatarElement) {
         if (shop.logoUrl) {
-            shopAvatarElement.innerHTML = `<img src="${shop.logoUrl}" alt="Shop Avatar">`;
+            shopAvatarElement.innerHTML = `<img loading="lazy" src="${shop.logoUrl}" alt="Shop Avatar">`;
         } else {
             shopAvatarElement.textContent = shop.name ? shop.name.substring(0, 2).toUpperCase() : 'NA'; // Fallback to initials
         }
@@ -296,7 +296,7 @@ function renderReviewList(reviews) {
 
         reviewItem.innerHTML = `
             <div class="reviewer-avatar">
-                <img src="${userAvatar}" alt="${review.user.fullName}">
+                <img  loading="lazy" src="${userAvatar}" alt="${review.user.fullName}">
             </div>
             <div class="review-content">
                 <div class="reviewer-name">${review.user.fullName}</div>
@@ -310,7 +310,7 @@ function renderReviewList(reviews) {
                 </div>
                 <div class="review-product">
                     <div class="review-product-image">
-                        <img src="${productImage}" alt="${productName}">
+                        <img loading="lazy" src="${productImage}" alt="${productName}">
                     </div>
                     <div class="review-product-details">
                         <div class="review-product-name">${productName}</div>
@@ -334,7 +334,7 @@ function renderShopProducts(products) {
         shopProductsGrid.innerHTML = products.map(product => `
             <a href="product.html?id=${product._id}" class="new-product-card">
                 <div class="card-top">
-                    <img src="${product.images?.[0] || './assests/images/default-product.jpg'}" alt="${product.name}" />
+                    <img loading="lazy" src="${product.images?.[0] || './assests/images/default-product.jpg'}" alt="${product.name}" />
                     <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
                         <i class="fa-regular fa-heart"></i>
                     </button>

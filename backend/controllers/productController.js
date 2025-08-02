@@ -231,9 +231,9 @@ const getAllProducts = async (req, res) => {
 const getPendingProducts = async (req, res) => {
     try {
         const products = await Product.find({ status: "pending" })
-            .populate("createdBy", "fullName email")
+            .populate("createdBy", "fullName")
             .populate("category", "name")
-            .populate("shop", "name logoUrl address status owner shopStatus createdAt");
+            .populate("shop", "name logoUrl address status shopStatus createdAt");
 
         res.status(200).json({
             success: true,
@@ -248,37 +248,30 @@ const getPendingProducts = async (req, res) => {
 
 
 const getApprovedProducts = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 15;
-        const skip = (page - 1) * limit;
+  const { cursor, limit = 15 } = req.query;
+  const query = { status: "approved" };
+  if (cursor) query._id = { $lt: cursor };
 
-        const [products, total] = await Promise.all([
-            Product.find({ status: "approved" })
-                .populate("createdBy", "fullName email")
-                .populate("category", "name")
-                .populate("shop", "name logoUrl address status owner shopStatus createdAt")
-                .skip(skip)
-                .limit(limit)
-                .lean(),
-            Product.countDocuments({ status: "approved" })
-        ]);
+  const products = await Product.find(query)
+    .select("name price images averageRating shop category")
+    .populate("shop", "name logoUrl")
+    .populate("category", "name")
+    .sort({ _id: -1 })
+    .limit(parseInt(limit))
+    .lean();
 
-        res.status(200).json({
-            success: true,
-            data: products,
-            pagination: {
-                total,
-                page,
-                totalPages: Math.ceil(total / limit),
-                limit
-            }
-        });
-    } catch (error) {
-        console.error("❌ Lỗi khi lấy sản phẩm đã duyệt:", error);
-        res.status(500).json({ error: "Lỗi server khi lấy sản phẩm đã duyệt" });
+  const total = await Product.estimatedDocumentCount({ status: "approved" }).catch(() => null);
+
+  return res.json({
+    success: true,
+    data: products,
+    pagination: {
+      nextCursor: products.length ? products[products.length - 1]._id : null,
+      total, limit: parseInt(limit)
     }
+  });
 };
+
 
 
 

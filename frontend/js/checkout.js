@@ -57,7 +57,7 @@ function renderOrderSummary(cartItems, orderItemsContainer, orderTotal, subtotal
       productRow.className = "checkout-order-item";
       productRow.innerHTML = `
         <div class="item-image">
-          <img src="${image}" alt="${item.product.name}" />
+          <img loading="lazy" src="${image}" alt="${item.product.name}" />
           <span class="quantity-badge">${quantity}</span>
         </div>
         <div class="item-info">

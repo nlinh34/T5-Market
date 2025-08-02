@@ -74,7 +74,7 @@ export class VoucherList {
                 <td>${voucher.label}</td>
                 <td>${voucher.name}</td>
                 <td class="product-image">
-                    <img src="${voucher.image_url}" alt="${voucher.name}" 
+                    <img loading="lazy" src="${voucher.image_url}" alt="${voucher.name}" 
                          onerror="this.src='../../../assets/images/default-voucher.png'">
                 </td>
                 <td>${voucher.code}</td>

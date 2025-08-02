@@ -558,7 +558,7 @@ function populateShopData(shop) {
     
     // Update Logo
     if (shopAvatarElement && shop.logoUrl) {
-        shopAvatarElement.innerHTML = `<img src="${shop.logoUrl}" alt="Shop Avatar">`;
+        shopAvatarElement.innerHTML = `<img loading="lazy" src="${shop.logoUrl}" alt="Shop Avatar">`;
     } else if (shopAvatarElement) {
         shopAvatarElement.textContent = shop.name ? shop.name.substring(0, 2).toUpperCase() : 'NA'; // Fallback to initials
     }
@@ -806,7 +806,7 @@ async function renderSellerProducts(status, searchTerm = '', sortBy = 'createdAt
                 productCard.dataset.productId = product._id;
                 
                     productCard.innerHTML = `
-                    <img src="${product.images[0] || './assests/images/default-product.png'}" alt="${product.name}" class="product-img" loading="lazy">
+                    <img loading="lazy" src="${product.images[0] || './assests/images/default-product.png'}" alt="${product.name}" class="product-img" loading="lazy">
                         <div class="product-info">
                                 <h4 class="product-name">${product.name}</h4>
                             <p class="product-price">${formatCurrency(product.price)}</p>
@@ -952,7 +952,7 @@ function renderReviewList(reviews) {
 
         reviewItem.innerHTML = `
             <div class="reviewer-avatar">
-                <img src="${userAvatar}" alt="${review.user.fullName}">
+                <img  loading="lazy" src="${userAvatar}" alt="${review.user.fullName}">
             </div>
             <div class="review-content">
                 <div class="reviewer-name">${review.user.fullName}</div>
@@ -966,7 +966,7 @@ function renderReviewList(reviews) {
                 </div>
                 <div class="review-product">
                     <div class="review-product-image">
-                        <img src="${productImage}" alt="${productName}">
+                        <img  loading="lazy" src="${productImage}" alt="${productName}">
                     </div>
                     <div class="review-product-details">
                         <div class="review-product-name">${productName}</div>

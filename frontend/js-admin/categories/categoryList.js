@@ -71,7 +71,7 @@ export class CategoryList {
             <tr>
                 <td>${category.name}</td>
                 <td class="product-image">
-                    <img src="${category.imageURL}" alt="${category.name}" 
+                    <img loading="lazy" src="${category.imageURL}" alt="${category.name}" 
                          onerror="this.src='../../../assets/images/default-product.png'">
                 </td>
                 <td>15</td>

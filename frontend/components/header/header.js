@@ -11,7 +11,7 @@ class Header extends HTMLElement {
     this.innerHTML = `
       <header>
         <div class="logo">
-          <img class="logo-img" src="./assests/images/logo.png" alt="">
+          <img  loading="lazy" class="logo-img" src="./assests/images/logo.png" alt="">
           <div class="logo-content">T5MARKET</div>
         </div>
         <div class="category">
@@ -41,7 +41,7 @@ class Header extends HTMLElement {
         <div class="account-dropdown">
           <button class="account-toggle">
             <div class="user-info" id="loggedInUserDisplay" style="display: none;">
-              <img src="" alt="Avatar" class="user-avatar" id="userAvatar">
+              <img loading="lazy" src="" alt="Avatar" class="user-avatar" id="userAvatar">
               <span class="username" id="usernameDisplay"></span>
             </div>
             <div class="logged-out-info" id="loggedOutUserDisplay">

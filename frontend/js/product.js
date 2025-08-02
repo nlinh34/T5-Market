@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Tạo thumbnails
         thumbnailContainer.innerHTML = images.map((img, index) => `
-    <img src="${img}" data-index="${index}" class="product-thumbnail ${index === 0 ? 'active' : ''}" />
+    <img loading="lazy" src="${img}" data-index="${index}" class="product-thumbnail ${index === 0 ? 'active' : ''}" />
 `).join("");
 
         // Click thumbnail
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 <div class="review-header">
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">
-                            <img src="/images/avatar/default-avatar.png" alt="${userName}">
+                            <img loading="lazy" src="/images/avatar/default-avatar.png" alt="${userName}">
                         </div>
                         <div class="reviewer-meta">
                             <span class="review-author">${userName}</span>
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             grid.innerHTML = otherProducts.map(product => `
                 <div class="new-product-card">
                     <div class="card-top">
-                        <img src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
+                        <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
                         <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
                         <i class="fa-regular fa-heart"></i>
                         </button>
@@ -477,7 +477,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             container.innerHTML = similarProducts.map(product => `
             <div class="new-product-card">
                 <div class="card-top">
-                    <img src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
+                    <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
                     <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
                         <i class="fa-regular fa-heart"></i>
                     </button>
