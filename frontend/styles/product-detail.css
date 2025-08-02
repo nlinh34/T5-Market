@@ -53,89 +53,96 @@ body {
 /* ===== PRODUCT GALLERY ===== */
 /* Ảnh chính */
 .image-slider-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
-  text-align: center;
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    text-align: center;
 }
 
 .main-product-image {
-  width: 100%;
-  aspect-ratio: 1 / 1; /* 👈 luôn là hình vuông */
-  object-fit: cover;   /* 👈 ảnh sẽ phủ kín ô vuông */
-  display: block;
-  border-radius: 20px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    /* 👈 luôn là hình vuông */
+    object-fit: cover;
+    /* 👈 ảnh sẽ phủ kín ô vuông */
+    display: block;
+    border-radius: 20px;
 }
 
 
 /* Nút chuyển ảnh trái/phải */
 .slider-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.5);
-  border: none;
-  width: 40px;         /* 👈 đảm bảo width */
-  height: 40px;        /* 👈 đảm bảo height */
-  padding: 0;          /* 👈 tránh làm lệch hình tròn */
-  color: #fff;
-  border-radius: 50%;  /* 👈 giúp bo tròn */
-  cursor: pointer;
-  display: flex;       /* 👈 căn giữa icon */
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    width: 40px;
+    /* 👈 đảm bảo width */
+    height: 40px;
+    /* 👈 đảm bảo height */
+    padding: 0;
+    /* 👈 tránh làm lệch hình tròn */
+    color: #fff;
+    border-radius: 50%;
+    /* 👈 giúp bo tròn */
+    cursor: pointer;
+    display: flex;
+    /* 👈 căn giữa icon */
+    align-items: center;
+    justify-content: center;
 }
 
 
 .slider-arrow.left {
-  left: 10px;
+    left: 10px;
 }
 
 .slider-arrow.right {
-  right: 10px;
+    right: 10px;
 }
 
 .slider-arrow i {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 /* Chỉ số ảnh */
 .image-index-overlay {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 5px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
 }
 
 /* Thumbnail nằm dưới */
 #thumbnailContainer {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 #thumbnailContainer img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
-  cursor: pointer;
-  opacity: 0.6;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
 }
 
 #thumbnailContainer img.active {
-  opacity: 1;
-  border-color: #007bff;
+    opacity: 1;
+    border-color: #007bff;
 }
 
 
@@ -219,6 +226,7 @@ body {
     flex-direction: row;
     gap: 6px;
 }
+
 .seller-header {
     display: flex;
     align-items: center;
@@ -892,6 +900,8 @@ body {
     margin-bottom: 0;
     color: #333;
     white-space: nowrap;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;

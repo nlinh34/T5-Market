@@ -40,9 +40,10 @@ export const ProductAPI = {
   },
 
   // Lấy sản phẩm đã duyệt
-  getApprovedProducts: async () => {
-    return await apiCall({ endpoint: "/products/get-approved-products" });
+  getApprovedProducts: async (page = 1, limit = 15) => {
+    return await apiCall({ endpoint: `/products/get-approved-products?page=${page}&limit=${limit}` });
   },
+
 
   // Lấy sản phẩm bị từ chối
   getRejectedProducts: async () => {
