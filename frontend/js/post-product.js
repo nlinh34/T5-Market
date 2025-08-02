@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const imgDiv = document.createElement("div");
                 imgDiv.classList.add("image-preview-item", "file-preview-item");
                 imgDiv.innerHTML = `
-          <img src="${e.target.result}" alt="Product Image" />
+          <img loading="lazy" src="${e.target.result}" alt="Product Image" />
           <button type="button" class="remove-image-btn" data-name="${file.name}" data-type="new">&times;</button>
         `;
                 imagePreviewContainer.appendChild(imgDiv);
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const imgDiv = document.createElement("div");
             imgDiv.classList.add("image-preview-item", "existing-image-item");
             imgDiv.innerHTML = `
-        <img src="${imageUrl}" alt="Product Image" />
+        <img loading="lazy" src="${imageUrl}" alt="Product Image" />
         <button type="button" class="remove-image-btn" data-src="${imageUrl}" data-type="existing">&times;</button>
       `;
             imagePreviewContainer.appendChild(imgDiv);

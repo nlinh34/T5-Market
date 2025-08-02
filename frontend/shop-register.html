@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="./styles/header.css">
     <link rel="stylesheet" href="./styles/shop-register.css">
     <link rel="stylesheet" href="./styles/footer.css">
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs"></script>
+
 </head>
 <body>
     <header-component></header-component>
@@ -56,9 +58,9 @@
                     <div class="introduction-content">
                         <div class="intro-images">
                             <div class="slider-wrapper">
-                                <img src="./assests/images/laptop.jpg" alt="Ảnh giới thiệu 1">
-                                <img src="./assests/images/banner.png" alt="Ảnh giới thiệu 2">
-                                <img src="./assests/images/laptop.jpg" alt="Ảnh giới thiệu 3">
+                                <img loading="lazy" src="./assests/images/laptop.jpg" alt="Ảnh giới thiệu 1">
+                                <img loading="lazy" src="./assests/images/banner.png" alt="Ảnh giới thiệu 2">
+                                <img loading="lazy" src="./assests/images/laptop.jpg" alt="Ảnh giới thiệu 3">
                             </div>
                             <button type="button" class="slider-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
                             <button type="button" class="slider-btn next-btn"><i class="fas fa-chevron-right"></i></button>
@@ -82,11 +84,11 @@
                             <h4><i class="fas fa-bolt"></i> Tính năng nổi bật</h4>
                             <div class="featured-features">
                                 <div class="feature-item">
-                                    <img src="./assests/images/manhinh.jpg" alt="Feature 1">
+                                    <img loading="lazy" src="./assests/images/manhinh.jpg" alt="Feature 1">
                                     <p>Giao diện chuyên nghiệp, cho phép đăng nhiều hình ảnh cửa hàng</p>
                                 </div>
                                 <div class="feature-item">
-                                    <img src="./assests/images/banner.png" alt="Feature 2">
+                                    <img loading="lazy" src="./assests/images/banner.png" alt="Feature 2">
                                     <p>Tên cửa hàng nổi bật trong trang tìm kiếm</p>
                                 </div>
                             </div>
@@ -115,7 +117,7 @@
                         <h3>Cửa hàng tiêu biểu</h3>
                         <div class="featured-shops-grid">
                             <div class="featured-shop-item">
-                                <img src="./assests/images/laptop.jpg" alt="Cửa hàng A">
+                                <img loading="lazy" src="./assests/images/laptop.jpg" alt="Cửa hàng A">
                                 <p>Tạo cửa hàng Điện tử</p>
                             </div>
                         </div>
@@ -141,7 +143,7 @@
                                 </div>
                                 <div class="shop-form-input-col">
                                     <div class="avatar-upload-overlay">
-                                        <img id="avatarPreview" src="./assests/images/default-product.png" alt="Ảnh đại diện cửa hàng">
+                                        <img loading="lazy" id="avatarPreview" src="./assests/images/default-product.png" alt="Ảnh đại diện cửa hàng">
                                         <label for="avatar" class="upload-btn"><i class="fas fa-camera"></i></label>
                                         <input type="file" id="avatar" accept="image/*" class="hidden-file-input">
                                     </div>
@@ -237,7 +239,7 @@
                             </div>
                             <div class="summary-item">
                                 <strong><i class="fas fa-image"></i> Ảnh đại diện:</strong>
-                                <img id="summaryAvatar" src="./assests/images/default-product.png" alt="Ảnh đại diện" class="preview-image-summary">
+                                <img loading="lazy" id="summaryAvatar" src="./assests/images/default-product.png" alt="Ảnh đại diện" class="preview-image-summary">
                             </div>
                         </div>
                         <div class="form-actions-shop-info">
@@ -321,19 +323,17 @@
           <div class="container">
             <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
             <div class="payment-methods">
-              <img
+              <img loading="lazy"
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
                 alt="Mastercard"
-              />
-              <img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
                 alt="Visa"
               />
-              <img
+              <img loading="lazy"
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
                 alt="Amex"
               />
-              <img
+              <img loading="lazy"
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
                 alt="Momo"
               />

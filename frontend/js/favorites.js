@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const html = products.map(p => `
       <div class="favorite-card">
-        <img src="${p.image_url}" alt="${p.name}" class="favorite-image" />
+        <img loading="lazy" src="${p.image_url}" alt="${p.name}" class="favorite-image" />
         <div class="favorite-info">
           <h3 class="favorite-name">${p.name}</h3>
           <div class="favorite-price">${formatPrice(p.price)}</div>

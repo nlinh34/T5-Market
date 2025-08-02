@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
               return `
                 <div class="product-row">
-                  <img src="${image}" alt="${item.name}" class="product-img" />
+                  <img loading="lazy" src="${image}" alt="${item.name}" class="product-img" />
                   <div class="product-info">
                     <div class="product-name">${item.name}</div>
                     <div class="product-qty">Số lượng: <strong>${item.quantity}</strong></div>

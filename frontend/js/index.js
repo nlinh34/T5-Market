@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const categoriesHTML = uniqueCategories.map(category => `
             <div class="category-card">
-                <img src="${category.imageURL}" alt="${category.name}" class="category-img"/>
+                <img loading="lazy" src="${category.imageURL}" alt="${category.name}" class="category-img"/>
                 <h3 class="category-name">${category.name}</h3>
             </div>
         `).join("");
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             return `
             <div class="product-card" data-id="${product._id}">
-                <img src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="product-img" loading="lazy"/>
+                <img loading="lazy" src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="product-img" loading="lazy"/>
                 <div class="product-info">
                     <h3 class="product-name">${productName}</h3>
                     <p class="product-price">${product.price.toLocaleString()} VND</p>
@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="featured-badge">
                     <i class="fas fa-star"></i> Nổi bật
                 </div>
-                <img src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="featured-product-img" loading="lazy"/>
+                <img loading="lazy" src="${getValidImageURL(product.images[0])}" alt="${product.name}" class="featured-product-img" loading="lazy"/>
                 <div class="featured-product-info">
                     <h3 class="featured-product-name">${featuredProductName}</h3>
                     <p class="featured-product-price">${product.price.toLocaleString()} VND</p>
@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const html = shops.slice(0, 3).map(shop => `
             <div class="seller-card">
-                <img src="${shop.logoUrl || './assests/images/default-product.png'}" alt="${shop.name}" class="seller-avatar" />
+                <img loading="lazy" src="${shop.logoUrl || './assests/images/default-product.png'}" alt="${shop.name}" class="seller-avatar" />
                 <div class="seller-details-group">
                     <div class="seller-name-row">
                         <h3 class="seller-name">${shop.name}</h3>

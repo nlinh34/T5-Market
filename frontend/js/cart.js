@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td><input type="checkbox" class="select-product" data-id="${_id}" data-price="${price}" data-qty="${quantity}" /></td>
                 <td>
                   <div class="cart-item-info">
-                    <img src="${image}" alt="${name}" class="cart-product-image" onerror="this.onerror=null;this.src='https://via.placeholder.com/100?text=Error+Loading+Image';" />
+                    <img loading="lazy" src="${image}" alt="${name}" class="cart-product-image" onerror="this.onerror=null;this.src='https://via.placeholder.com/100?text=Error+Loading+Image';" />
                     <span class="cart-product-name">${name}</span>
                   </div>
                 </td>

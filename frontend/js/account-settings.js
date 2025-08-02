@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dobInput.value = user.dateofbirth ? new Date(user.dateofbirth).toISOString().split("T")[0] : "";
         addressInput.value = user.address || "";
         if (user.avatarUrl) {
-          avatarPreview.innerHTML = `<img src="${user.avatarUrl}" alt="Avatar Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+          avatarPreview.innerHTML = `<img loading="lazy" src="${user.avatarUrl}" alt="Avatar Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
         } else {
           avatarPreview.innerHTML = `<div class="default-avatar">NA</div>`;
         }
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        avatarPreview.innerHTML = `<img src="${e.target.result}" alt="Avatar Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        avatarPreview.innerHTML = `<img loading="lazy" src="${e.target.result}" alt="Avatar Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
       };
       reader.readAsDataURL(file);
     } else {
