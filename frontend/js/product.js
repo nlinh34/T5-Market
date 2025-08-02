@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <div class="product-info">
                         <h3 class="product-name">${product.name}</h3>
                         <div class="price-wrapper">
-                            <span class="current-price-card">${product.price.toLocaleString("vi-VN")} VNĐ</span>
+                            <span class="current-price-card">${product.price.toLocaleString("vi-VN")} đ</span>
                         </div>
                         <div class="rating">
                             ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}

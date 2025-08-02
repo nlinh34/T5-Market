@@ -141,13 +141,13 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="card-content">
         <h4 class="product-name">${product.name}</h4>
         <div class="price-wrapper">
-          <span class="current-price">$${product.price.toFixed(2)}</span>
+          <span class="current-price">${product.price.toLocaleString("vi-VN")} đ</span>
         </div>
         <div class="rating">
           ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
           <span>${(product.rating || 4.33).toFixed(2)}</span>
         </div>
-        <div class="store">Cửa hàng: <strong>${product.shop?.name || 'Unknown'}</strong></div>
+        <div class="store"><i class="fa-solid fa-store"></i> ${product.shop?.name || 'Unknown'}</div>
       </div>
     </div>
   `;
@@ -198,17 +198,48 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Lỗi khi tải danh mục:", err);
     }
   }
-
-  function loadAllProducts() {
+  let currentPage = 1;
+  const limit = 15;
+  function loadAllProducts(page = 1) {
     container.innerHTML = "Đang tải sản phẩm...";
-    ProductAPI.getAllProducts().then(res => {
+    ProductAPI.getApprovedProducts(page, limit).then(res => {
       renderProducts(res.data);
-      attachAddToCartEvents(); // Gắn event cho nút thêm giỏ hàng sau khi render
+      renderPagination(res.pagination.totalPages, page);
+      attachAddToCartEvents();
     }).catch(err => {
       container.innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
       console.error("Lỗi lấy sản phẩm:", err);
     });
   }
+
+  function renderPagination(totalPages, currentPage) {
+  const paginationHTML = `
+    <div class="pagination">
+      <button id="prevPage" ${currentPage === 1 ? "disabled" : ""}>◀</button>
+      <span>Trang ${currentPage} / ${totalPages}</span>
+      <button id="nextPage" ${currentPage === totalPages ? "disabled" : ""}>▶</button>
+    </div>
+  `;
+
+  const paginationContainer = document.querySelector(".pagination-container");
+  if (!paginationContainer) return;
+
+  paginationContainer.innerHTML = paginationHTML;
+
+  document.getElementById("prevPage").addEventListener("click", () => {
+    if (currentPage > 1) {
+      loadAllProducts(currentPage - 1);
+    }
+  });
+
+  document.getElementById("nextPage").addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      loadAllProducts(currentPage + 1);
+    }
+  });
+}
+
+
 
   // Cập nhật giá trị hiển thị khi thay đổi range
   minPriceInput.addEventListener("input", updatePriceValues);
