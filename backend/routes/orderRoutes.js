@@ -9,11 +9,13 @@ const {
   cancelOrder,
   getProductPurchaseStats,
   getDeliveredOrderCountByShop,
+  getOrdersByShop
 } = require("../controllers/orderController");
 const { protect } = require("../middlewares/authMiddleware");
 
 router.post("/", protect, createOrder);
 router.get("/get-order", protect, getUserOrders);
+router.get("/shop/:shopId", protect, getOrdersByShop);
 router.put("/cancel-order/:id", protect, cancelOrder);
 router.get("/get-all-orders", protect, getAllOrders);
 router.get("/purchase", getProductPurchaseStats);

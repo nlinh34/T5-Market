@@ -140,7 +140,6 @@ class Header extends HTMLElement {
       if ([Role.SELLER, Role.STAFF].includes(user.role)) {
         html += `
         <a href="./post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
-        <a href="./product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
         <a href="./seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
         `
       }

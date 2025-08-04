@@ -1,7 +1,8 @@
 // backend/controllers/orderController.js
 const Order = require("../models/Order");
 const Product = require("../models/Product");
-const Cart = require("../models/Cart"); 
+const Cart = require("../models/Cart");
+const Shop = require("../models/Shop")
 
 const { Role } = require("../constants/roleEnum")
 
@@ -42,7 +43,7 @@ exports.createOrder = async (req, res) => {
     // Lấy dữ liệu sản phẩm từ DB
     const productIds = products.map(p => p.productId);
     const productDocs = await Product.find({ _id: { $in: productIds } })
-      .select("_id name price image_url shop");
+      .select("_id name price images shop");
 
     // Gom đơn theo shop
     const ordersByShop = {};
@@ -51,7 +52,7 @@ exports.createOrder = async (req, res) => {
       const prod = productDocs.find(p => p._id.equals(item.productId));
       if (!prod) throw new Error(`Không tìm thấy sản phẩm với ID: ${item.productId}`);
       if (!prod.shop) throw new Error(`Sản phẩm ${prod._id} không có thông tin shop.`);
-
+ console.log("🔥 Product raw from DB:", prod)
       const shopId = prod.shop.toString();
       if (!ordersByShop[shopId]) ordersByShop[shopId] = [];
 
@@ -60,7 +61,7 @@ exports.createOrder = async (req, res) => {
         name: prod.name,
         quantity: item.quantity,
         price: prod.price,
-        image: prod.image_url || ""
+        image: prod.images?.[0] || ""
       });
     }
 
@@ -274,5 +275,50 @@ exports.getDeliveredOrderCountByShop = async (req, res) => {
   } catch (error) {
     console.error("Delivered order count error:", error);
     res.status(500).json({ success: false, error: "Lỗi khi thống kê đơn hàng đã giao" });
+  }
+};
+
+// Lấy danh sách đơn theo shopId (dành cho seller hoặc nhân viên shop)
+exports.getOrdersByShop = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const userRole = req.user.role;
+    // Lấy shopId từ params
+    const { shopId } = req.params;
+
+    // Chỉ seller hoặc staff mới được truy cập
+    if (![Role.SELLER, Role.STAFF].includes(userRole)) {
+      return res.status(403).json({ success: false, error: "Bạn không có quyền truy cập." });
+    }
+
+    // Kiểm tra xem user có thuộc shop này không (chủ shop hoặc nhân viên)
+    const shop = await Shop.findOne({
+      _id: shopId,
+      $or: [
+        { owner: userId },
+        { "staff.user": userId }
+      ]
+    });
+
+    if (!shop) {
+      return res.status(403).json({ success: false, error: "Bạn không có quyền truy cập đơn hàng của shop này." });
+    }
+
+    // Áp dụng lọc theo trạng thái nếu có query param
+    const filterStatus = req.query.status;
+    const filter = { shop: shopId };
+    if (filterStatus) {
+      filter.status = filterStatus;
+    }
+
+    const orders = await Order.find(filter)
+      .sort({ createdAt: -1 })
+      .populate("user", "fullName email") // thông tin người mua
+      .lean();
+
+    res.status(200).json({ success: true, data: orders });
+  } catch (error) {
+    console.error("❌ Lỗi khi lấy đơn hàng theo shop:", error);
+    res.status(500).json({ success: false, error: "Lỗi server khi lấy đơn hàng của shop." });
   }
 };

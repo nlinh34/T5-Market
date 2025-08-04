@@ -1,18 +1,24 @@
-document.addEventListener("DOMContentLoaded", () => {
+import OrderAPI from "../APIs/orderAPI.js";
+import { ShopAPI } from "../APIs/shopAPI.js"
+
+document.addEventListener("DOMContentLoaded", async () => {
   const tabButtons = document.querySelectorAll(".sidebar-btn");
   const tabContents = document.querySelectorAll(".tab-content");
 
-  let orders = JSON.parse(localStorage.getItem("userOrders")) || [];
+  let orders = [];
   let currentAllPage = 1;
   const itemsPerPage = 6;
   let searchCode = "";
   let searchName = "";
   let debounceTimer;
 
-  tabButtons.forEach(btn => {
+  await loadOrders();
+  renderAllTabs();
+
+  tabButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      tabButtons.forEach(b => b.classList.remove("active"));
-      tabContents.forEach(c => c.classList.remove("active"));
+      tabButtons.forEach((b) => b.classList.remove("active"));
+      tabContents.forEach((c) => c.classList.remove("active"));
       btn.classList.add("active");
       const selectedTab = btn.dataset.tab;
       document.getElementById(`tab-${selectedTab}`).classList.add("active");
@@ -20,43 +26,105 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  async function loadOrders() {
+    let shopId = localStorage.getItem("shopId");
+
+    if (!shopId) {
+      try {
+        const res = await ShopAPI.getMyShop();
+        if (res.success && res.data?._id) {
+          shopId = res.data._id;
+          localStorage.setItem("shopId", shopId);
+          console.log("✅ Đã lưu shopId:", shopId);
+        } else {
+          alert("❌ Không tìm thấy thông tin shop. Vui lòng đăng nhập lại.");
+          return;
+        }
+      } catch (error) {
+        console.error("❌ Lỗi khi lấy shopId:", error);
+        alert("Lỗi khi lấy thông tin shop. Vui lòng thử lại.");
+        return;
+      }
+    }
+
+    const res = await OrderAPI.getOrdersByShop(shopId);
+    if (res.success) {
+      orders = res.data;
+    } else {
+      alert(res.error || "Không thể tải danh sách đơn hàng");
+    }
+  }
+
+  function renderAllTabs() {
+    const tabs = ["pending", "confirmed", "shipped", "delivered", "cancelled"];
+    tabs.forEach((tab) => {
+      const tabDiv = document.getElementById(`tab-${tab}`);
+      if (tabDiv) {
+        tabDiv.innerHTML = renderTable(tab);
+      }
+    });
+    renderAllTabWithPagination();
+  }
+
+  function renderAllTabWithPagination() {
+    const tabAll = document.getElementById("tab-all");
+    tabAll.innerHTML = renderTable("all", currentAllPage);
+    attachEvents();
+
+    const codeInput = document.getElementById("search-code");
+    const nameInput = document.getElementById("search-name");
+
+    if (codeInput && nameInput) {
+      codeInput.value = searchCode;
+      nameInput.value = searchName;
+
+      codeInput.addEventListener("input", handleSearchInput);
+      nameInput.addEventListener("input", handleSearchInput);
+    }
+
+    document.querySelectorAll(".page-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentAllPage = parseInt(btn.dataset.page);
+        renderAllTabWithPagination();
+      });
+    });
+
+    function handleSearchInput() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        searchCode = codeInput.value.trim();
+        searchName = nameInput.value.trim();
+        currentAllPage = 1;
+        renderAllTabWithPagination();
+      }, 400);
+    }
+  }
+
   function renderTable(type, page = 1) {
     let html = "";
 
     if (type === "all") {
       html += `
-      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+      <div style="display:flex; gap:10px; margin-bottom:10px;">
         <input type="text" id="search-code" placeholder="Tìm mã đơn...">
         <input type="text" id="search-name" placeholder="Tìm tên khách hàng...">
       </div>`;
     }
 
-    html += `<table class="order-table">
-      <thead><tr>`;
+    html += `<table class="order-table"><thead><tr>
+      <th>Mã đơn</th><th>Thời gian</th><th>Tên KH</th><th>Thanh toán</th><th>Trạng thái</th><th>Thao tác</th>
+    </tr></thead><tbody>`;
 
-    if (type === "cancelled") {
-      html += `<th>Mã đơn</th><th>Thời gian</th><th>Tên KH</th><th>Thanh toán</th><th>Lý do</th><th>Trạng thái</th>`;
-    } else {
-      html += `<th>Mã đơn</th><th>Thời gian</th><th>Tên KH</th><th>Thanh toán</th><th>Trạng thái</th><th>Thao tác</th>`;
-    }
+    let filtered = orders
+      .map((o, i) => ({ ...o, _index: i }))
+      .filter((order) => {
+        const status = order.status;
+        const matchTab = type === "all" || type === status;
 
-    html += `</tr></thead><tbody>`;
-
-    let filtered = orders.map((o, i) => ({ ...o, _index: i }))
-      .filter(order => {
-        const status = order.status || "pending";
-        const isMatchTab =
-          type === "all"
-          || (type === "pending" && status === "pending")
-          || (type === "packing" && status === "packing")
-          || (type === "shipping" && status === "shipping")
-          || (type === "delivered" && status === "delivered")
-          || (type === "cancelled" && status === "cancelled");
-
-        if (!isMatchTab) return false;
+        if (!matchTab) return false;
 
         if (type === "all") {
-          const code = (order.code || order._index + 1).toString().toLowerCase();
+          const code = (order.orderCode || "").toLowerCase();
           const name = (order.shippingInfo?.fullName || "").toLowerCase();
           return code.includes(searchCode.toLowerCase()) && name.includes(searchName.toLowerCase());
         }
@@ -71,65 +139,31 @@ document.addEventListener("DOMContentLoaded", () => {
     if (paginated.length === 0) {
       html += `<tr><td colspan="6">Không có đơn hàng</td></tr>`;
     } else {
-      paginated.forEach(order => {
-        const realIndex = order._index;
-        const status = order.status || "pending";
-        const date = new Date(order.createdAt).toLocaleString();
-        const fullName = order?.shippingInfo?.fullName || "";
-        const method = order.paymentMethod || "";
-        const statusLabel = `<span class='status-label status-${status}'>${getStatusLabel(status)}</span>`;
+      paginated.forEach((order) => {
+        const statusLabel = `<span class="status-label status-${order.status}">${getStatusLabel(order.status)}</span>`;
+        const updateBtn = renderStatusUpdateButton(order, type);
+        const actionBtn = `<button class="action-btn action-detail" data-index="${order._index}"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
 
-        const detailButton = `<button class='action-btn action-detail' data-index='${realIndex}'>Chi tiết đơn</button>`;
-
-        let actions = "";
-        if (type === "pending" && status === "pending") {
-          actions = `<button class='action-btn action-confirm' data-action='toPacking' data-index='${realIndex}'>Xác nhận</button>
-                     <button class='action-btn action-cancel' data-action='cancel' data-index='${realIndex}'>Huỷ</button>`;
-        } else if (type === "packing" && status === "packing") {
-          actions = `<button class='action-btn action-confirm' data-action='toShipping' data-index='${realIndex}'>Xác nhận giao</button>`;
-        } else if (type === "shipping" && status === "shipping") {
-          actions = `<button class='action-btn action-confirm' data-action='toDelivered' data-index='${realIndex}'>Xác nhận đã giao</button>`;
-        }
-
-        if (type === "cancelled") {
-          html += `<tr>
-            <td>#${order.code || realIndex + 1}</td>
-            <td>${date}</td>
-            <td>${fullName}</td>
-            <td>${method}</td>
-            <td>${order.cancelReason ? order.cancelReason : "—"}</td>
-            <td>${statusLabel}</td>
-          </tr>`;
-        } else {
-          html += `<tr>
-            <td>#${order.code || realIndex + 1}</td>
-            <td>${date}</td>
-            <td>${fullName}</td>
-            <td>${method}</td>
-            <td>${statusLabel}</td>`;
-          if (type === "all") {
-            html += `<td>${detailButton}</td>`;
-          } else {
-            html += `<td>${actions}</td>`;
-          }
-          html += `</tr>`;
-        }
+        html += `<tr>
+          <td>${order.orderCode}</td>
+          <td>${new Date(order.createdAt).toLocaleString()}</td>
+          <td>${order.shippingInfo?.fullName || ""}</td>
+          <td>${order.paymentMethod || ""}</td>
+          <td>${statusLabel}</td>
+          <td>${updateBtn}${actionBtn}</td>
+        </tr>`;
       });
     }
 
-    html += `</tbody></table>`;
+    html += "</tbody></table>";
 
     if (type === "all") {
       const totalPages = Math.ceil(filtered.length / itemsPerPage);
       if (totalPages > 1) {
         html += `<div class="pagination">`;
-        if (page > 1) {
-          html += `<button class="page-btn" data-page="${page - 1}">←</button>`;
-        }
+        if (page > 1) html += `<button class="page-btn" data-page="${page - 1}">←</button>`;
         html += `<span>Trang ${page} / ${totalPages}</span>`;
-        if (page < totalPages) {
-          html += `<button class="page-btn" data-page="${page + 1}">→</button>`;
-        }
+        if (page < totalPages) html += `<button class="page-btn" data-page="${page + 1}">→</button>`;
         html += `</div>`;
       }
     }
@@ -137,152 +171,110 @@ document.addEventListener("DOMContentLoaded", () => {
     return html;
   }
 
+  // ✅ ĐÃ SỬA để chỉ hiện nút cập nhật nếu đúng tab
+  function renderStatusUpdateButton(order, tabType) {
+    const nextStatus = {
+      pending: "confirmed",
+      confirmed: "shipped",
+      shipped: "delivered",
+    };
+
+    const next = nextStatus[order.status];
+    if (!next || tabType !== order.status) return "";
+
+    return `<button class="action-btn action-update" data-id="${order._id}" data-status="${next}">
+      → ${getStatusLabel(next)}
+    </button>`;
+  }
+
   function getStatusLabel(status) {
     const map = {
-      pending: "Chờ duyệt",
-      packing: "Đang chuẩn bị",
-      shipping: "Đang giao",
-      delivered: "Đã giao",
-      cancelled: "Đã hủy"
+      pending: "Chờ xác nhận",
+      confirmed: "Đang chuẩn bị",
+      shipped: "Đang giao hàng",
+      delivered: "Đã giao hàng",
+      cancelled: "Đã hủy đơn",
     };
-    return map[status] || "Chưa rõ";
+    return map[status] || status;
   }
 
-  function renderAllTabs() {
-    const tabs = ["pending", "packing", "shipping", "delivered", "cancelled"];
-    tabs.forEach(tab => {
-      const tabDiv = document.getElementById(`tab-${tab}`);
-      tabDiv.innerHTML = renderTable(tab);
-    });
-    renderAllTabWithPagination();
-  }
-
-  function renderAllTabWithPagination() {
-    const tabAll = document.getElementById("tab-all");
-    tabAll.innerHTML = renderTable("all", currentAllPage);
-    attachEventListeners();
-
-    const codeInput = document.getElementById("search-code");
-    const nameInput = document.getElementById("search-name");
-
-    if (codeInput && nameInput) {
-      codeInput.value = searchCode;
-      nameInput.value = searchName;
-
-      codeInput.addEventListener("input", handleSearchInput);
-      nameInput.addEventListener("input", handleSearchInput);
-    }
-
-    function handleSearchInput() {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        searchCode = codeInput.value.trim();
-        searchName = nameInput.value.trim();
-        currentAllPage = 1;
-        renderAllTabWithPagination();
-      }, 400);
-    }
-
-    document.querySelectorAll(".page-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        currentAllPage = parseInt(btn.dataset.page);
-        renderAllTabWithPagination();
-      });
-    });
-  }
-
-  function attachEventListeners() {
-    document.querySelectorAll("[data-action]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const action = btn.dataset.action;
-        const index = parseInt(btn.dataset.index);
-
-        switch (action) {
-          case "toPacking":
-            orders[index].status = "packing";
-            break;
-          case "toShipping":
-            orders[index].status = "shipping";
-            break;
-          case "toDelivered":
-            orders[index].status = "delivered";
-            break;
-          case "cancel":
-            const reason = prompt("Lý do hủy đơn hàng:");
-            if (!reason) return;
-            orders[index].status = "cancelled";
-            orders[index].cancelReason = reason;
-            break;
-        }
-
-        localStorage.setItem("userOrders", JSON.stringify(orders));
-        renderAllTabs();
-      });
-    });
-
-    document.querySelectorAll(".action-detail").forEach(btn => {
+  function attachEvents() {
+    document.querySelectorAll(".action-detail").forEach((btn) => {
       btn.addEventListener("click", () => {
         const index = parseInt(btn.dataset.index);
-        const order = orders[index];
-
-        let productsHtml = "";
-        if (order.order?.items?.length) {
-          productsHtml = order.order.items.map(item => {
-            const image = item.image_url?.startsWith("http")
-              ? item.image_url
-              : item.image_url
-              ? `https://t5-market.onrender.com/uploads/${item.image_url}`
-              : "https://via.placeholder.com/80x80?text=No+Image";
-
-            return `
-              <div class="product-row">
-                <img loading="lazy" src="${image}" alt="${item.name}" class="product-img" />
-                <div class="product-info">
-                  <div class="product-name">${item.name}</div>
-                  <div class="product-qty">Số lượng: <strong>${item.quantity}</strong></div>
-                  <div class="product-price">${item.price.toLocaleString()}đ</div>
-                </div>
-              </div>
-            `;
-          }).join("");
-        }
-
-        const sub = order.order?.subTotal || 0;
-        const discount = order.order?.discount || 0;
-        const total = order.order?.totalAmount || sub;
-
-        const modalContent = `
-          <h3><i class="fas fa-receipt"></i> Chi tiết đơn hàng</h3>
-          <hr/>
-          <p><strong>Tên KH:</strong> ${order.shippingInfo?.fullName || ""}</p>
-          <p><strong>SĐT:</strong> ${order.shippingInfo?.phoneNumber || ""}</p>
-          <p><strong>Địa chỉ:</strong> ${order.shippingInfo?.fullAddress || ""}</p>
-          <p><strong>Ghi chú:</strong> ${order.shippingInfo?.note || ""}</p>
-          <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod || ""}</p>
-          <hr/>
-          <h4><i class="fas fa-box-open"></i> Thông tin đơn hàng</h4>
-          <div class="product-list">${productsHtml}</div>
-          <hr/>
-          <div class="summary-row"><span>Tạm tính:</span><strong>${sub.toLocaleString()}đ</strong></div>
-          <div class="summary-row"><span>Đã giảm:</span><strong>${discount.toLocaleString()}đ</strong></div>
-          <div class="summary-row total"><span>Tổng tiền:</span><strong>${total.toLocaleString()}đ</strong></div>
-        `;
-
-        document.getElementById("order-detail-content").innerHTML = modalContent;
-        document.getElementById("order-detail-modal").style.display = "flex";
+        showOrderModal(orders[index]);
       });
     });
 
-    document.querySelector(".modal-close").addEventListener("click", () => {
-      document.getElementById("order-detail-modal").style.display = "none";
+    document.querySelectorAll(".action-update").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const orderId = btn.dataset.id;
+        const status = btn.dataset.status;
+        const res = await OrderAPI.updateOrderStatus(orderId, status);
+        if (res.success) {
+          await loadOrders();
+          renderAllTabs();
+        } else {
+          alert("Cập nhật trạng thái thất bại");
+        }
+      });
+    });
+  }
+
+  function showOrderModal(order) {
+    const items = order.products || [];
+
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const total = order.totalAmount || subtotal;
+    const discount = subtotal - total;
+
+    // In thử từng item để kiểm tra ảnh
+    items.forEach((item, index) => {
+      console.log(`🖼 Sản phẩm ${index + 1}:`, item.name, item.image);
     });
 
-    document.getElementById("order-detail-modal").addEventListener("click", e => {
+    const content = `
+    <h3><i class="fas fa-clipboard-list"></i> Chi tiết đơn hàng</h3>
+    <p><strong>Tên KH:</strong> ${order.shippingInfo?.fullName || "—"}</p>
+    <p><strong>SĐT:</strong> ${order.shippingInfo?.phone || "—"}</p>
+    <p><strong>Địa chỉ:</strong> ${order.shippingInfo?.address || "—"}</p>
+    <p><strong>Ghi chú:</strong> <em>${order.shippingInfo?.note || "Không có ghi chú cho đơn hàng này."}</em> </p>
+    <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod || "cod"}</p>
+    <p><i class="fas fa-box"></i> <strong>Sản phẩm đã đặt</strong></p>
+    <hr/>
+   ${items.map(item => `
+  <div style="display: flex; align-items: center; margin-bottom: 12px; gap: 10px;">
+    <img src="${item.image}" alt="${item.name}" 
+      style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
+    <div>
+      <strong>${item.name}</strong><br />
+      x${item.quantity} – ${item.price.toLocaleString()}đ
+    </div>
+  </div>
+`).join("")}
+
+    <hr/>
+    <div style="border-top: 1px dashed #ccc; padding-top: 10px;">
+      <p><strong>Tạm tính:</strong> ${subtotal.toLocaleString()}đ</p>
+  <p><strong>Đã giảm:</strong> ${discount > 0 ? discount.toLocaleString() + "đ" : "0đ"}</p>
+      <p><strong style="color:red;">Tổng tiền:</strong> <strong style="color:red;">${order.totalAmount?.toLocaleString() || "0"}đ</strong></p>
+    </div>
+  `;
+
+    const modal = document.getElementById("order-detail-modal");
+    modal.querySelector("#order-detail-content").innerHTML = content;
+    modal.style.display = "flex";
+
+    modal.querySelector(".modal-close").addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    modal.addEventListener("click", (e) => {
       if (e.target.id === "order-detail-modal") {
-        e.target.style.display = "none";
+        modal.style.display = "none";
       }
     });
   }
 
-  renderAllTabs();
+
 });

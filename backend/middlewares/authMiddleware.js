@@ -29,6 +29,7 @@ const protect = async (req, res, next) => {
       email: user.email,
       phone: user.phone,
       role: user.role,
+      shop: user.shop || null, 
     };
     next();
   } catch (error) {
