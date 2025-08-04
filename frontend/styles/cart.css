@@ -1,11 +1,11 @@
 /* Giỏ hàng kiểu Tiki */
 .cart-container {
-  max-width: 1200px;
-  margin: 20px auto;
+  max-width: 2000px;
+  margin: 20px 20px;
   display: flex;
   flex-direction: row;
   gap: 2rem;
-  padding: 0 1rem;
+  padding: 0;
 }
 
 .cart-title {
@@ -15,15 +15,15 @@
 }
 
 .cart-table-section {
-  flex: 3;
+  flex: 5;
   overflow-x: auto;
 }
 
 .cart-table-section table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
-  background: #fff;
-  border-radius: 6px;
+  background-color: white;
 }
 
 .cart-table-section th,
@@ -31,7 +31,11 @@
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #eee;
+  word-break: break-word;
+  width: 16.66%;
+  vertical-align: middle;
 }
+
 
 .cart-table-section th:first-child {
   text-align: left;
@@ -64,19 +68,22 @@
   object-fit: contain;
   border: 1px solid #ddd;
   border-radius: 4px;
+  vertical-align: middle;
+  display: inline-block;
+
 }
 
 .cart-product-name {
-  font-weight: 500;
-  font-size: 1rem;
-  color: #222;
+  white-space: nowrap;        /* Không cho xuống dòng */
+  word-break: keep-all;       /* Giữ nguyên từ */
+  overflow: hidden;           /* Ẩn phần vượt khung */
+  text-overflow: ellipsis;    /* Hiển thị dấu ... nếu dài quá */
+  display: inline-block;
+  max-width: 200px;   
+  padding: 20px;        /* Tùy chỉnh độ rộng phù hợp */
 }
 
-.cart-product-price {
-  color: #888;
-  text-decoration: line-through;
-  font-size: 0.9rem;
-}
+
 
 .cart-product-actions {
   display: flex;
@@ -111,7 +118,7 @@
 
 /* Phần tóm tắt đơn hàng */
 .cart-summary {
-  flex: 1;
+  flex: 2;
   background: #fff;
   border: 1px solid #eee;
   padding: 1rem;
@@ -231,7 +238,12 @@
 .cart-item-info {
   display: flex;
   align-items: center;
+  gap: 1rem;
+  min-width: 250px;
+  max-width: 100%;
+  flex-wrap: nowrap;
 }
+
 
 .cart-product-image {
   width: 80px;

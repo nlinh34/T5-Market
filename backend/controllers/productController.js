@@ -253,8 +253,8 @@ const getApprovedProducts = async (req, res) => {
   if (cursor) query._id = { $lt: cursor };
 
   const products = await Product.find(query)
-    .select("name price images averageRating shop category")
-    .populate("shop", "name logoUrl")
+    .select("name price images averageRating shop category createdAt")
+    .populate("shop", "name logoUrl address status shopStatus createdAt")
     .populate("category", "name")
     .sort({ _id: -1 })
     .limit(parseInt(limit))

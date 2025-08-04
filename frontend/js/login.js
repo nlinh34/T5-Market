@@ -34,9 +34,14 @@ document
         throw new Error((data.error && data.error.message) || data.message || "Đăng nhập thất bại");
       }
 
-      // Lưu token và thông tin user
+      // Xóa token và user cũ trước khi lưu
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      // Lưu token và user mới
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+
 
       // Chuyển hướng đến trang chủ
       window.location.href = "./index.html";
@@ -95,9 +100,14 @@ async function handleGoogleSignIn(response) {
       return;
     }
 
-    // Lưu token và thông tin user
+    // Xóa token và user cũ trước khi lưu
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // Lưu token và user mới
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
+
 
     // Chuyển hướng đến trang chủ
     window.location.href = "./index.html";

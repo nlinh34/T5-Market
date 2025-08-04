@@ -10,15 +10,16 @@ export const apiCall = async ({
 }) => {
   try {
     const token = localStorage.getItem("token");
-    const headers = new Headers({
+    const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
       ...customHeaders,
-    });
+    };
 
     if (token) {
-      headers.append("Authorization", `Bearer ${token}`);
+      headers["Authorization"] = `Bearer ${token}`;
     }
+
 
     const config = {
       method,

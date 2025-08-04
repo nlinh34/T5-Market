@@ -21,34 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     console.log("DOM loaded, starting to load categories...");
 
-    async function addToCart(productId) {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
-            return;
-        }
-
-        try {
-            const res = await fetch("https://t5-market.onrender.com/cart/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ product_id: productId, quantity: 1 })
-            });
-
-            const result = await res.json();
-            if (result.success) {
-                alert("✅ Đã thêm vào giỏ hàng!");
-            } else {
-                alert("❌ Lỗi khi thêm vào giỏ: " + (result.error || "Không xác định"));
-            }
-        } catch (err) {
-            console.error("Lỗi fetch:", err);
-            alert("Đã xảy ra lỗi khi thêm vào giỏ hàng.");
-        }
-    }
 
     async function loadCategories() {
         try {

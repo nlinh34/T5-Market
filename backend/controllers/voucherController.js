@@ -5,7 +5,7 @@ const { httpStatusCodes } = require("../utils/constants");
 // Tạo voucher mới
 exports.createVoucher = async (req, res) => {
   try {
-    req.body.created_by = req.user._id;
+    req.body.created_by = req.user.userId;
 
     const voucher = await Voucher.create(req.body);
 

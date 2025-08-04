@@ -105,7 +105,7 @@ function initializeGoogleSignIn() {
 // Xử lý đăng nhập Google
 async function handleGoogleSignIn(response) {
   try {
-    const result = await fetch("http://127.0.0.1:5000/auth/google", {
+    const result = await fetch("https://t5-market.onrender.com/auth/google", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
