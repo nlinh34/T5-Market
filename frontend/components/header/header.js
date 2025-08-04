@@ -33,7 +33,7 @@ class Header extends HTMLElement {
         <a href="./cart.html" class="cart">
           <div class="cart-icon">
             <i class="fa fa-shopping-cart"></i>
-            <span class="cart-count">0</span> <!-- <- chỗ này sẽ được cập nhật -->
+            <span class="cart-count">0</span>
           </div>
         </a>
 
@@ -107,25 +107,24 @@ class Header extends HTMLElement {
       }
 
       let shopLinkHtml = '';
-
-      if ([Role.SELLER, Role.STAFF].includes(user.role)) {
-        try {
-          const shopResponse = await ShopAPI.getMyShop();
-          if (shopResponse.success && shopResponse.data) {
+      try {
+        const shopResponse = await ShopAPI.getMyShop();
+        if (shopResponse.success && shopResponse.data) {
             const shop = shopResponse.data;
             if (shop.status === 'approved') {
-              shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
+                shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
             } else {
-              shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
+                // Shop exists but is not approved (e.g., pending, rejected)
+                shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
             }
-          } else {
+        } else {
+            // API call succeeded, but no shop data returned (e.g., success: false from backend, or data is null/undefined)
             shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
-          }
-        } catch (error) {
-          shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
         }
+      } catch (error) {
+          // API call failed (e.g., 404 Not Found from backend, or network error)
+          shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
       }
-
 
 
       let html = `
@@ -141,6 +140,7 @@ class Header extends HTMLElement {
       if ([Role.SELLER, Role.STAFF].includes(user.role)) {
         html += `
         <a href="./post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
+        <a href="./product-manager.html"><i class="fa fa-tasks"></i>Quản lý bài đăng</a>
         <a href="./seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
         `
       }
