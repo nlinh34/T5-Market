@@ -1,5 +1,5 @@
 import OrderAPI from "../APIs/OrderAPI.js";
-import CartAPI from "../APIs/CartAPI.js";
+import CartAPI from "../APIs/cartAPI.js";
 
 // Hiển thị phần tóm tắt đơn hàng (từ localStorage)
 function renderOrderSummaryFromLocal() {
