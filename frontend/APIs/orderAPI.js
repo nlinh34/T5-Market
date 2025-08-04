@@ -49,7 +49,7 @@ const OrderAPI = {
     try {
       const data = cancelReason ? { cancelReason } : {};
       const response = await apiCall({
-        endpoint: `/order/${orderId}/cancel`,
+        endpoint: `/order//cancel-order/${orderId}`,
         method: "PUT",
         data,
       });

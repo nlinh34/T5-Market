@@ -1,32 +1,35 @@
 /* ====== Sidebar ====== */
 .page-wrapper {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 15px;
+  margin: 10px 80px;
+  
 }
+
 .management-container {
   display: flex;
   gap: 20px;
   align-items: stretch;
 }
+
 .sidebar {
-  flex: 0 0 220px;
-  min-height: 440px;
-    border: 1px solid #ddd;
+  flex: 0 0 300px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  padding: 10px;
-  min-height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 10px ;
+  height: 400px;
+  top: 0;
 }
+
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
+
 .sidebar-btn {
   display: flex;
   align-items: center;
-  width: 100%; /* Chiếm toàn bộ chiều ngang sidebar */
+  width: 100%;
+  /* Chiếm toàn bộ chiều ngang sidebar */
   gap: 10px;
   padding: 14px 20px;
   background: white;
@@ -36,7 +39,7 @@
   border-left: 4px solid transparent;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 17px;
+  font-size: 15px;
   box-sizing: border-box;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
@@ -60,9 +63,11 @@
 .content-area {
   flex: 1;
 }
+
 .tab-content {
   display: none;
 }
+
 .tab-content.active {
   display: block;
 }
@@ -88,14 +93,17 @@
   border-radius: 4px;
   font-size: 0.9em;
   color: white;
-  background-color: #b8ce14; /* fallback màu nền */
+  background-color: #b8ce14;
+  /* fallback màu nền */
   display: inline-block;
   font-weight: 500;
 }
+
 .status-pending {
-  background: #ff9800;
-  color: white;
+  background: 	#fff7e6;
+  color: #ff9800;
   padding: 4px 8px;
+  border: 1px solid #ff9800;
   border-radius: 4px;
   font-weight: 500;
   display: inline-block;
@@ -103,11 +111,13 @@
 
 
 .status-shipping {
-  background: #03a9f4;
+  background: #f0f5ff;
 }
+
 .status-delivered {
   background: #4caf50;
 }
+
 .status-cancelled {
   background: #f44336;
 }
@@ -123,6 +133,7 @@
   font-size: 0.9em;
   transition: background 0.2s;
 }
+
 .cancel-btn:hover {
   background: #d32f2f;
 }
@@ -134,23 +145,26 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
+
 .modal-content {
   background: white;
   padding: 20px;
   max-width: 400px;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+
 .modal-content h3 {
   margin-top: 0;
   margin-bottom: 10px;
 }
+
 .modal-content textarea {
   width: 100%;
   resize: vertical;
@@ -158,28 +172,34 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
 .modal-actions {
   margin-top: 10px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
+
 .modal-actions button {
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
+
 #cancel-confirm {
   background: #f44336;
   color: white;
 }
+
 #cancel-confirm:hover {
   background: #d32f2f;
 }
+
 #cancel-close {
   background: #ccc;
 }
+
 #cancel-close:hover {
   background: #aaa;
 }
@@ -190,21 +210,24 @@
   border: 1px solid #ddd;
   border-radius: 6px;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   font-size: 15px;
   max-width: 900px;
   margin: 20px auto;
 }
+
 #order-detail h2 {
   font-size: 22px;
   margin-top: 0;
   margin-bottom: 16px;
   color: #2e8b57;
 }
+
 #order-detail p {
   margin: 6px 0;
   color: #333;
 }
+
 #order-detail h3 {
   font-size: 18px;
   margin-top: 20px;
@@ -223,6 +246,7 @@
   border-radius: 6px;
   overflow: hidden;
 }
+
 #order-detail ul li {
   display: flex;
   justify-content: space-between;
@@ -231,6 +255,7 @@
   font-size: 14px;
   color: #333;
 }
+
 #order-detail ul li:last-child {
   border-bottom: none;
 }
@@ -253,6 +278,7 @@
   margin-top: 15px;
   transition: background-color 0.2s ease;
 }
+
 #cancel-order-btn:hover {
   background-color: #c82333;
 }
@@ -262,10 +288,12 @@
   .management-container {
     flex-direction: column;
   }
+
   .sidebar {
     width: 100%;
   }
 }
+
 /* ====== Làm nổi bảng danh sách đơn hàng ====== */
 .tab-content {
   background: white;
@@ -290,20 +318,22 @@
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 0;
   overflow: hidden;
   border-radius: 0 !important;
   min-height: 440px;
 }
+
 /* Làm sidebar nổi lên */
 .sidebar {
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 10px;
 }
+
 .order-title {
   text-align: center;
   font-size: 32px;
@@ -311,11 +341,14 @@
   margin: 24px auto;
   color: #2e8b57;
 }
+
 /* Bảng danh sách đơn hàng TO hơn */
 .order-table th,
 .order-table td {
-  padding: 14px 16px;   /* Ô cao hơn */
-  font-size: 16px;      /* Chữ to hơn */
+  padding: 14px 16px;
+  /* Ô cao hơn */
+  font-size: 16px;
+  /* Chữ to hơn */
 }
 
 .sidebar-menu {
@@ -325,9 +358,11 @@
   padding: 0;
   margin: 0;
 }
+
 .pagination {
   display: flex;
-  justify-content: center; /* Canh giữa */
+  justify-content: center;
+  /* Canh giữa */
   align-items: center;
   gap: 8px;
   margin: 20px 0;
@@ -343,7 +378,7 @@
   cursor: pointer;
   font-size: 15px;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .page-btn:hover {
@@ -356,8 +391,9 @@
   font-size: 15px;
   color: #555;
 }
+
 .view-detail-btn {
-  background-color: #2e8b57;
+  background-color: #30b66a;
   color: white;
   border: none;
   padding: 6px 12px;
@@ -368,7 +404,7 @@
 }
 
 .view-detail-btn:hover {
-  background-color: #256f46;
+  background-color: #35915e;
 }
 
 .cancel-btn {
@@ -385,6 +421,7 @@
 .cancel-btn:hover {
   background-color: #d32f2f;
 }
+
 /* Modal xem chi tiết đơn hàng */
 .modal-overlay {
   position: fixed;
@@ -392,7 +429,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -405,7 +442,7 @@
   width: 90%;
   max-width: 600px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   max-height: 80vh;
   overflow-y: auto;
@@ -458,23 +495,28 @@
 
 /* Tiêu đề modal Chi tiết đơn hàng thành màu đen */
 .modal-content h3 {
-  color: #222; /* Màu đen */
+  color: #222;
+  /* Màu đen */
 }
 
 /* Dòng Tổng tiền thành màu đỏ */
 .summary-row.total {
   font-weight: bold;
-  color: #e53935; /* Màu đỏ */
+  color: #e53935;
+  /* Màu đỏ */
 }
+
 /* Giá tiền sản phẩm trong danh sách */
 .product-price {
-  color: #0288d1; /* Xanh nước */
+  color: #0288d1;
+  /* Xanh nước */
   font-weight: 500;
 }
 
 /* Tạm tính và Đã giảm */
 .summary-row:not(.total) strong {
-  color: #0288d1; /* Xanh nước */
+  color: #0288d1;
+  /* Xanh nước */
 }
 
 /* Tổng tiền giữ màu đỏ */
@@ -482,6 +524,7 @@
   color: #e53935;
   font-weight: bold;
 }
+
 .order-table td {
   vertical-align: middle;
 }
