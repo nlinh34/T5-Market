@@ -1,12 +1,14 @@
 import { apiCall } from "./utils/api.js";
 
-export const OrderAPI = {
-  baseURL: "https://t5-market.onrender.com/order",
-
+const OrderAPI = {
   // USER
   createOrder: async (orderData) => {
     try {
-      const response = await apiCall("/order/create", "POST", orderData);
+      const response = await apiCall({
+        endpoint: "/order",
+        method: "POST",
+        data: orderData,
+      });
       return {
         success: true,
         data: response,
@@ -20,14 +22,16 @@ export const OrderAPI = {
     }
   },
 
-  // Lấy danh sách đơn hàng của người dùng hiện tại
   getUserOrders: async (status = null) => {
     try {
-      let url = "/order/get-order";
+      let endpoint = "/order/get-order";
       if (status) {
-        url += `?status=${status}`;
+        endpoint += `?status=${status}`;
       }
-      const response = await apiCall(url, "GET");
+      const response = await apiCall({
+        endpoint,
+        method: "GET",
+      });
       return {
         success: true,
         data: response.data,
@@ -40,11 +44,15 @@ export const OrderAPI = {
       };
     }
   },
-  // Hủy đơn hàng
+
   cancelOrder: async (orderId, cancelReason = null) => {
     try {
-      const body = cancelReason ? { cancelReason } : {};
-      const response = await apiCall(`/order/${orderId}/cancel`, "PUT", body);
+      const data = cancelReason ? { cancelReason } : {};
+      const response = await apiCall({
+        endpoint: `/order/${orderId}/cancel`,
+        method: "PUT",
+        data,
+      });
       return {
         success: true,
         data: response,
@@ -59,14 +67,16 @@ export const OrderAPI = {
   },
 
   // ADMIN
-  // Chỉ dành cho Admin: Lấy tất cả đơn hàng
   getAllOrders: async (status = null) => {
     try {
-      let url = "/order/get-all-orders";
+      let endpoint = "/order/get-all-orders";
       if (status) {
-        url += `?status=${status}`;
+        endpoint += `?status=${status}`;
       }
-      const response = await apiCall(url, "GET");
+      const response = await apiCall({
+        endpoint,
+        method: "GET",
+      });
       return {
         success: true,
         data: response.data,
@@ -80,16 +90,13 @@ export const OrderAPI = {
     }
   },
 
-  // Chỉ dành cho Admin: Cập nhật trạng thái đơn hàng
   updateOrderStatus: async (orderId, status) => {
     try {
-      const response = await apiCall(
-        `/order/update-order-status/${orderId}`,
-        "PUT",
-        {
-          status,
-        }
-      );
+      const response = await apiCall({
+        endpoint: `/order/update-order-status/${orderId}`,
+        method: "PUT",
+        data: { status },
+      });
       return {
         success: true,
         data: response.data,
@@ -98,8 +105,7 @@ export const OrderAPI = {
       console.error("Error in updateOrderStatus:", error);
       return {
         success: false,
-        error:
-          error.message || "Có lỗi xảy ra khi cập nhật trạng thái đơn hàng",
+        error: error.message || "Có lỗi xảy ra khi cập nhật trạng thái đơn hàng",
       };
     }
   },

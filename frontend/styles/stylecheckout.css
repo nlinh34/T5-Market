@@ -546,3 +546,59 @@ body {
     transform: scale(1.1);
     outline: none; /* Loại bỏ outline mặc định */
 }
+/* ==== Đơn hàng hiển thị ==== */
+
+.order-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.order-item img {
+  width: 90px;         /* ✅ Giảm nhẹ nếu ảnh đang chật */
+  height: 90px;
+  object-fit: contain; 
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.order-item-details {
+  flex: 1;
+  overflow: hidden;
+}
+
+.order-item-details .name-prod {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+  line-height: 1.4;
+  display: -webkit-box;         /* ✅ Ẩn bớt nếu dài quá */
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.order-item-details div {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+/* ==== Tổng kết đơn hàng ==== */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+.summary-row.total {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #d9534f;
+}

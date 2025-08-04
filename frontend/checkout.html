@@ -32,9 +32,8 @@
           <textarea name="note" placeholder="Ghi chú đơn hàng (tuỳ chọn)"></textarea>
           <label for="payment-method"><strong>Phương thức thanh toán</strong></label>
           <select name="paymentMethod" id="payment-method" required>
-            <option value="COD">Thanh toán khi nhận hàng (COD)</option>
-            <option value="BANK">Chuyển khoản ngân hàng</option>
-            <option value="MOMO">Ví Momo</option>
+            <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+            <option value="bank">Chuyển khoản ngân hàng</option>
           </select>
           <button type="submit" class="btn primary">Đặt hàng</button>
         </form>
@@ -43,25 +42,26 @@
       <!-- Bảng hiển thị đơn hàng -->
       <div style="flex: 1 1 45%;">
         <section id="order-preview">
-  <h2>🛒 Đơn hàng của bạn</h2>
-  <div id="order-items" class="order-list"></div>
+        <h2>🛒 Đơn hàng của bạn</h2>
+        <hr>
+        <div id="order-items" class="order-list"></div>
 
 
-  <hr />
-<div class="summary-row">
-  <span>Tạm tính</span>
-  <span id="subtotal">0đ</span>
-</div>
-<div class="summary-row">
-  <span>Đã giảm</span>
-  <span id="discount">0đ</span>
-</div>
+        <hr />
+      <div class="summary-row">
+        <span>Tạm tính</span>
+        <span id="subtotal">0đ</span>
+      </div>
+      <div class="summary-row">
+        <span>Đã giảm</span>
+        <span id="discount">0đ</span>
+      </div>
 
-  <hr />
-  <div class="summary-row total">
-    <strong>Tổng tiền</strong>
-    <strong id="order-total">0đ</strong>
-  </div>
+        <hr />
+        <div class="summary-row total">
+          <strong>Tổng tiền</strong>
+          <strong id="order-total">0đ</strong>
+        </div>
 </section>
 
       </div>
@@ -147,6 +147,5 @@
       </div>
     </footer>
 
-    <script src="checkout.js" type="module"></script>
   </body>
 </html>

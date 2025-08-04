@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
               const image = item.image_url?.startsWith("http")
                 ? item.image_url
                 : item.image_url
-                ? `http://127.0.0.1:5000/uploads/${item.image_url}`
+                ? `https://t5-market.onrender.com/uploads/${item.image_url}`
                 : "https://via.placeholder.com/80x80?text=No+Image";
 
               return `

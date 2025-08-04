@@ -5,24 +5,13 @@ const mongoose = require("mongoose")
 // Thêm vào giỏ hàng
 exports.addToCart = async (req, res) => {
   try {
-    if (!req.user || !req.user.userId) {
-      return res.status(401).json({ success: false, message: "Chưa đăng nhập hoặc token không hợp lệ" });
-    }
+    const userId = req.user?.userId;
 
-    let userId = req.user.userId;
-
-    if (typeof userId === "string") {
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ success: false, message: "ID user không hợp lệ" });
-      }
-      userId = new mongoose.Types.ObjectId(userId);
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({ success: false, message: "Chưa đăng nhập hoặc ID không hợp lệ" });
     }
 
     const { product, quantity = 1 } = req.body;
-
-    if (!product) {
-      return res.status(400).json({ success: false, message: "Thiếu ID sản phẩm" });
-    }
 
     if (!mongoose.Types.ObjectId.isValid(product)) {
       return res.status(400).json({ success: false, message: "ID sản phẩm không hợp lệ" });
@@ -42,9 +31,8 @@ exports.addToCart = async (req, res) => {
     if (!cart) {
       cart = new Cart({ user: userId, items: [] });
     }
-
     const itemIndex = cart.items.findIndex(item =>
-      item.product && item.product.toString() === product
+      item.product?.toString() === product.toString()
     );
 
     if (itemIndex > -1) {
@@ -55,51 +43,69 @@ exports.addToCart = async (req, res) => {
 
     await cart.save();
 
-    res.status(200).json({ success: true, message: "Đã thêm vào giỏ hàng", data: cart });
+    // ❗Lấy lại giỏ hàng sau khi cập nhật
+    const updatedCart = await Cart.findOne({ user: userId }).populate("items.product");
+
+    res.status(200).json({ success: true, message: "Đã thêm vào giỏ hàng", data: updatedCart });
   } catch (error) {
     console.error("❌ Lỗi thêm giỏ hàng:", error);
     res.status(500).json({ success: false, message: "Lỗi server", error: error.message });
   }
 };
 
+
 exports.getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ user: req.user.userId })
-      .populate("items.product", "name price images")
-      .populate("shop", "name");
+    const userId = req.user?.userId;
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({ success: false, message: "Chưa đăng nhập hoặc ID không hợp lệ" });
+    }
 
-    if (!cart) return res.json({ success: true, cart: { items: [], total: 0 } });
-
-    const itemsWithSubtotal = cart.items.map(item => {
-      const product = item.product;
-      const subtotal = item.product.price * item.quantity;
-      // Fallback nếu product.shop bị null
-      const safeProduct = {
-        ...product._doc,
-        shop: product.shop || { name: "Không xác định" }
-      };
-
-      return {
-        product: safeProduct,
-        quantity: item.quantity,
-        subtotal
-      };
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: "items.product",
+      select: "name price images shop",
+      populate: {
+        path: "shop",
+        select: "name"
+      }
     });
-    const total = itemsWithSubtotal.reduce((sum, item) => sum + item.subtotal, 0);
 
-    res.json({
+    if (!cart || !Array.isArray(cart.items)) {
+      return res.json({ success: true, cart: { items: [], total: 0 } });
+    }
+
+    const cleanedItems = cart.items
+      .filter(item => item.product && typeof item.product.price === "number")
+      .map(item => {
+        const product = item.product;
+
+        return {
+          product: {
+            _id: product._id || "",
+            name: product.name || "Không có tên",
+            price: product.price || 0,
+            images: Array.isArray(product.images) ? product.images : [],
+            shop: product.shop?.name
+              ? { name: product.shop.name }
+              : { name: "Không xác định" }
+          },
+          quantity: item.quantity,
+          subtotal: product.price * item.quantity
+        };
+      });
+
+    const total = cleanedItems.reduce((sum, item) => sum + item.subtotal, 0);
+
+    return res.json({
       success: true,
       cart: {
-        items: itemsWithSubtotal,
+        items: cleanedItems,
         total
       }
     });
-  } catch (err) {
-    console.error("❌ Lỗi khi lấy giỏ hàng:", err.message);
-    res.status(500).json({
-      success: false,
-      message: "Lỗi khi lấy giỏ hàng"
-    });
+  } catch (error) {
+    console.error("❌ Lỗi khi lấy giỏ hàng:", error);
+    res.status(500).json({ success: false, message: "Lỗi khi lấy giỏ hàng", error: error.message });
   }
 };
 

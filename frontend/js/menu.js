@@ -1,6 +1,6 @@
 import { ProductAPI } from "../APIs/productAPI.js";
 import { CategoryAPI } from "../APIs/categoryAPI.js";
-import CartAPI from "../APIs/cartAPI.js";
+import CartAPI from "../APIs/CartAPI.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.querySelector(".product-grid");

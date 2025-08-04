@@ -1,5 +1,6 @@
-import { ReviewAPI } from "../APIs/reviewAPI.js";
 import { ProductAPI } from "../APIs/productAPI.js";
+import CartAPI from "../APIs/CartAPI.js";
+
 
 document.addEventListener('DOMContentLoaded', async function () {
     // Function to get product ID from URL
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             <div class="product-not-found" style="text-align: center; padding: 50px;">
                 <h2>Sản phẩm không tồn tại</h2>
                 <p>Xin lỗi, sản phẩm bạn tìm kiếm không có trong hệ thống. Vui lòng kiểm tra lại hoặc xem các sản phẩm khác.</p>
-                <a href="../home/index.html" class="btn btn-primary" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none;">Quay lại trang chủ</a>
+                <a href="./index.html" class="btn btn-primary" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none;">Quay lại trang chủ</a>
             </div>
         `;
     }
@@ -137,7 +138,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         `;
         productMeta[2].innerHTML = `
             <span class="time"><i class="fas fa-clock"></i> Đăng ${daysAgo(data.createdAt)} ngày trước</span>
+            <button class="btn buy-now add-to-cart-btn" style="width: 100%;" data-id="${data._id}">Thêm vào giỏ hàng</button>
         `;
+
 
         // Update seller info
         const sellerInfo = document.querySelector('.seller-info');
@@ -312,90 +315,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         displayNotFoundCard();
     }
 
-    const reviewListEl = document.getElementById("review-list");
-    const reviewsSummaryEl = document.getElementById("reviews-summary");
-
-    // Hàm tạo star icons theo rating (1-5)
-    function renderStars(rating) {
-        let starsHTML = "";
-        for (let i = 1; i <= 5; i++) {
-            if (i <= rating) {
-                starsHTML += `<i class="fas fa-star"></i>`;
-            } else {
-                starsHTML += `<i class="far fa-star"></i>`;
-            }
-        }
-        return starsHTML;
-    }
-
-    // Hàm hiển thị danh sách review
-    function renderReviews(reviews) {
-        reviewListEl.innerHTML = ""; // Xoá cũ
-
-        if (reviews.length === 0) {
-            reviewListEl.innerHTML = `<p>Chưa có đánh giá nào cho sản phẩm này.</p>`;
-            return;
-        }
-
-        reviews.forEach((review) => {
-            const date = new Date(review.createdAt).toLocaleDateString("vi-VN");
-            const userName = review.user?.fullName || "Người dùng"
-            const ratingStars = renderStars(review.rating);
-            const comment = review.comment || "";
-
-            const reviewItem = document.createElement("div");
-            reviewItem.classList.add("review-item");
-
-            reviewItem.innerHTML = `
-                <div class="review-header">
-                    <div class="reviewer-info">
-                        <div class="reviewer-avatar">
-                            <img loading="lazy" src="/images/avatar/default-avatar.png" alt="${userName}">
-                        </div>
-                        <div class="reviewer-meta">
-                            <span class="review-author">${userName}</span>
-                            <span class="review-date">${date}</span>
-                        </div>
-                    </div>
-                    <div class="review-rating">${ratingStars}</div>
-                </div>
-                <div class="review-body">
-                    <p>${comment}</p>
-                </div>
-            `;
-
-            reviewListEl.appendChild(reviewItem);
-        });
-    }
-
-    // Fetch reviews and show summary
-    async function loadReviews(productId) {
-        const res = await ReviewAPI.getReviewsByProduct(productId);
-        if (!res.success) {
-            reviewsSummaryEl.innerHTML = "Không có đánh giá";
-            return;
-        }
-
-        const reviews = res.data || [];
-        const totalReviews = reviews.length;
-        const avgRating = totalReviews ?
-            reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews :
-            0;
-
-        reviewsSummaryEl.innerHTML = `
-            <span class="avg-rating">${avgRating.toFixed(1)}</span>
-            <span class="total-reviews">(${totalReviews} đánh giá)</span>
-        `;
-
-        renderReviews(reviews);
-    }
-
-    if (productId) {
-        loadReviews(productId);
-    } else {
-        displayNotFoundCard();
-    }
-
     // Hàm mới: Load sản phẩm khác từ shop
     async function loadOtherProductsFromShop(shopId, currentProductId) {
         const grid = document.querySelector(".products-grid");
@@ -423,14 +342,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <div class="card-top">
                         <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
                         <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
-                        <i class="fa-regular fa-heart"></i>
+                        <i class="fa-regular fa-heart" ></i>
                         </button>
                         <div class="action-icons">
                         <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                         <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
-                            <i class="fa-solid fa-cart-shopping"></i>
+                            <i class="fa-solid fa-cart-shopping""></i>
                         </button>
 
                         </div>
@@ -486,7 +405,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             <i class="fa-regular fa-eye"></i>
                         </button>
                         <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
-                            <i class="fa-solid fa-cart-shopping"></i>
+                            <i class="fa-solid fa-cart-shopping""></i>
                         </button>
                     </div>
                 </div>
@@ -508,6 +427,37 @@ document.addEventListener('DOMContentLoaded', async function () {
             container.innerHTML = "<p>Không thể tải sản phẩm tương tự.</p>";
         }
     }
+
+    let isAdding = false;
+
+document.addEventListener("click", async (e) => {
+    const addToCartBtn = e.target.closest(".add-to-cart-btn");
+    if (!addToCartBtn) return;
+
+    if (isAdding) return; // ✅ Chặn click khi đang thêm
+
+    isAdding = true;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const productId = addToCartBtn.dataset.id;
+    if (!productId) {
+        alert("❌ Không tìm thấy ID sản phẩm!");
+        isAdding = false;
+        return;
+    }
+
+    try {
+        await CartAPI.addToCart(productId, 1);
+        window.dispatchEvent(new Event("cartUpdated"));
+        alert("✅ Đã thêm vào giỏ hàng!");
+    } catch (error) {
+        console.error("Lỗi khi thêm vào giỏ hàng:", error);
+        alert("❌ Thêm vào giỏ hàng thất bại.");
+    } finally {
+        isAdding = false;
+    }
+});
 
 });
 

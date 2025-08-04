@@ -1,6 +1,8 @@
 // backend/controllers/orderController.js
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const Cart = require("../models/Cart"); 
+
 const { Role } = require("../constants/roleEnum")
 
 async function generateUniqueOrderCode() {
@@ -28,25 +30,29 @@ exports.createOrder = async (req, res) => {
     const userId = req.user.userId;
     const { products, shippingInfo, paymentMethod } = req.body;
 
-    if (!products || !Array.isArray(products) || products.length === 0) {
+    // Kiểm tra dữ liệu đầu vào
+    if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ success: false, error: "Danh sách sản phẩm không hợp lệ." });
     }
 
-    if (!shippingInfo || !shippingInfo.fullName || !shippingInfo.address || !shippingInfo.phone) {
+    if (!shippingInfo?.fullName || !shippingInfo?.address || !shippingInfo?.phone) {
       return res.status(400).json({ success: false, error: "Thông tin giao hàng không đầy đủ." });
     }
 
-    const productDocs = await Product.find({ _id: { $in: products.map(p => p.productId) } })
+    // Lấy dữ liệu sản phẩm từ DB
+    const productIds = products.map(p => p.productId);
+    const productDocs = await Product.find({ _id: { $in: productIds } })
       .select("_id name price image_url shop");
 
-    const ordersByShop = {}; // { shopId: [product1, product2] }
+    // Gom đơn theo shop
+    const ordersByShop = {};
 
     for (const item of products) {
       const prod = productDocs.find(p => p._id.equals(item.productId));
       if (!prod) throw new Error(`Không tìm thấy sản phẩm với ID: ${item.productId}`);
+      if (!prod.shop) throw new Error(`Sản phẩm ${prod._id} không có thông tin shop.`);
 
       const shopId = prod.shop.toString();
-
       if (!ordersByShop[shopId]) ordersByShop[shopId] = [];
 
       ordersByShop[shopId].push({
@@ -58,12 +64,14 @@ exports.createOrder = async (req, res) => {
       });
     }
 
+    // Tạo đơn hàng theo từng shop
     const createdOrders = [];
 
     for (const [shopId, shopProducts] of Object.entries(ordersByShop)) {
       const totalAmount = shopProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
       const orderCode = await generateUniqueOrderCode();
+
       const newOrder = await Order.create({
         user: userId,
         shop: shopId,
@@ -77,19 +85,33 @@ exports.createOrder = async (req, res) => {
       createdOrders.push(newOrder);
     }
 
-    res.status(201).json({
+    // Xoá các sản phẩm đã đặt khỏi giỏ hàng
+    await Cart.updateOne(
+      { user: userId },
+      {
+        $pull: {
+          items: {
+            product: { $in: productIds }
+          }
+        }
+      }
+    );
+
+    return res.status(201).json({
       success: true,
       message: "Tạo đơn hàng thành công",
       data: createdOrders
     });
+
   } catch (error) {
-    console.error("Create Order Error:", error);
-    res.status(500).json({
+    console.error("❌ Lỗi tạo đơn hàng:", error);
+    return res.status(500).json({
       success: false,
       error: error.message || "Có lỗi xảy ra khi tạo đơn hàng"
     });
   }
 };
+
 
 //Lấy danh sách đơn hàng của người dùng
 exports.getUserOrders = async (req, res) => {
@@ -168,10 +190,6 @@ exports.getAllOrders = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   try {
     if (req.user.role !== Role.SELLER) {
-      console.log("Current user role:", req.user.role, "| Expected:", Role.SELLER);
-
-      console.log("req.user = ", req.user);
-
       return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
     }
 
