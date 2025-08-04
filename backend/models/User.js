@@ -38,6 +38,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: false
     },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Shop",
+    },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"], // Chờ xác thực - Đã xác thực - Từ chối

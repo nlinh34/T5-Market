@@ -109,6 +109,32 @@ const OrderAPI = {
       };
     }
   },
+  getOrdersByShop: async (shopId, status = null) => {
+    try {
+      if (!shopId) throw new Error("Thiếu shopId khi gọi getOrdersByShop");
+
+      let endpoint = `/order/shop/${shopId}`;
+      if (status) endpoint += `?status=${status}`;
+
+      const response = await apiCall({
+        endpoint,
+        method: "GET",
+      });
+
+      return {
+        success: true,
+        data: response.data,
+      };
+    } catch (error) {
+      console.error("Error in getOrdersByShop:", error);
+      return {
+        success: false,
+        error: error.message || "Không thể lấy đơn hàng của shop",
+      };
+    }
+  },
 };
+
+
 
 export default OrderAPI;
