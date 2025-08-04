@@ -1,5 +1,5 @@
 import { ProductAPI } from "../APIs/productAPI.js";
-import CartAPI from "../APIs/CartAPI.js";
+import CartAPI from "../APIs/cartAPI.js";
 
 
 document.addEventListener('DOMContentLoaded', async function () {

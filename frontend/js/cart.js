@@ -1,4 +1,4 @@
-import CartAPI from "../APIs/CartAPI.js";
+import CartAPI from "../APIs/cartAPI.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
