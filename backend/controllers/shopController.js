@@ -371,7 +371,6 @@ const getShopRating = async (req, res) => {
 
 // ================= STAFF MANAGEMENT =================
 
-// [GET] /api/shops/my-shop/staff
 const getShopStaff = async (req, res) => {
   try {
     const ownerId = req.user.userId;
@@ -391,7 +390,6 @@ const getShopStaff = async (req, res) => {
   }
 };
 
-// [POST] /api/shops/my-shop/staff
 const addStaff = async (req, res) => {
     try {
         const ownerId = req.user.userId;
@@ -440,7 +438,6 @@ const addStaff = async (req, res) => {
     }
 };
 
-// [DELETE] /api/shops/my-shop/staff/:staffId
 const removeStaff = async (req, res) => {
     try {
         const ownerId = req.user.userId;
@@ -470,7 +467,6 @@ const removeStaff = async (req, res) => {
     }
 };
 
-// [PUT] /api/shops/my-shop/staff/:staffId/permissions
 const updateStaffPermissions = async (req, res) => {
     try {
         const ownerId = req.user.userId;
