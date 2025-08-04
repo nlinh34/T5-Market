@@ -1,4 +1,4 @@
-import OrderAPI from "../APIs/OrderAPI.js";
+import OrderAPI from "../APIs/orderAPI.js";
 import CartAPI from "../APIs/cartAPI.js";
 
 // Hiển thị phần tóm tắt đơn hàng (từ localStorage)
