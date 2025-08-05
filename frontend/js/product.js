@@ -1,8 +1,23 @@
 import { ProductAPI } from "../APIs/productAPI.js";
 import CartAPI from "../APIs/cartAPI.js";
+import FavoriteAPI from "../APIs/favoriteAPI.js";
 
 
 document.addEventListener('DOMContentLoaded', async function () {
+
+    let favoriteProductIds = [];
+
+    const loadFavorites = async () => {
+        try {
+            const favorites = await FavoriteAPI.getFavorites();
+            favoriteProductIds = favorites.map(p => p._id);
+        } catch (err) {
+            console.warn("Không thể tải danh sách yêu thích:", err);
+            favoriteProductIds = [];
+        }
+    };
+
+    await loadFavorites();
     // Function to get product ID from URL
     function getProductIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
@@ -120,11 +135,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
         // Update product name
-        document.querySelector('h1').textContent = data.name;
-        document.querySelector('.product-category').innerHTML = `
+        document.querySelector(".product-title").textContent = data.name; document.querySelector('.product-category').innerHTML = `
             <span class="pro-category">${data.category.name}</span>
         `;
         // Update product meta (price, stock, location, time)
+        const isLiked = favoriteProductIds.includes(data._id);
+        const heartIcon = isLiked ? "fa-solid" : "fa-regular";
+        const likedClass = isLiked ? "liked" : "";
         const productMeta = document.querySelectorAll('.product-meta');
         productMeta[0].innerHTML = `
             <span class="current-price">${formatPrice(data.price)}</span>
@@ -137,10 +154,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             <span class="location"><i class="fas fa-map-marker-alt"></i> ${data.shop.address}</span>
         `;
         productMeta[2].innerHTML = `
-            <span class="time"><i class="fas fa-clock"></i> Đăng ${daysAgo(data.createdAt)} ngày trước</span>
-            <button class="btn buy-now add-to-cart-btn" style="width: 100%;" data-id="${data._id}">Thêm vào giỏ hàng</button>
-        `;
+            <div>
+                <span class="time"><i class="fas fa-clock"></i> Đăng ${daysAgo(data.createdAt)} ngày trước</span>
+                <div class="btn-product" >
+                    <button class="btn buy-now add-to-cart-btn" data-id="${data._id}">Thêm vào giỏ hàng</button>
+                    <button class="like-main-btn ${likedClass}" data-id="${data._id}" title="Yêu thích">
+                        <i class="${heartIcon} fa-heart"></i>
+                    </button>           
+                </div>
+            </div>
 
+        `;
 
         // Update seller info
         const sellerInfo = document.querySelector('.seller-info');
@@ -430,34 +454,71 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     let isAdding = false;
 
-document.addEventListener("click", async (e) => {
-    const addToCartBtn = e.target.closest(".add-to-cart-btn");
-    if (!addToCartBtn) return;
+    document.addEventListener("click", async (e) => {
+        const addToCartBtn = e.target.closest(".add-to-cart-btn");
+        if (!addToCartBtn) return;
 
-    if (isAdding) return; // ✅ Chặn click khi đang thêm
+        if (isAdding) return; // ✅ Chặn click khi đang thêm
 
-    isAdding = true;
-    e.preventDefault();
-    e.stopImmediatePropagation();
+        isAdding = true;
+        e.preventDefault();
+        e.stopImmediatePropagation();
 
-    const productId = addToCartBtn.dataset.id;
-    if (!productId) {
-        alert("❌ Không tìm thấy ID sản phẩm!");
-        isAdding = false;
-        return;
-    }
+        const productId = addToCartBtn.dataset.id;
+        if (!productId) {
+            alert("❌ Không tìm thấy ID sản phẩm!");
+            isAdding = false;
+            return;
+        }
 
+        try {
+            await CartAPI.addToCart(productId, 1);
+            window.dispatchEvent(new Event("cartUpdated"));
+            alert("✅ Đã thêm vào giỏ hàng!");
+        } catch (error) {
+            console.error("Lỗi khi thêm vào giỏ hàng:", error);
+            alert("❌ Thêm vào giỏ hàng thất bại.");
+        } finally {
+            isAdding = false;
+        }
+    });
+    document.addEventListener("click", async (e) => {
+        const likeBtn = e.target.closest(".like-main-btn");
+        if (!likeBtn) return;
+
+        e.preventDefault();
+        const productId = likeBtn.dataset.id;
+        const icon = likeBtn.querySelector("i");
+
+        if (!productId || !icon) return;
+
+        try {
+  if (likeBtn.classList.contains("liked")) {
+    await FavoriteAPI.removeFavorite(productId);
+    likeBtn.classList.remove("liked");
+    icon.classList.remove("fa-solid");
+    icon.classList.add("fa-regular");
+  } else {
     try {
-        await CartAPI.addToCart(productId, 1);
-        window.dispatchEvent(new Event("cartUpdated"));
-        alert("✅ Đã thêm vào giỏ hàng!");
-    } catch (error) {
-        console.error("Lỗi khi thêm vào giỏ hàng:", error);
-        alert("❌ Thêm vào giỏ hàng thất bại.");
-    } finally {
-        isAdding = false;
+      await FavoriteAPI.addFavorite(productId);
+    } catch (err) {
+      // Nếu sản phẩm đã tồn tại trong danh sách yêu thích, bỏ qua lỗi và cập nhật UI
+      if (err.message?.includes("nằm trong danh sách yêu thích")) {
+        console.warn("Đã có trong yêu thích, cập nhật lại giao diện");
+      } else {
+        throw err;
+      }
     }
-});
+
+    likeBtn.classList.add("liked");
+    icon.classList.remove("fa-regular");
+    icon.classList.add("fa-solid");
+  }
+} catch (error) {
+  console.error("Lỗi xử lý yêu thích:", error);
+  alert("❌ Thao tác thất bại, vui lòng thử lại!");
+}
+    });
 
 });
 

@@ -1,6 +1,7 @@
 import { ShopAPI } from '../../APIs/shopAPI.js';
 import { Role } from '../../APIs/utils/roleEnum.js';
 import { UserAPI } from '../../APIs/userAPI.js';
+import CartAPI from '../../APIs/cartAPI.js';
 
 class Header extends HTMLElement {
   constructor() {
@@ -13,10 +14,6 @@ class Header extends HTMLElement {
         <div class="logo">
           <img  loading="lazy" class="logo-img" src="./assests/images/logo.png" alt="">
           <div class="logo-content">T5MARKET</div>
-        </div>
-        <div class="category">
-          <i class="fa fa-bars"></i>
-          <p>Danh mục</p>
         </div>
 
         <form class="search">
@@ -60,13 +57,27 @@ class Header extends HTMLElement {
   }
 
   initializeCartCount() {
-    const updateCartCountUI = () => {
-      const cartCount = localStorage.getItem("cartCount") || 0;
-      this.querySelector(".cart-count").textContent = cartCount;
-    };
-    updateCartCountUI(); // Initial call
-    window.addEventListener("cartUpdated", updateCartCountUI);
-  }
+  const updateCartCountUI = async () => {
+    try {
+      const res = await CartAPI.getCart();
+      const items = res.cart?.items || [];
+
+      // Tính tổng số lượng sản phẩm
+      const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+      
+      this.querySelector(".cart-count").textContent = totalCount;
+    } catch (err) {
+      console.error("❌ Lỗi khi lấy số lượng giỏ hàng:", err);
+      this.querySelector(".cart-count").textContent = "0";
+    }
+  };
+
+  updateCartCountUI(); // Lần đầu khi load
+
+  // Cập nhật lại khi có sự kiện cartUpdated
+  window.addEventListener("cartUpdated", updateCartCountUI);
+}
+
 
   async updateUserInterface() {
     const token = localStorage.getItem("token");

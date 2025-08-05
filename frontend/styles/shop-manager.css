@@ -33,7 +33,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f5f5f5; /* Light grey background */
     line-height: 1.5;
     color: #333; /* Dark grey for general text */
@@ -151,7 +151,7 @@ body {
     gap: 12px;
 }
 
-.btn {
+.btn1 {
     padding: 12px 24px; /* Slightly larger padding */
     border: none;
     border-radius: 6px; /* Slightly sharper radius */
@@ -161,23 +161,27 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother transition */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle initial shadow */
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.btn-primary {
+.btn-primary1 {
     background: #FFD700;
-    color: #333; /* Darker text for contrast */
+    color: #333;
     border: 1px solid #FFD700;
     font-weight: 650;
+      text-decoration: none;
+
 }
 
-.btn-primary:hover {
+.btn-primary1:hover {
     background: #EEDD00;
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15); /* More prominent shadow on hover */
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
-
+.btn-primary1 a{
+    text-decoration: none;
+}
 .btn-secondary {
     background: #ffffff; /* White background */
     color: #555; /* Slightly softer text color */
@@ -213,7 +217,7 @@ body {
     align-content: center;
 }
 
-.stat-item {
+.stat-item-shop {
     display: flex;
     align-items: baseline;
 }
@@ -292,7 +296,7 @@ body {
 }
 
 .top-section .card {
-    flex: 1; /* Make them take equal width */
+    flex: 1 1 0; /* Make them take equal width */
     min-width: 300px; /* Ensure they don't get too small */
 }
 
@@ -308,18 +312,8 @@ body {
     min-width: 0;
 }
 
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    /* Removed fixed width as it's now a flex item within top-section */
-    gap: 20px;
-    flex: 1;
-    min-width: 300px; /* Ensure sidebar doesn't get too small */
-    flex-shrink: 0;
-}
-
 .card {
-    background: #fff; /* White background */
+    background: #fff;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -655,7 +649,7 @@ body {
 /* Products Grid */
 .products-grid {
     display: grid;
-    grid-template-columns: 1fr; /* One product per row */
+    grid-template-columns: 1fr; 
     gap: 20px;
     padding: 20px 0;
 }
@@ -665,12 +659,12 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    display: flex; /* Make it a flex container for horizontal layout */
+    display: flex; 
     position: relative;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     text-decoration: none;
     color: inherit;
-    height: 140px; /* Fixed height for the product card */
+    height: 140px;
 }
 
 .product-card:hover {
@@ -789,18 +783,18 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .products-grid {
-        grid-template-columns: 1fr; /* Still one column */
+        grid-template-columns: 1fr; 
     }
 
     .product-card {
-        flex-direction: column; /* Stack image and info vertically on smaller screens */
+        flex-direction: column; 
         align-items: center;
     }
 
     .product-img {
-        width: 100%; /* Image takes full width */
-        height: 200px; /* Keep fixed height */
-        border-bottom: 1px solid #eee; /* Add border back when stacked */
+        width: 100%; 
+        height: 200px; 
+        border-bottom: 1px solid #eee; 
     }
 
     .product-status-badge {
@@ -900,7 +894,6 @@ body {
 
 .custom-select {
     position: relative;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 .select-selected {
@@ -1000,16 +993,16 @@ body {
     background-color: #fefefe;
     margin: auto;
     padding: 0;
-    border: none; /* Remove border */
+    border: none;
     border-radius: 12px;
     width: 90%;
-    max-width: 600px; /* Increased max-width for better content display */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25); /* Stronger, softer shadow */
+    max-width: 600px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     animation-name: animatetop;
     animation-duration: 0.4s;
-    display: flex; /* Make content a flex container */
-    flex-direction: column; /* Stack header, body, footer vertically */
-    max-height: 90vh; /* Limit modal height */
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
 }
 
 /* Add Animation */
@@ -1258,19 +1251,19 @@ input:checked + .slider:before {
 }
 
 .add-custom-policy-btn {
-    padding: 8px 16px; /* Adjusted padding for a more compact button */
-    background-color: #e0e0e0; /* Light gray background */
-    color: #555; /* Darker text color */
-    border: 1px solid #ccc; /* Lighter border */
+    padding: 8px 16px;
+    background-color: #e0e0e0; 
+    color: #555;
+    border: 1px solid #ccc; 
     border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem; /* Slightly smaller font size */
+    font-size: 0.9rem; 
     font-weight: 500;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .add-custom-policy-btn:hover {
-    background-color: #d0d0d0; /* Darker gray on hover */
+    background-color: #d0d0d0;
     border-color: #bbb;
 }
 

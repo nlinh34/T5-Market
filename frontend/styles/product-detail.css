@@ -212,6 +212,35 @@ body {
     font-weight: 500;
 }
 
+.btn-product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-product .like-main-btn {
+  flex: 1; 
+}
+
+.like-main-btn {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.like-main-btn.liked {
+  background-color: #ffe5e5;
+  color: red;
+  border-color: red;
+}
+
 /* ===== SELLER INFO ===== */
 .seller-info {
     background-color: #f9f9f9;
@@ -1289,10 +1318,7 @@ body {
         flex-direction: column;
     }
 
-    .add-to-cart,
-    .buy-now {
-        width: 100%;
-    }
+
 
     .tabs-header li {
         padding: 10px 15px;
