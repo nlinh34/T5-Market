@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderAllTabs() {
-    ["pending", "packing", "shipping", "delivered", "cancelled"].forEach(renderTab);
+    ["pending", "confirmed", "shipped", "delivered", "cancelled"].forEach(renderTab);
     renderTab("all", currentPage);
   }
 
@@ -72,23 +72,37 @@ document.addEventListener("DOMContentLoaded", () => {
       paginated.forEach((order) => {
         const idx = order._index;
         html += `<tr>
-          <td>${order.orderCode}</td>
-          <td>${new Date(order.createdAt).toLocaleString()}</td>
-          <td>${order.shippingInfo?.fullName || ""}</td>
-          <td>${order.paymentMethod || ""}</td>
-          <td><span class="status-label status-${order.status}">${getStatusLabel(order.status)}</span></td>`;
+    <td class="order-code" data-index="${idx}" style="cursor:pointer;color:blue;text-decoration:underline;">
+      ${order.orderCode}
+    </td>
+    <td>${new Date(order.createdAt).toLocaleString()}</td>
+    <td>${order.shippingInfo?.fullName || ""}</td>
+    <td>${order.paymentMethod || ""}</td>
+    <td><span class="status-label status-${order.status}">
+      ${getStatusLabel(order.status)}
+    </span></td>`;
 
         if (type === "all") {
-          html += `<td><div class="order-actions">
-            <button class="view-detail-btn" data-index="${idx}"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
-          if (!["cancelled", "delivered"].includes(order.status)) {
-            html += `<button class="cancel-btn" data-index="${idx}">Hủy đơn</button>`;
+          html += `<td><div class="order-actions">`;
+
+          // Chỉ hiện nút xem chi tiết nếu không phải pending
+          if (["confirmed", "shipped", "delivered", "cancelled"].includes(order.status)) {
+            html += `<button class="view-detail-btn" data-index="${idx}">
+                <i class="fa fa-eye" aria-hidden="true"></i>  Xem
+              </button>`;
           }
+
+          // Chỉ cho hủy nếu chưa giao hoặc chưa bị hủy
+          if (order.status === "pending") {
+  html += `<button class="cancel-btn" data-index="${idx}">Hủy đơn</button>`;
+}
+
           html += `</div></td>`;
         }
 
         html += `</tr>`;
       });
+
     }
 
     html += `</tbody></table></div>`;
@@ -131,6 +145,14 @@ document.addEventListener("DOMContentLoaded", () => {
         showOrderDetail(orders[idx]);
       });
     });
+
+    document.querySelectorAll(".order-code").forEach((el) => {
+      el.addEventListener("click", () => {
+        const idx = parseInt(el.dataset.index);
+        showOrderDetail(orders[idx]);
+      });
+    });
+
   }
 
   function showOrderDetail(order) {
@@ -208,10 +230,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function getStatusLabel(status) {
     const map = {
       pending: "Chờ xác nhận",
-      packing: "Đang chuẩn bị",
-      shipping: "Chờ giao hàng",
-      delivered: "Đã giao",
-      cancelled: "Đã hủy"
+      confirmed: "Đang chuẩn bị",
+      shipped: "Đang giao hàng",
+      delivered: "Đã giao hàng",
+      cancelled: "Đã hủy đơn"
     };
     return map[status] || "Chờ xác nhận";
   }
