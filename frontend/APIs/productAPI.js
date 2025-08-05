@@ -2,36 +2,8 @@ import { apiCall } from "./utils/api.js";
 
 export const ProductAPI = {
 
-  // Lấy tất cả sản phẩm (không lọc trạng thái)
   getAllProducts: async () => {
     return await apiCall({ endpoint: "/products/get-all-products" });
-  },
-
-  getAllProductsByFilter: async ({ categoryIds, minPrice, maxPrice }) => {
-    try {
-      let endpoint = "/products/get-all-products";
-      const queryParams = [];
-
-      if (categoryIds && categoryIds.length > 0) {
-        queryParams.push(`category=${categoryIds.join(",")}`);
-      }
-      if (minPrice) {
-        queryParams.push(`minPrice=${minPrice}`);
-      }
-      if (maxPrice) {
-        queryParams.push(`maxPrice=${maxPrice}`);
-      }
-
-      if (queryParams.length > 0) {
-        endpoint += `?${queryParams.join("&")}`;
-      }
-
-      return await apiCall({
-        endpoint,
-      });
-    } catch (error) {
-      throw error;
-    }
   },
 
   // Lấy sản phẩm chờ duyệt
@@ -43,7 +15,6 @@ export const ProductAPI = {
   getApprovedProducts: async (page = 1, limit = 15) => {
     return await apiCall({ endpoint: `/products/get-approved-products?page=${page}&limit=${limit}` });
   },
-
 
   // Lấy sản phẩm bị từ chối
   getRejectedProducts: async () => {
@@ -142,5 +113,33 @@ export const ProductAPI = {
       method: 'GET',
       expectedStatusCodes: [200],
     });
+  },
+
+  getPriceRange: async () => {
+    return await apiCall({
+      endpoint: "/products/price-range",
+      method: "GET",
+    });
+  },
+  
+  getAllProductsByFilter: async ({ category, minPrice, maxPrice, page = 1, limit = 15 }) => {
+    const queryParams = [];
+
+    // CHỈ PUSH nếu category là mảng và có ít nhất 1 ObjectId hợp lệ
+    if (Array.isArray(category) && category.length > 0) {
+      const validCategoryIds = category.filter(id => /^[a-f\d]{24}$/i.test(id));
+      if (validCategoryIds.length > 0) {
+        queryParams.push(`category=${validCategoryIds.join(",")}`);
+      }
+    }
+
+    if (typeof minPrice !== "undefined") queryParams.push(`minPrice=${minPrice}`);
+    if (typeof maxPrice !== "undefined") queryParams.push(`maxPrice=${maxPrice}`);
+
+    if (page) queryParams.push(`page=${page}`);
+    if (limit) queryParams.push(`limit=${limit}`);
+
+    const endpoint = `/products/filter?${queryParams.join("&")}`;
+    return await apiCall({ endpoint });
   }
 };
