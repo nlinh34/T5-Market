@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,16 +8,9 @@
   <link rel="stylesheet" href="./styles/style.css">
   <link rel="stylesheet" href="./styles/header.css">
   <link rel="stylesheet" href="./styles/favorites.css">
-      <link rel="stylesheet" href="./styles/footer.css" />
-
-
+  <link rel="stylesheet" href="./styles/footer.css" />
   <script src="./components/header/header.js" type="module"></script>
 </head>
-<style>
-  body {
-    padding-top: 58px;
-  }
-</style>
 
 <body>
   <!-- Header -->
@@ -75,9 +67,15 @@
     </div>
 
     <!-- Favorites Grid -->
-    <div class="favorites-grid" id="favorites-grid"></div>
-    <div class="empty-state" id="empty-state" style="display: none"></div>
+    <section class="favorites-list">
+      <div id="favorites-grid" class="favorites-grid"></div>
+      <div id="empty-state">
+      <i class="fas fa-heart-broken text-3xl mb-2"></i>
+      <p>Chưa có sản phẩm yêu thích nào.</p>
+    </div>
+    </section>
 
+    
 
     <!-- Empty State -->
     <div class="empty-state" id="empty-state">
@@ -158,7 +156,7 @@
       </div>
     </div>
   </footer>
-    <script src="./js/favorites.js" type="module"></script>
+  <script src="./js/favorites.js" type="module"></script>
 
 </body>
 

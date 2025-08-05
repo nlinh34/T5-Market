@@ -554,7 +554,7 @@ nav ul li a.active {
 }
 
 .like-btn .fa-heart {
-    color: #ccc;
+    color: #f97979;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
@@ -984,7 +984,7 @@ nav ul li a.active {
     background: #fff;
     transition: all 0.3s ease;
     position: relative;
-    font-family: Arial, sans-serif;
+
 }
 
 .new-product-card:hover .action-icons {

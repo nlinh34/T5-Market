@@ -6,6 +6,7 @@
     <title>Quản lý cửa hàng - T5Market</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./styles/shop-manager.css">
+    <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/footer.css">
     <link rel="stylesheet" href="./styles/header.css">
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
@@ -47,15 +48,15 @@
                     </div>
                 </div>
                 <div class="shop-stats">
-                    <div class="stat-item">
+                    <div class="stat-item-shop">
                         <div class="stat-label">Sản phẩm: </div>
                         <div class="stat-value" id="shopProductsCount">30</div>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item-shop">
                         <div class="stat-label">Đã bán: </div>
                         <div class="stat-value" id="shopSoldCount">4</div>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item-shop">
                         <div class="stat-label">Tham gia: </div>
                         <div class="stat-value" id="shopJoinedDate">4 năm</div>
                     </div>
@@ -104,16 +105,13 @@
                         </div>
                     </div>
                     <div class="edit-section">
-                        <button class="btn btn-secondary" id="editShopInfoBtn">
+                        <button class="btn1 btn-secondary" id="editShopInfoBtn">
                             <i class="fas fa-edit"></i>
                             Chỉnh sửa thông tin
                         </button>
                     </div>
                 </div>
-                
-                <div class="sidebar">
-                    <!-- Shop Policies -->
-                    <div class="card">
+                <div class="card">
                         <h3 class="card-title">
                             <i class="fas fa-shield-alt"></i>
                             Chính sách cửa hàng
@@ -123,12 +121,11 @@
                         </ul>
                         <p class="no-policy-message hidden" id="noPolicyMessage">Chưa có chính sách nào được thêm.</p>
                         <div class="edit-section">
-                            <button class="btn btn-secondary" id="editPoliciesBtn">
+                            <button class="btn1 btn-secondary" id="editPoliciesBtn">
                                 <i class="fas fa-edit"></i>
                                 Chỉnh sửa chính sách
                             </button>
                         </div>
-                    </div>
                 </div>
             </div>
 
@@ -140,7 +137,7 @@
                             <i class="fas fa-box"></i>
                             Sản phẩm đang bán
                         </h3>
-                        <a href="/frontend/post-products.html" class="btn btn-primary">
+                        <a href="./post-products.html" class="btn1 btn-primary1">
                             <i class="fas fa-plus"></i> Đăng sản phẩm
                         </a>
                     </div>
@@ -179,7 +176,7 @@
                             <i class="fas fa-users"></i>
                             Quản lý nhân viên
                         </h3>
-                        <button class="btn btn-primary" id="addStaffBtn">
+                        <button class="btn btn-primary1" id="addStaffBtn">
                             <i class="fas fa-plus"></i> Thêm nhân viên
                         </button>
                     </div>
@@ -211,8 +208,8 @@
                                     <td>Nhân viên</td>
                                     <td>18/06/2024</td>
                                     <td>
-                                        <button class="btn btn-icon" title="Sửa quyền"><i class="fas fa-user-shield"></i></button>
-                                        <button class="btn btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                        <button class="btn1 btn-icon" title="Sửa quyền"><i class="fas fa-user-shield"></i></button>
+                                        <button class="btn1 btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
                                     </td>
                                 </tr>
                                 <!-- Example Row 2 -->
@@ -226,8 +223,8 @@
                                     <td>Nhân viên</td>
                                     <td>15/05/2024</td>
                                     <td>
-                                        <button class="btn btn-icon" title="Sửa quyền"><i class="fas fa-user-shield"></i></button>
-                                        <button class="btn btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                        <button class="btn1 btn-icon" title="Sửa quyền"><i class="fas fa-user-shield"></i></button>
+                                        <button class="btn1 btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -375,8 +372,8 @@
                         <input type="tel" id="editShopPhone3" placeholder="Số điện thoại phụ 2 (Nếu có)">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary close-button">Hủy</button>
-                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                        <button type="button" class="btn1 btn-secondary close-button">Hủy</button>
+                        <button type="submit" class="btn1 btn-primary1">Lưu thay đổi</button>
                     </div>
                 </form>
             </div>
@@ -491,8 +488,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close-button">Hủy</button>
-                <button type="button" class="btn btn-primary" id="confirmEditPoliciesBtn">Xác nhận</button>
+                <button type="button" class="btn1 btn-secondary close-button">Hủy</button>
+                <button type="button" class="btn1 btn-primary1" id="confirmEditPoliciesBtn">Xác nhận</button>
             </div>
         </div>
     </div>
@@ -522,8 +519,8 @@
                         <span class="error-message" id="staffPasswordError" style="display: none;">Vui lòng nhập mật khẩu.</span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary close-button">Hủy</button>
-                        <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+                        <button type="button" class="btn1 btn-secondary close-button">Hủy</button>
+                        <button type="submit" class="btn1 btn-primary1">Tạo tài khoản</button>
                     </div>
                 </form>
             </div>
@@ -556,8 +553,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary close-button">Hủy</button>
-                        <button type="submit" class="btn btn-primary">Lưu quyền</button>
+                        <button type="button" class="btn1 btn-secondary close-button">Hủy</button>
+                        <button type="submit" class="btn1 btn-primary1">Lưu quyền</button>
                     </div>
                 </form>
             </div>

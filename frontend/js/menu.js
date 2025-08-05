@@ -1,8 +1,9 @@
 import { ProductAPI } from "../APIs/productAPI.js";
 import { CategoryAPI } from "../APIs/categoryAPI.js";
+import FavoriteAPI from "../APIs/favoriteAPI.js";
 import CartAPI from "../APIs/cartAPI.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const container = document.querySelector(".product-grid");
   const paginationContainer = document.querySelector(".pagination-container");
   const minPriceInput = document.getElementById("minPrice");
@@ -13,6 +14,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const fallbackImg = "https://t4.ftcdn.net/jpg/05/82/98/21/360_F_582982149_kN0XAeccaysWXvcHr4s3bhitFSVU8rlP.jpg";
   let currentPage = 1;
   const limit = 15;
+  let favoriteProductIds = [];
+  const loadFavorites = async () => {
+    try {
+      const favorites = await FavoriteAPI.getFavorites();
+      favoriteProductIds = favorites.map(p => p._id);
+    } catch (err) {
+      console.warn("Không thể tải danh sách yêu thích:", err);
+      favoriteProductIds = [];
+    }
+  };
+
+  const attachFavoriteEvents = () => {
+    document.querySelectorAll(".like-btn").forEach(btn => {
+      btn.onclick = async () => {
+        const productId = btn.dataset.id;
+        const isLiked = btn.classList.contains("liked");
+        try {
+          if (isLiked) {
+            await FavoriteAPI.removeFavorite(productId);
+            btn.classList.remove("liked");
+            btn.querySelector("i").classList.replace("fa-solid", "fa-regular");
+          } else {
+            await FavoriteAPI.addFavorite(productId);
+            btn.classList.add("liked");
+            btn.querySelector("i").classList.replace("fa-regular", "fa-solid");
+          }
+        } catch (err) {
+          alert("⚠️ Vui lòng đăng nhập để sử dụng tính năng yêu thích.");
+        }
+      };
+    });
+  };
 
   const optimizeCloudinaryUrl = (url, width = 400) => {
     return url.includes("/upload/")
@@ -34,12 +67,17 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = url;
   });
 
-  const generateProductCard = (product, imgSrc, imgElId) => `
+  const generateProductCard = (product, imgSrc, imgElId) => {
+    const isLiked = favoriteProductIds.includes(product._id);
+    const heartIcon = isLiked ? "fa-solid" : "fa-regular";
+    const likedClass = isLiked ? "liked" : "";
+
+    return `
     <div class="new-product-card">
       <div class="card-top">
         <img loading="lazy" decoding="async" fetchpriority="low" width="200" height="200" id="${imgElId}" src="${imgSrc}" alt="${product.name}" />
-        <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
-          <i class="fa-regular fa-heart"></i>
+        <button class="like-btn ${likedClass}" data-id="${product._id}" title="Yêu thích">
+          <i class="${heartIcon} fa-heart"></i>
         </button>
         <div class="action-icons">
           <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
@@ -63,6 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     </div>
   `;
+  };
+
 
   const renderProducts = async (products) => {
     container.innerHTML = "";
@@ -83,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     container.appendChild(fragment);
     attachAddToCartEvents();
+    attachFavoriteEvents();
   };
 
   const attachAddToCartEvents = () => {
@@ -177,6 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   applyPriceFilterBtn.addEventListener("click", () => handleFilter(1));
 
   updatePriceValues();
+  await loadFavorites();
   loadCategorySidebar();
   loadAllProducts();
 });

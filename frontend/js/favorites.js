@@ -1,157 +1,116 @@
 import { CategoryAPI } from "../APIs/categoryAPI.js";
+import FavoriteAPI from "../APIs/favoriteAPI.js";
+import { formatCurrency } from "../APIs/utils/formatter.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const favoritesGrid = document.getElementById("favorites-grid");
   const emptyState = document.getElementById("empty-state");
   const favoritesTotal = document.getElementById("favorites-total");
-  const sortSelect = document.getElementById("sort-by");
-  const categorySelect = document.getElementById("category-filter");
-  const clearFiltersBtn = document.getElementById("clear-filters");
-
-  let allFavorites = [];
-
-  // Load danh mục từ DB
-  await loadCategories();
-
-  // Lấy ID yêu thích từ localStorage
-  const favoriteIds = JSON.parse(localStorage.getItem("favorites")) || [];
-
-  if (favoriteIds.length === 0) {
-    favoritesGrid.innerHTML = "";
-    emptyState.style.display = "block";
-    return;
-  }
 
   try {
-    const res = await fetch("https://t5-market.onrender.com/products/approved");
-    const result = await res.json();
-    const allProducts = result.data;
+    // Lấy danh sách sản phẩm yêu thích từ API
+    const favoriteProducts = await FavoriteAPI.getFavorites();
+    console.log("📦 favoriteProducts:", favoriteProducts);
+    // Cập nhật tổng số sản phẩm yêu thích
+    favoritesTotal.textContent = favoriteProducts.length;
 
-    allFavorites = allProducts.filter(p => favoriteIds.includes(p._id));
-    favoritesTotal.textContent = allFavorites.length;
-    renderFavorites(allFavorites);
-  } catch (err) {
-    favoritesGrid.innerHTML = "<p>Lỗi khi tải sản phẩm.</p>";
-    console.error("Lỗi tải sản phẩm yêu thích:", err);
-  }
-
-  // ========== Bộ lọc ==========
-  sortSelect.addEventListener("change", () => {
-    const sorted = sortFavorites(allFavorites, sortSelect.value);
-    renderFavorites(sorted);
-  });
-
-  categorySelect.addEventListener("change", () => {
-    const filtered = filterByCategory(allFavorites, categorySelect.value);
-    renderFavorites(filtered);
-  });
-
-  clearFiltersBtn.addEventListener("click", () => {
-    sortSelect.value = "newest";
-    categorySelect.value = "all";
-    renderFavorites(allFavorites);
-  });
-
-  // ========== Danh mục thật ==========
-  async function loadCategories() {
-    categorySelect.innerHTML = `<option value="all">Tất cả danh mục</option>`;
-    try {
-      const res = await CategoryAPI.getAllCategories();
-      const categories = res.data;
-
-      categories.forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat._id;
-        option.textContent = cat.name;
-        categorySelect.appendChild(option);
-      });
-    } catch (err) {
-      console.error("Lỗi khi tải danh mục:", err);
-    }
-  }
-
-  // ========== Render ==========
-  function renderFavorites(products) {
-    if (!products || products.length === 0) {
+    // Nếu không có sản phẩm nào thì hiện trạng thái rỗng
+    if (favoriteProducts.length === 0) {
       favoritesGrid.innerHTML = "";
       emptyState.style.display = "block";
       return;
     }
 
+    // Nếu có sản phẩm, ẩn trạng thái rỗng
     emptyState.style.display = "none";
 
-    const html = products.map(p => `
-      <div class="favorite-card">
-        <img loading="lazy" src="${p.image_url}" alt="${p.name}" class="favorite-image" />
-        <div class="favorite-info">
-          <h3 class="favorite-name">${p.name}</h3>
-          <div class="favorite-price">${formatPrice(p.price)}</div>
-          <div class="favorite-actions">
-            <button class="action-btn add-to-cart-btn" data-id="${p._id}">
-              <i class="fas fa-cart-plus"></i> 
-            </button>
-            <button class="action-btn remove-favorite-btn" data-id="${p._id}">
-              <i class="fas fa-heart"></i> 
-            </button>
-          </div>
+    // Render danh sách sản phẩm
+    renderFavorites(favoriteProducts);
+  } catch (err) {
+    console.error("Lỗi khi tải danh sách yêu thích:", err.message);
+  }
+
+  function renderFavorites(products) {
+    favoritesGrid.innerHTML = "";
+
+    products.forEach((product) => {
+      const card = document.createElement("div");
+      card.className = "new-product-card";
+      console.log(product)
+      const isLiked = true; // Vì đang ở trang yêu thích, luôn là true
+      const heartIcon = isLiked ? "fa-solid" : "fa-regular";
+      const likedClass = isLiked ? "liked" : "";
+
+      card.innerHTML = `
+      <div class="card-top">
+        <img loading="lazy" decoding="async" fetchpriority="low" width="200" height="200" 
+          src="${product.images?.[0] || '/images/no-image.png'}" 
+          alt="${product.name}" />
+        
+        <button class="like-btn ${likedClass}" data-product-id="${product._id}" title="Bỏ yêu thích">
+          <i class="${heartIcon} fa-heart"></i>
+        </button>
+        
+        <div class="action-icons">
+          <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+          <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </button>
         </div>
       </div>
-    `).join("");
 
-    favoritesGrid.innerHTML = html;
+      <div class="card-content">
+        <h4 class="product-name">${product.name}</h4>
+        
+        <div class="price-wrapper">
+          <span class="current-price">${formatCurrency(product.price)}</span>
+        </div>
 
-    document.querySelectorAll(".remove-favorite-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
-        removeFromFavorites(id);
-      });
+        <div class="rating">
+          ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
+          <span>${(product.rating || 4.33).toFixed(2)}</span>
+        </div>
+
+        <div class="store">
+          <i class="fa-solid fa-store"></i> ${product.shop?.name || "Không rõ"}
+        </div>
+      </div>
+    `;
+
+      favoritesGrid.appendChild(card);
     });
 
-    document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
-        addToCart(id);
+    attachUnfavoriteEvents();
+  }
+
+
+  function attachUnfavoriteEvents() {
+    const likeButtons = document.querySelectorAll(".like-btn");
+
+    likeButtons.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const productId = btn.dataset.productId;
+        try {
+          await FavoriteAPI.removeFavorite(productId);
+
+          // Xóa sản phẩm khỏi DOM
+          const productCard = btn.closest(".new-product-card");
+          productCard.remove();
+
+          // Cập nhật tổng số
+          const currentTotal = document.querySelectorAll(".new-product-card").length;
+          favoritesTotal.textContent = currentTotal;
+
+          // Hiện trạng thái rỗng nếu hết sản phẩm
+          if (currentTotal === 0) {
+            emptyState.style.display = "block";
+          }
+        } catch (err) {
+          console.error("Lỗi khi bỏ yêu thích:", err.message);
+        }
       });
     });
-  }
-
-  function sortFavorites(data, type) {
-    const sorted = [...data];
-    switch (type) {
-      case "newest":
-        return sorted.reverse();
-      case "oldest":
-        return sorted;
-      case "price-asc":
-        return sorted.sort((a, b) => a.price - b.price);
-      case "price-desc":
-        return sorted.sort((a, b) => b.price - a.price);
-      default:
-        return sorted;
-    }
-  }
-
-  function filterByCategory(data, category) {
-    if (category === "all") return data;
-    return data.filter(p => p.category === category);
-  }
-
-  function formatPrice(price) {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price).replace("₫", "đ");
-  }
-
-  function removeFromFavorites(id) {
-    if (!confirm("Bạn có chắc muốn bỏ yêu thích sản phẩm này không?")) return;
-    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    favorites = favorites.filter(item => item !== id);
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    window.location.reload();
-  }
-
-  function addToCart(id) {
-    alert("Đã thêm sản phẩm vào giỏ hàng!");
   }
 });

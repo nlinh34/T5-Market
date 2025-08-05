@@ -19,7 +19,7 @@ function renderOrderSummaryFromLocal() {
 
     return `
       <div class="order-item">
-        <img src="${item.image}" alt="${item.name}" />
+        <img loading="lazy" src="${item.image}" alt="${item.name}" />
         <div class="order-item-details">
           <div class="name-prod">${item.name}</div>
           <div>SL: ${item.qty}</div>

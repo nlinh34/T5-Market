@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     <hr/>
    ${items.map(item => `
   <div style="display: flex; align-items: center; margin-bottom: 12px; gap: 10px;">
-    <img src="${item.image}" alt="${item.name}" 
+    <img loading="lazy" src="${item.image}" alt="${item.name}" 
       style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
     <div>
       <strong>${item.name}</strong><br />

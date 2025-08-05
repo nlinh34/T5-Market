@@ -66,6 +66,12 @@ const UserSchema = new mongoose.Schema(
       required: false,
       default: "",
     },
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      }
+    ],
   },
   { timestamps: true }
 );
