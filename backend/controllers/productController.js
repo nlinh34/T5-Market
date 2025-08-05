@@ -176,7 +176,6 @@ const approveProduct = async (req, res) => {
     }
 };
 
-
 const rejectProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -245,35 +244,30 @@ const getPendingProducts = async (req, res) => {
     }
 };
 
-
-
 const getApprovedProducts = async (req, res) => {
-  const { cursor, limit = 15 } = req.query;
-  const query = { status: "approved" };
-  if (cursor) query._id = { $lt: cursor };
+    const { cursor, limit = 15 } = req.query;
+    const query = { status: "approved" };
+    if (cursor) query._id = { $lt: cursor };
 
-  const products = await Product.find(query)
-    .select("name price images averageRating shop category createdAt")
-    .populate("shop", "name logoUrl address status shopStatus createdAt")
-    .populate("category", "name")
-    .sort({ _id: -1 })
-    .limit(parseInt(limit))
-    .lean();
+    const products = await Product.find(query)
+        .select("name price images averageRating shop category createdAt")
+        .populate("shop", "name logoUrl address status shopStatus createdAt")
+        .populate("category", "name")
+        .sort({ _id: -1 })
+        .limit(parseInt(limit))
+        .lean();
 
-  const total = await Product.estimatedDocumentCount({ status: "approved" }).catch(() => null);
+    const total = await Product.estimatedDocumentCount({ status: "approved" }).catch(() => null);
 
-  return res.json({
-    success: true,
-    data: products,
-    pagination: {
-      nextCursor: products.length ? products[products.length - 1]._id : null,
-      total, limit: parseInt(limit)
-    }
-  });
+    return res.json({
+        success: true,
+        data: products,
+        pagination: {
+            nextCursor: products.length ? products[products.length - 1]._id : null,
+            total, limit: parseInt(limit)
+        }
+    });
 };
-
-
-
 
 const getRejectedProducts = async (req, res) => {
     try {
@@ -287,7 +281,7 @@ const getRejectedProducts = async (req, res) => {
             data: rejectedProducts,
         });
     } catch (error) {
-        console.error("❌ Lỗi khi lấy sản phẩm bị từ chối:", error);
+        console.error("Lỗi khi lấy sản phẩm bị từ chối:", error);
         res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
             error: "Lỗi khi lấy danh sách sản phẩm bị từ chối",
         });
@@ -323,19 +317,18 @@ const getProductById = async (req, res) => {
     }
 };
 
-
 const getAllProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
-        const { keyword, sortBy, status } = req.query; // Thêm keyword và sortBy
+        const { keyword, sortBy, status } = req.query;
 
         let query = { shop: shopId };
-        if (status && status !== 'all') { // Lọc theo trạng thái nếu có
+        if (status && status !== 'all') {
             query.status = status;
         }
 
         if (keyword) {
-            query.name = { $regex: keyword, $options: 'i' }; // Tìm kiếm theo tên sản phẩm (không phân biệt chữ hoa, chữ thường)
+            query.name = { $regex: keyword, $options: 'i' };
         }
 
         let sortOptions = {};
@@ -343,7 +336,7 @@ const getAllProductsByShopId = async (req, res) => {
             const [field, order] = sortBy.split('-');
             sortOptions[field] = order === 'asc' ? 1 : -1;
         } else {
-            sortOptions = { createdAt: -1 }; // Mặc định sắp xếp mới nhất
+            sortOptions = { createdAt: -1 };
         }
 
         const products = await Product.find(query)
@@ -358,7 +351,6 @@ const getAllProductsByShopId = async (req, res) => {
         res.status(500).json({ error: "Lỗi hệ thống" });
     }
 };
-
 
 const getApprovedProductsByShopId = async (req, res) => {
     try {
@@ -387,7 +379,6 @@ const getApprovedProductsByShopId = async (req, res) => {
     }
 };
 
-
 const getPendingProductsByShopId = async (req, res) => {
     try {
         const { shopId } = req.params;
@@ -412,7 +403,6 @@ const getPendingProductsByShopId = async (req, res) => {
         res.status(500).json({ error: "Lỗi hệ thống" });
     }
 };
-
 
 const getRejectedProductsByShopId = async (req, res) => {
     try {
@@ -439,6 +429,87 @@ const getRejectedProductsByShopId = async (req, res) => {
     }
 };
 
+const getPriceRange = async (req, res) => {
+  try {
+    const products = await Product.find({ status: "approved" }).select("price");
+
+    if (!products.length) {
+      return res.json({ min: 0, max: 0 });
+    }
+
+    const prices = products.map(p => p.price);
+    const min = 0;
+    const maxRaw = Math.max(...prices);
+
+    const roundedMax = Math.ceil(maxRaw / 1_000_000) * 1_000_000;
+
+    res.json({ min, max: roundedMax });
+  } catch (err) {
+    console.error("Lỗi khi lấy khoảng giá:", err);
+    res.status(500).json({ error: "Lỗi khi lấy khoảng giá sản phẩm" });
+  }
+};
+
+const getFilteredProducts = async (req, res) => {
+    try {
+        const { category, minPrice, maxPrice, page = 1, limit = 15 } = req.query;
+        const query = { status: "approved" };
+
+        if (category) {
+            const categoryIds = category
+                .split(",")
+                .filter(id => mongoose.Types.ObjectId.isValid(id));
+            if (!categoryIds.length) {
+                console.warn("⚠️ Không có categoryId nào hợp lệ");
+                return res.status(400).json({ error: "ID danh mục không hợp lệ" });
+            }
+            query.category = { $in: categoryIds };
+        }
+
+        if (minPrice != null || maxPrice != null) {
+            query.price = {};
+
+            if (minPrice != null && minPrice !== "")
+                query.price.$gte = parseFloat(minPrice);
+
+            if (maxPrice != null && maxPrice !== "")
+                query.price.$lte = parseFloat(maxPrice);
+
+            if (Object.keys(query.price).length === 0) {
+                delete query.price;
+            }
+        }
+
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const [products, total] = await Promise.all([
+            Product.find(query)
+                .select("name price images averageRating shop category createdAt")
+                .populate("shop", "name logoUrl address")
+                .populate("category", "name")
+                .sort({ _id: -1 })
+                .skip(skip)
+                .limit(parseInt(limit))
+                .lean(),
+            Product.countDocuments(query),
+        ]);
+
+        return res.json({
+            success: true,
+            data: products,
+            pagination: {
+                total,
+                totalPages: Math.ceil(total / limit),
+                currentPage: parseInt(page),
+            },
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi lọc sản phẩm:", error);
+        return res.status(500).json({ error: "Lỗi hệ thống khi lọc sản phẩm" });
+    }
+};
+
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -453,5 +524,7 @@ module.exports = {
     getAllProductsByShopId,
     getApprovedProductsByShopId,
     getRejectedProductsByShopId,
-    getPendingProductsByShopId
+    getPendingProductsByShopId,
+    getFilteredProducts,
+    getPriceRange
 };

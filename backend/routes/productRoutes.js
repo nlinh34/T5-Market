@@ -14,7 +14,9 @@ const {
     getRejectedProductsByShopId,
     getAllProducts,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getFilteredProducts,
+    getPriceRange
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
@@ -28,6 +30,10 @@ router.get("/get-all-products", getAllProducts);
 router.get("/get-pending-products", getPendingProducts);
 router.get("/get-approved-products", getApprovedProducts);
 router.get("/get-rejected-products", getRejectedProducts);
+
+//Lọc sản phẩm theo danh mục
+router.get("/price-range", getPriceRange);
+router.get("/filter", getFilteredProducts);
 
 // Duyệt hoặc từ chối sản phẩm
 router.put("/approve-product/:id", protect, authorize(Role.ADMIN, Role.MOD, Role.MANAGER), approveProduct);
@@ -43,6 +49,7 @@ router.get("/by-shop/:shopId", getAllProductsByShopId);
 router.get("/by-shop/:shopId/approved", getApprovedProductsByShopId);
 router.get("/by-shop/:shopId/pending", getPendingProductsByShopId);
 router.get("/by-shop/:shopId/rejected", getRejectedProductsByShopId);
+
 
 
 module.exports = router;

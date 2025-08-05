@@ -53,7 +53,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       : url;
   };
 
-  const formatPriceVND = (price) => price.toLocaleString("vi-VN") + " VND";
+  const formatPriceVND = (price) => price.toLocaleString("vi-VN") + " đ";
+
+  const loadPriceRange = async () => {
+    try {
+      const result = await ProductAPI.getPriceRange();
+      const { min, max } = result;
+
+      if (typeof min === "number" && typeof max === "number") {
+        minPriceInput.min = min;
+        minPriceInput.max = max;
+        maxPriceInput.min = min;
+        maxPriceInput.max = max;
+
+        minPriceInput.value = 0;
+        maxPriceInput.value = max;
+
+        updatePriceValues();
+      }
+    } catch (err) {
+      console.error("Không thể lấy khoảng giá:", err);
+    }
+  };
 
   const updatePriceValues = () => {
     minPriceValue.textContent = formatPriceVND(parseInt(minPriceInput.value));
@@ -133,8 +154,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const token = localStorage.getItem("token");
         if (!token) return alert("⚠️ Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
         try {
-          const res = await CartAPI.addProduct(productId, 1);
+          const res = await CartAPI.addToCart(productId, 1);
           alert(res.success ? "✅ Đã thêm sản phẩm vào giỏ hàng!" : "❌ Thêm thất bại.");
+          window.dispatchEvent(new Event("cartUpdated"));
         } catch (err) {
           alert("❌ Có lỗi xảy ra khi thêm vào giỏ hàng.");
         }
@@ -164,24 +186,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   const handleFilter = async (page = 1) => {
-    const selectedIds = [...document.querySelectorAll(".category-filter:checked")].map(cb => cb.value);
-    const minPrice = parseInt(minPriceInput.value);
-    const maxPrice = parseInt(maxPriceInput.value);
+    const selectedIds = [...document.querySelectorAll(".category-filter:checked")]
+      .map(cb => cb.value)
+      .filter(id => /^[a-f\d]{24}$/i.test(id));  // chỉ giữ ObjectId hợp lệ
+    console.log("Selected categoryIds:", selectedIds);
+    const minPrice = parseInt(minPriceInput.value) || 0;
+    const maxPrice = parseInt(maxPriceInput.value) || 999999999;
 
     container.innerHTML = "🔍 Đang lọc sản phẩm...";
+
     try {
-      const result = await ProductAPI.getAllProductsByFilter({ categoryIds: selectedIds, minPrice, maxPrice, page, limit });
-      if (!result.data?.length) {
+      const result = await ProductAPI.getAllProductsByFilter({
+        category: selectedIds,
+        minPrice,
+        maxPrice,
+        page,
+        limit
+      });
+      const products = result.data;
+      const pagination = result.pagination;
+
+      if (!products || products.length === 0) {
         container.innerHTML = "<p>❗Không tìm thấy sản phẩm nào phù hợp.</p>";
         paginationContainer.innerHTML = "";
         return;
       }
-      await renderProducts(result.data);
-      renderPagination(result.pagination.totalPages, page, true);
+
+      await renderProducts(products);
+      renderPagination(pagination.totalPages || 1, page, true);
     } catch (err) {
+      console.error("Lỗi khi lọc sản phẩm:", err);
       container.innerHTML = "<p>⚠️ Đã xảy ra lỗi khi lọc sản phẩm.</p>";
     }
   };
+
 
   const loadCategorySidebar = async () => {
     try {
@@ -189,7 +227,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const categories = result.data;
       const categoryList = document.querySelector(".category-filter-list");
       if (!categoryList || !categories) return;
-
       categoryList.innerHTML = categories.map(c => `
         <li>
           <label>
@@ -218,6 +255,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   applyPriceFilterBtn.addEventListener("click", () => handleFilter(1));
 
   updatePriceValues();
+  await loadPriceRange();
   await loadFavorites();
   loadCategorySidebar();
   loadAllProducts();

@@ -361,36 +361,42 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             // Hiển thị sản phẩm khác
-            grid.innerHTML = otherProducts.map(product => `
-                <div class="new-product-card">
-                    <div class="card-top">
-                        <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
-                        <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
-                        <i class="fa-regular fa-heart" ></i>
-                        </button>
-                        <div class="action-icons">
-                        <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                        <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
-                            <i class="fa-solid fa-cart-shopping""></i>
-                        </button>
+            grid.innerHTML = otherProducts.map(product => {
+    const isLiked = favoriteProductIds.includes(product._id);
+    const likedClass = isLiked ? "liked" : "";
+    const heartIcon = isLiked ? "fa-solid" : "fa-regular";
 
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">${product.name}</h3>
-                        <div class="price-wrapper">
-                            <span class="current-price-card">${product.price.toLocaleString("vi-VN")} đ</span>
-                        </div>
-                        <div class="rating">
-                            ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
-                            <span>${(product.rating || 4.33).toFixed(2)}</span>
-                        </div>
-                        <div class="store">Cửa hàng: <strong>${product.shop?.name || 'Unknown'}</strong></div>
-                    </div>
+    return `
+        <div class="new-product-card">
+            <div class="card-top">
+                <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
+                <button class="like-btn ${likedClass}" data-id="${product._id}" title="Thêm yêu thích">
+                    <i class="${heartIcon} fa-heart"></i>
+                </button>
+                <div class="action-icons">
+                    <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                    <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </button>
                 </div>
-            `).join("");
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <div class="price-wrapper">
+                    <span class="current-price-card">${product.price.toLocaleString("vi-VN")} đ</span>
+                </div>
+                <div class="rating">
+                    ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
+                    <span>${(product.rating || 4.33).toFixed(2)}</span>
+                </div>
+                <div class="store">Cửa hàng: <strong>${product.shop?.name || 'Unknown'}</strong></div>
+            </div>
+        </div>
+    `;
+}).join("");
+
 
         } catch (error) {
             console.error("Lỗi khi tải sản phẩm khác từ shop:", error);
@@ -452,72 +458,69 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    let isAdding = false;
-
-    document.addEventListener("click", async (e) => {
-        const addToCartBtn = e.target.closest(".add-to-cart-btn");
-        if (!addToCartBtn) return;
-
-        if (isAdding) return; // ✅ Chặn click khi đang thêm
-
-        isAdding = true;
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        const productId = addToCartBtn.dataset.id;
-        if (!productId) {
-            alert("❌ Không tìm thấy ID sản phẩm!");
-            isAdding = false;
-            return;
-        }
-
-        try {
-            await CartAPI.addToCart(productId, 1);
-            window.dispatchEvent(new Event("cartUpdated"));
-            alert("✅ Đã thêm vào giỏ hàng!");
-        } catch (error) {
-            console.error("Lỗi khi thêm vào giỏ hàng:", error);
-            alert("❌ Thêm vào giỏ hàng thất bại.");
-        } finally {
-            isAdding = false;
-        }
-    });
-    document.addEventListener("click", async (e) => {
-        const likeBtn = e.target.closest(".like-main-btn");
-        if (!likeBtn) return;
-
-        e.preventDefault();
-        const productId = likeBtn.dataset.id;
-        const icon = likeBtn.querySelector("i");
+    async function toggleFavorite(button) {
+        const productId = button.dataset.id;
+        const icon = button.querySelector("i");
 
         if (!productId || !icon) return;
 
         try {
-  if (likeBtn.classList.contains("liked")) {
-    await FavoriteAPI.removeFavorite(productId);
-    likeBtn.classList.remove("liked");
-    icon.classList.remove("fa-solid");
-    icon.classList.add("fa-regular");
-  } else {
-    try {
-      await FavoriteAPI.addFavorite(productId);
-    } catch (err) {
-      // Nếu sản phẩm đã tồn tại trong danh sách yêu thích, bỏ qua lỗi và cập nhật UI
-      if (err.message?.includes("nằm trong danh sách yêu thích")) {
-        console.warn("Đã có trong yêu thích, cập nhật lại giao diện");
-      } else {
-        throw err;
-      }
+            if (button.classList.contains("liked")) {
+                await FavoriteAPI.removeFavorite(productId);
+                button.classList.remove("liked");
+                icon.classList.remove("fa-solid");
+                icon.classList.add("fa-regular");
+            } else {
+                try {
+                    await FavoriteAPI.addFavorite(productId);
+                } catch (err) {
+                    if (!err.message?.includes("nằm trong danh sách yêu thích")) throw err;
+                }
+                button.classList.add("liked");
+                icon.classList.remove("fa-regular");
+                icon.classList.add("fa-solid");
+            }
+        } catch (error) {
+            console.error("Lỗi xử lý yêu thích:", error);
+            alert("❌ Thao tác thất bại, vui lòng thử lại!");
+        }
     }
 
-    likeBtn.classList.add("liked");
-    icon.classList.remove("fa-regular");
-    icon.classList.add("fa-solid");
-  }
-} catch (error) {
-  console.error("Lỗi xử lý yêu thích:", error);
-  alert("❌ Thao tác thất bại, vui lòng thử lại!");
-}
+    let isAdding = false;
+
+    document.addEventListener("click", async (e) => {
+        const likeBtn = e.target.closest(".like-main-btn, .like-btn");
+        if (likeBtn) {
+            e.preventDefault();
+            await toggleFavorite(likeBtn);
+            return;
+        }
+
+        const addToCartBtn = e.target.closest(".add-to-cart-btn");
+        if (addToCartBtn) {
+            if (isAdding) return;
+
+            isAdding = true;
+            e.preventDefault();
+
+            const productId = addToCartBtn.dataset.id;
+            if (!productId) {
+                alert("❌ Không tìm thấy ID sản phẩm!");
+                isAdding = false;
+                return;
+            }
+
+            try {
+                await CartAPI.addToCart(productId, 1);
+                window.dispatchEvent(new Event("cartUpdated"));
+                alert("✅ Đã thêm vào giỏ hàng!");
+            } catch (error) {
+                console.error("Lỗi khi thêm vào giỏ hàng:", error);
+                alert("❌ Thêm vào giỏ hàng thất bại.");
+            } finally {
+                isAdding = false;
+            }
+        }
     });
 
 });
