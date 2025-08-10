@@ -170,6 +170,84 @@
 }
 
 /* ====== Modal Overlay ====== */
+
+ #review-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  #review-modal .modal-content {
+    background-color: #fff;
+    margin: 80px auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+  }
+
+  #review-modal .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+  }
+
+  .product-review-card {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+  }
+
+  .product-review-card:last-child {
+    border-bottom: none;
+  }
+
+  .product-review-card h4 {
+    margin: 0 0 8px;
+  }
+
+  .product-review-card textarea {
+    width: 100%;
+    min-height: 60px;
+    margin-bottom: 8px;
+    resize: vertical;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .product-review-card .stars i {
+    font-size: 18px;
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .product-review-card .stars i.selected {
+    color: #ffc107;
+  }
+
+  .product-review-card button {
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .product-review-card button:hover {
+    background-color: #ffb300;
+  }
+  
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -424,7 +502,7 @@
 }
 
 .view-detail-btn {
-  width: 80px;
+  width: 100px;
   background-color: #30b66a;
   color: white;
   border: none;
@@ -438,7 +516,23 @@
   background-color: #35915e;
 }
 
+.review-btn{
+ width: 100px;
+  background-color: #fbbf24;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.review-btn:hover{
+background-color: #f59e0b;
+}
+
 .cancel-btn {
+  width: 100px;
   background-color: #f44336;
   color: white;
   border: none;
@@ -488,22 +582,11 @@
 }
 
 .product-list {
-  margin-top: 12px;
   border: 0px solid #ddd;
   border-radius: 6px;
   padding: 10px;
 }
 
-.product-row {
-  display: flex;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.product-row:last-child {
-  border-bottom: none;
-}
 
 .product-img {
   width: 60px;

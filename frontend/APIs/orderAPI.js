@@ -49,7 +49,7 @@ const OrderAPI = {
     try {
       const data = cancelReason ? { cancelReason } : {};
       const response = await apiCall({
-        endpoint: `/order//cancel-order/${orderId}`,
+        endpoint: `/order/cancel-order/${orderId}`,
         method: "PUT",
         data,
       });
@@ -109,6 +109,7 @@ const OrderAPI = {
       };
     }
   },
+  
   getOrdersByShop: async (shopId, status = null) => {
     try {
       if (!shopId) throw new Error("Thiếu shopId khi gọi getOrdersByShop");

@@ -28,6 +28,6 @@ const reviewSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-reviewSchema.index({ user: 1, product: 1 }, { unique: true }); // Mỗi user chỉ được đánh giá 1 lần/sp
+reviewSchema.index({ user: 1, product: 1, order: 1 }, { unique: true }); // Mỗi user chỉ đánh giá 1 lần/sp/đơn
 
 module.exports = mongoose.model("Review", reviewSchema);

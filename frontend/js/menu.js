@@ -155,10 +155,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!token) return alert("⚠️ Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
         try {
           const res = await CartAPI.addToCart(productId, 1);
-          alert(res.success ? "✅ Đã thêm sản phẩm vào giỏ hàng!" : "❌ Thêm thất bại.");
+          alert(res.success ? "Đã thêm sản phẩm vào giỏ hàng!" : "Bạn không thể thêm sản phẩm của cửa hàng này.");
           window.dispatchEvent(new Event("cartUpdated"));
         } catch (err) {
-          alert("❌ Có lỗi xảy ra khi thêm vào giỏ hàng.");
+          const errorMsg =
+            err?.response?.data?.message ||
+            err?.message ||
+            "❌ Có lỗi xảy ra khi thêm vào giỏ hàng.";
+
+          // Nếu là lỗi "mua sản phẩm từ shop của chính mình" thì xử lý yên lặng
+          if (errorMsg.includes("Bạn không thể mua sản phẩm từ shop của chính mình")) {
+            alert("⚠️ Bạn không thể mua sản phẩm của chính mình.");
+          } else {
+            alert(errorMsg);
+          }
         }
       };
     });

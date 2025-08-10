@@ -1,5 +1,7 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const Shop = require("../models/Shop");
+
 const mongoose = require("mongoose")
 
 // Thêm vào giỏ hàng
@@ -21,16 +23,25 @@ exports.addToCart = async (req, res) => {
       return res.status(400).json({ success: false, message: "Số lượng không hợp lệ" });
     }
 
-    const productExists = await Product.findById(product);
+    const productExists = await Product.findById(product).populate("shop");
     if (!productExists) {
       return res.status(404).json({ success: false, message: "Sản phẩm không tồn tại" });
     }
 
-    let cart = await Cart.findOne({ user: userId });
+    // 🚫 Chặn mua sản phẩm từ shop của chính mình (trả về 200 để không log lỗi đỏ ở console)
+    const ownShop = await Shop.findOne({ owner: new mongoose.Types.ObjectId(userId) }).select("_id");
+    if (ownShop && productExists.shop && productExists.shop._id.toString() === ownShop._id.toString()) {
+      return res.status(200).json({
+        success: false,
+        message: `Bạn không thể mua sản phẩm từ shop của chính mình.`
+      });
+    }
 
+    let cart = await Cart.findOne({ user: userId });
     if (!cart) {
       cart = new Cart({ user: userId, items: [] });
     }
+
     const itemIndex = cart.items.findIndex(item =>
       item.product?.toString() === product.toString()
     );
@@ -49,9 +60,10 @@ exports.addToCart = async (req, res) => {
     res.status(200).json({ success: true, message: "Đã thêm vào giỏ hàng", data: updatedCart });
   } catch (error) {
     console.error("❌ Lỗi thêm giỏ hàng:", error);
-    res.status(500).json({ success: false, message: "Lỗi server", error: error.message });
+    res.status(500).json({ success: false, message: "Lỗi server" });
   }
 };
+
 
 
 exports.getCart = async (req, res) => {

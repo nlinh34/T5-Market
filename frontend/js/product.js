@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Update product name
         document.querySelector(".product-title").textContent = data.name; document.querySelector('.product-category').innerHTML = `
-            <span class="pro-category">${data.category.name}</span>
+            <span class="pro-category">• ${data.category.name}</span>
         `;
         // Update product meta (price, stock, location, time)
         const isLiked = favoriteProductIds.includes(data._id);
