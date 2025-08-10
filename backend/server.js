@@ -7,7 +7,6 @@ const path = require("path");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
-const voucherRoutes = require("./routes/voucherRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const shopRoutes = require("./routes/shopRoutes");
@@ -33,7 +32,6 @@ connectDatabase()
     app.use("/auth", userRoutes);
     app.use("/products", productRoutes);
     app.use("/categories", categoryRoutes);
-    app.use("/vouchers", voucherRoutes);
     app.use("/cart", cartRoutes);
     app.use("/order", orderRoutes);
     app.use("/shop", shopRoutes);

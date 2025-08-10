@@ -1,10 +1,12 @@
 import OrderAPI from "../APIs/orderAPI.js";
+import { ReviewAPI } from "../APIs/reviewAPI.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const tabButtons = document.querySelectorAll(".sidebar-btn");
   const tabContents = document.querySelectorAll(".tab-content");
   const cancelModal = document.getElementById("cancel-modal");
   const orderDetailModal = document.getElementById("order-detail-modal");
+  const reviewModal = document.getElementById("review-modal");
 
   let orders = [];
   let currentPage = 1;
@@ -72,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
       paginated.forEach((order) => {
         const idx = order._index;
         html += `<tr>
-    <td class="order-code" data-index="${idx}" style="cursor:pointer;color:blue;text-decoration:underline;">
+    <td class="order-code" data-index="${idx}" style="cursor:pointer;color:blue;">
       ${order.orderCode}
     </td>
     <td>${new Date(order.createdAt).toLocaleString()}</td>
@@ -83,26 +85,24 @@ document.addEventListener("DOMContentLoaded", () => {
     </span></td>`;
 
         if (type === "all") {
-          html += `<td><div class="order-actions">`;
-
-          // Chỉ hiện nút xem chi tiết nếu không phải pending
-          if (["confirmed", "shipped", "delivered", "cancelled"].includes(order.status)) {
+          html += `<td>`;
+          if (order.status === "delivered") {
+            html += `<button class="review-btn" data-index="${idx}">
+              <i class="fa fa-star" aria-hidden="true"></i> Đánh giá
+            </button>`;
+          } else if (["confirmed", "shipped", "cancelled"].includes(order.status)) {
             html += `<button class="view-detail-btn" data-index="${idx}">
-                <i class="fa fa-eye" aria-hidden="true"></i>  Xem
-              </button>`;
+              <i class="fa fa-eye" aria-hidden="true"></i> Xem
+            </button>`;
           }
 
-          // Chỉ cho hủy nếu chưa giao hoặc chưa bị hủy
           if (order.status === "pending") {
-  html += `<button class="cancel-btn" data-index="${idx}">Hủy đơn</button>`;
-}
-
+            html += `<button class="cancel-btn" data-index="${idx}">Hủy đơn</button>`;
+          }
           html += `</div></td>`;
         }
-
         html += `</tr>`;
       });
-
     }
 
     html += `</tbody></table></div>`;
@@ -116,10 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     container.innerHTML = html;
+    bindActionButtons();
 
-    if (type === "all") {
-      bindActionButtons();
-    }
   }
 
   function bindActionButtons() {
@@ -148,64 +146,153 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".order-code").forEach((el) => {
       el.addEventListener("click", () => {
+        console.log("Đã click nút order");
         const idx = parseInt(el.dataset.index);
         showOrderDetail(orders[idx]);
       });
     });
 
+    document.querySelectorAll(".review-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.dataset.index);
+        console.log("orders[idx] = ", orders[idx]); //
+        showReviewModal(orders[idx]);
+      });
+    });
+  }
+
+  function showReviewModal(order) {
+    const productList = document.getElementById("review-product-list");
+    productList.innerHTML = "";
+
+    const items = order.products || order.order?.products || [];
+    if (!items.length) {
+      productList.innerHTML = `<p>Không có sản phẩm nào để đánh giá.</p>`;
+      return;
+    }
+
+    items.forEach((item) => {
+      const productId = item.productId?._id || item.productId || item._id;
+      const image = item.image?.startsWith("http")
+        ? item.image
+        : item.image
+          ? `https://t5-market.onrender.com/uploads/${item.image}`
+          : "https://via.placeholder.com/80x80?text=No+Image";
+
+      productList.insertAdjacentHTML(
+        "beforeend",
+        `
+      <div class="review-item" data-product-id="${productId}" style="border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:6px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <img src="${image}" alt="${item.name}" width="60" height="60" style="object-fit:cover; border-radius:6px;" />
+          <span style="font-size: 14px"><strong>${item.name}</strong></span>
+        </div>
+        <label>Đánh giá sao:
+          <select class="review-rating" style="margin-left: 10px;">
+            <option value="5">5 sao</option>
+            <option value="4">4 sao</option>
+            <option value="3">3 sao</option>
+            <option value="2">2 sao</option>
+            <option value="1">1 sao</option>
+          </select>
+        </label>
+        <br />
+        <textarea class="review-content" placeholder="Nhập nội dung đánh giá..." style="width:100%; margin-top:6px;"></textarea>
+        <br />
+        <button class="submit-product-review-btn" style="margin-top:5px; background:#28a745; color:white;">Gửi đánh giá</button>
+      </div>
+    `
+      );
+    });
+
+    reviewModal.style.display = "flex";
+
+    // Sự kiện gửi đánh giá
+    document.querySelectorAll(".submit-product-review-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const container = btn.closest(".review-item");
+        const productId = container.dataset.productId;
+        const rating = parseInt(container.querySelector(".review-rating").value);
+        const comment = container.querySelector(".review-content").value.trim();
+
+        if (!comment) return alert("Vui lòng nhập nội dung đánh giá.");
+        if (!rating || rating < 1 || rating > 5) return alert("Chọn số sao hợp lệ.");
+
+        try {
+          const { success, error } = await ReviewAPI.createReview({
+            productId,
+            orderId: order._id,
+            rating,
+            comment,
+          });
+
+          if (success) {
+            alert("Đánh giá thành công!");
+            btn.disabled = true;
+            btn.textContent = "Đã gửi";
+          } else {
+            alert("Lỗi gửi đánh giá: " + error);
+          }
+        } catch (err) {
+          console.error("Lỗi gửi đánh giá:", err);
+          alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+        }
+      });
+    });
   }
 
   function showOrderDetail(order) {
-    const itemsHtml = order.order?.items?.map(item => {
-      const image = item.image_url?.startsWith("http")
-        ? item.image_url
-        : item.image_url
-          ? `https://t5-market.onrender.com/uploads/${item.image_url}`
+    let subTotal = 0;
+    const itemsHtml = order.products?.map(item => {
+      const image = item.image?.startsWith("http")
+        ? item.image
+        : item.image
+          ? `https://t5-market.onrender.com/uploads/${item.image}`
           : "https://via.placeholder.com/80x80?text=No+Image";
-      return `<div class="product-row">
-        <img loading="lazy" src="${image}" alt="${item.name}" class="product-img" />
-        <div class="product-info">
-          <div class="product-name">${item.name}</div>
-          <div class="product-qty">Số lượng: <strong>${item.quantity}</strong></div>
-          <div class="product-price">${item.price.toLocaleString()}đ</div>
+
+      const itemTotal = item.price * item.quantity;
+      subTotal += itemTotal;
+      return `
+      <div style="display: flex; align-items: center; margin-bottom: 12px; gap: 10px;">
+        <img loading="lazy" src="${image}" alt="${item.name}" class="product-img" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
+        <div>
+          <strong>${item.name}</strong><br />
+          x${item.quantity} – ${item.price.toLocaleString()}đ
         </div>
       </div>`;
     }).join("") || "";
 
-    const sub = order.order?.subTotal || 0;
-    const discount = order.order?.discount || 0;
-    const total = order.order?.totalAmount || sub;
+    const discount = 0; // bạn có thể tự tính nếu có điều kiện nào đó
+    const total = subTotal - discount;
 
     document.getElementById("order-detail-content").innerHTML = `
       <h3><i class="fas fa-receipt"></i> Chi tiết đơn hàng</h3>
       <p><strong>Tên KH:</strong> ${order.shippingInfo?.fullName || ""}</p>
-      <p><strong>SĐT:</strong> ${order.shippingInfo?.phoneNumber || ""}</p>
-      <p><strong>Địa chỉ:</strong> ${order.shippingInfo?.fullAddress || ""}</p>
-      <p><strong>Ghi chú:</strong> ${order.shippingInfo?.note || ""}</p>
+      <p><strong>SĐT:</strong> ${order.shippingInfo?.phone || ""}</p>
+      <p><strong>Địa chỉ:</strong> ${order.shippingInfo?.address || ""}</p>
+      <p><strong>Ghi chú:</strong> ${order.shippingInfo?.note || "Không có ghi chú cho đơn hàng này."}</p>
       <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod || ""}</p>
       <h4><i class="fas fa-box-open"></i> Sản phẩm đã đặt</h4>
       <div class="product-list">${itemsHtml}</div>
       <hr/>
-      <div class="summary-row"><span>Tạm tính:</span><strong>${sub.toLocaleString()}đ</strong></div>
+      <div class="summary-row"><span>Tạm tính:</span><strong>${subTotal.toLocaleString()}đ</strong></div>
       <div class="summary-row"><span>Đã giảm:</span><strong>${discount.toLocaleString()}đ</strong></div>
       <div class="summary-row total"><span>Tổng tiền:</span><strong>${total.toLocaleString()}đ</strong></div>
     `;
     orderDetailModal.style.display = "flex";
   }
-
   async function confirmCancel(index) {
     const reasonInput = document.getElementById("cancel-reason");
     const reason = reasonInput.value.trim();
     if (!reason) return alert("Vui lòng nhập lý do.");
 
     const order = orders[index];
-    const orderId = order._id; // kiểm tra lại nếu key ID là khác
+    const orderId = order._id;
 
     try {
       const { success, error } = await OrderAPI.cancelOrder(orderId, reason);
       if (!success) return alert("Hủy đơn thất bại: " + error);
 
-      // Cập nhật lại local data sau khi API thành công
       order.status = "cancelled";
       order.cancelReason = reason;
       localStorage.setItem("userOrders", JSON.stringify(orders));
@@ -218,13 +305,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
   function bindModalEvents() {
     document.getElementById("cancel-close").onclick = () => cancelModal.style.display = "none";
     cancelModal.addEventListener("click", (e) => { if (e.target.id === "cancel-modal") cancelModal.style.display = "none"; });
 
     document.querySelector("#order-detail-modal .modal-close").onclick = () => orderDetailModal.style.display = "none";
     orderDetailModal.addEventListener("click", (e) => { if (e.target.id === "order-detail-modal") orderDetailModal.style.display = "none"; });
+
+    document.querySelector("#review-modal .modal-close").onclick = () => reviewModal.style.display = "none";
+    reviewModal.addEventListener("click", (e) => { if (e.target.id === "review-modal") reviewModal.style.display = "none"; });
   }
 
   function getStatusLabel(status) {

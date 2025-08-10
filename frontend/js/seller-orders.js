@@ -26,34 +26,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  async function loadOrders() {
-    let shopId = localStorage.getItem("shopId");
-
-    if (!shopId) {
-      try {
-        const res = await ShopAPI.getMyShop();
-        if (res.success && res.data?._id) {
-          shopId = res.data._id;
-          localStorage.setItem("shopId", shopId);
-          console.log("✅ Đã lưu shopId:", shopId);
-        } else {
-          alert("❌ Không tìm thấy thông tin shop. Vui lòng đăng nhập lại.");
-          return;
-        }
-      } catch (error) {
-        console.error("❌ Lỗi khi lấy shopId:", error);
-        alert("Lỗi khi lấy thông tin shop. Vui lòng thử lại.");
-        return;
-      }
+ async function loadOrders() {
+  try {
+    // Luôn lấy shop từ server để tránh sai shopId
+    const res = await ShopAPI.getMyShop();
+    if (!res.success || !res.data?._id) {
+      localStorage.removeItem("shopId");
+      alert("❌ Không tìm thấy thông tin shop. Vui lòng đăng nhập lại.");
+      window.location.href = "/login.html";
+      return;
     }
 
-    const res = await OrderAPI.getOrdersByShop(shopId);
-    if (res.success) {
-      orders = res.data;
+    const shopId = res.data._id;
+    localStorage.setItem("shopId", shopId);
+
+    const orderRes = await OrderAPI.getOrdersByShop(shopId);
+    if (orderRes.success) {
+      orders = orderRes.data;
     } else {
-      alert(res.error || "Không thể tải danh sách đơn hàng");
+      alert(orderRes.error || "Không thể tải danh sách đơn hàng");
     }
+  } catch (err) {
+    console.error("❌ Lỗi khi loadOrders:", err);
+    alert("Lỗi kết nối. Vui lòng thử lại.");
   }
+}
+
 
   function renderAllTabs() {
     const tabs = ["pending", "confirmed", "shipped", "delivered", "cancelled"];

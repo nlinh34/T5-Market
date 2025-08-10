@@ -26,12 +26,17 @@ async function generateUniqueOrderCode() {
 }
 
 //Tạo đơn hàng
+// backend/controllers/orderController.js
+
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.userId;
+
+    // Lấy shop mà user này sở hữu (nếu có)
+    const ownShop = await Shop.findOne({ owner: userId }).select("_id");
+
     const { products, shippingInfo, paymentMethod } = req.body;
 
-    // Kiểm tra dữ liệu đầu vào
     if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ success: false, error: "Danh sách sản phẩm không hợp lệ." });
     }
@@ -40,19 +45,25 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ success: false, error: "Thông tin giao hàng không đầy đủ." });
     }
 
-    // Lấy dữ liệu sản phẩm từ DB
     const productIds = products.map(p => p.productId);
     const productDocs = await Product.find({ _id: { $in: productIds } })
       .select("_id name price images shop");
 
-    // Gom đơn theo shop
     const ordersByShop = {};
 
     for (const item of products) {
       const prod = productDocs.find(p => p._id.equals(item.productId));
       if (!prod) throw new Error(`Không tìm thấy sản phẩm với ID: ${item.productId}`);
       if (!prod.shop) throw new Error(`Sản phẩm ${prod._id} không có thông tin shop.`);
- console.log("🔥 Product raw from DB:", prod)
+
+      // 🚫 Chặn mua sản phẩm từ shop của chính mình
+      if (ownShop && prod.shop.equals(ownShop._id)) {
+        return res.status(400).json({
+          success: false,
+          error: `Bạn không thể mua sản phẩm từ shop của chính mình (${prod.name}).`
+        });
+      }
+
       const shopId = prod.shop.toString();
       if (!ordersByShop[shopId]) ordersByShop[shopId] = [];
 
@@ -65,12 +76,10 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // Tạo đơn hàng theo từng shop
     const createdOrders = [];
 
     for (const [shopId, shopProducts] of Object.entries(ordersByShop)) {
       const totalAmount = shopProducts.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
       const orderCode = await generateUniqueOrderCode();
 
       const newOrder = await Order.create({
@@ -86,16 +95,9 @@ exports.createOrder = async (req, res) => {
       createdOrders.push(newOrder);
     }
 
-    // Xoá các sản phẩm đã đặt khỏi giỏ hàng
     await Cart.updateOne(
       { user: userId },
-      {
-        $pull: {
-          items: {
-            product: { $in: productIds }
-          }
-        }
-      }
+      { $pull: { items: { product: { $in: productIds } } } }
     );
 
     return res.status(201).json({
@@ -112,7 +114,6 @@ exports.createOrder = async (req, res) => {
     });
   }
 };
-
 
 //Lấy danh sách đơn hàng của người dùng
 exports.getUserOrders = async (req, res) => {

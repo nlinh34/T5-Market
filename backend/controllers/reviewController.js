@@ -23,8 +23,15 @@ exports.createReview = async (req, res) => {
     if (!order) {
       return res.status(403).json({ error: "Bạn không có quyền đánh giá sản phẩm này." });
     }
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ error: "Số sao không hợp lệ (1-5)" });
+    }
 
-    const existing = await Review.findOne({ user: userId, product: productId });
+    const existing = await Review.findOne({
+      user: userId,
+      product: productId,
+      order: orderId, // đánh giá 1 sản phẩm 1 lần trong mỗi đơn
+    });
     if (existing) {
       return res.status(409).json({ error: "Bạn đã đánh giá sản phẩm này rồi." });
     }
@@ -34,7 +41,7 @@ exports.createReview = async (req, res) => {
       product: productId,
       order: orderId,
       rating,
-      comment,
+      comment: comment?.trim() || "",
     });
 
     await review.save();
