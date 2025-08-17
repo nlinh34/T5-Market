@@ -106,7 +106,7 @@ section {
     margin: 0 auto 3rem;
 }
 
-/* Header Styles */
+/* Header Styles
 header {
     color: white;
     padding: 15px 0;
@@ -240,7 +240,7 @@ nav ul li a.active {
     display: flex;
     align-items: center;
     gap: 15px;
-}
+} */
 
 /* Product Grid Styles */
 .container-flex {
