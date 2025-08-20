@@ -33,11 +33,11 @@ export class CategoryForm {
       document.getElementById("modalTitle").textContent = "Thêm Danh Mục Mới";
     }
 
-    this.modal.style.display = "block";
+    this.modal.classList.add("active");
   }
 
   closeModal() {
-    this.modal.style.display = "none";
+    this.modal.classList.remove("active");
     this.form.reset();
   }
 

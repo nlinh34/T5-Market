@@ -1,16 +1,16 @@
-:root {
-    /* Palette hiện đại */
-    --color-success: #2dd36f;
-    /* Xanh lá sáng */
-    --color-error: #eb445a;
-    /* Đỏ hồng đậm */
-    --color-info: #3880ff;
-    /* Xanh dương đậm */
-    --color-text: #ffffff;
-    /* Trắng */
-    --shadow: rgba(0, 0, 0, 0.15);
+/* Notification Container */
+#notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050; /* Ensure it's above most other elements */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 350px; /* Limit width for better readability */
 }
 
+/* Base Notification Style */
 .notification {
     margin-top: 85px;
     position: fixed;
@@ -30,53 +30,69 @@
 }
 
 .notification.show {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateX(0); /* Slide in from right */
 }
 
-.notification.success {
-    background-color: var(--color-success);
+.notification.hide {
+  opacity: 0;
+  transform: translateX(100%); /* Slide out to right */
 }
 
-.notification.error {
-    background-color: var(--color-error);
+/* Notification Types */
+.notification-success {
+  border-left-color: var(--success-color);
 }
 
-.notification.info {
-    background-color: var(--color-info);
+.notification-error {
+  border-left-color: var(--danger-color);
 }
 
-
-/* Responsive cho mobile */
-
-@media (max-width: 600px) {
-    .notification {
-        top: 10px;
-        right: 10px;
-        left: 10px;
-        padding: 12px 16px;
-        font-size: 0.9em;
-        text-align: center;
-    }
+.notification-warning {
+  border-left-color: var(--warning-color);
 }
 
-:root {
-    --color-success-start: #43d04d;
-    --color-success-end: #7be58c;
-    --color-error-start: #c42b2b;
-    --color-error-end: #f28c8c;
+.notification-info {
+  border-left-color: var(--info-color);
 }
 
-
-/* Ví dụ cho success */
-
-.notification.success {
-    background-image: linear-gradient( 135deg, var(--color-success-start) 0%, var(--color-success-end) 100%);
+/* Notification Icon */
+.notification-icon {
+  font-size: 18px;
 }
 
+.notification-success .notification-icon {
+  color: var(--success-color);
+}
+.notification-error .notification-icon {
+  color: var(--danger-color);
+}
+.notification-warning .notification-icon {
+  color: var(--warning-color);
+}
+.notification-info .notification-icon {
+  color: var(--info-color);
+}
 
-/* Ví dụ cho error */
+/* Notification Message */
+.notification-message {
+  flex-grow: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+}
 
-.notification.error {
-    background-image: linear-gradient( 135deg, var(--color-error-start) 0%, var(--color-error-end) 100%);
+/* Close Button */
+.notification-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--neutral-gray400); /* Light gray for close button */
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s ease;
+}
+
+.notification-close:hover {
+  color: var(--neutral-gray700); /* Darker on hover */
 }

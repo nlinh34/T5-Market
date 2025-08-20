@@ -1,5 +1,6 @@
 // approveUserListContainer.js
 import { UserAPI } from "../../APIs/userAPI.js";
+import { showNotification } from "../../APIs/utils/notification.js";
 
 const roleDisplayVN = {
   0: "Quản trị viên",
@@ -107,13 +108,15 @@ export class ApproveUserList {
         <td class="ellipsis">${user.email || "Chưa cập nhật"}</td>
         <td>${roleDisplayVN[user.role] || "Chưa cập nhật"}</td>
         <td>${accountStatusDisplayVN[user.accountStatus] || "Chưa cập nhật"}</td>
-        <td class="action-buttons">
-          <button class="approve-btn" data-id="${user._id}">
-            ✅ Duyệt
-          </button>
-          <button class="reject-btn" data-id="${user._id}">
-            ❌ Từ chối
-          </button>
+        <td>
+          <div class="action-buttons">
+            <button class="approve-btn" data-id="${user._id}">
+              <i class="fas fa-check"></i> Duyệt
+            </button>
+            <button class="reject-btn" data-id="${user._id}">
+              <i class="fas fa-times"></i> Từ chối
+            </button>
+          </div>
         </td>
       </tr>
     `;
@@ -125,10 +128,10 @@ export class ApproveUserList {
         const userId = e.currentTarget.dataset.id;
         try {
           await UserAPI.updateUserStatus(userId, "approve");
-          alert("Đã duyệt người dùng.");
+          showNotification("Đã duyệt người dùng.", "success", "fas fa-check-circle");
           this.initApproveUsersList();
         } catch (err) {
-          alert("Lỗi khi duyệt người dùng.");
+          showNotification("Lỗi khi duyệt người dùng.", "error", "fas fa-times-circle");
         }
       });
     });
@@ -138,10 +141,10 @@ export class ApproveUserList {
         const userId = e.currentTarget.dataset.id;
         try {
           await UserAPI.updateUserStatus(userId, "rejecte");
-          alert("Đã từ chối người dùng.");
+          showNotification("Đã từ chối người dùng.", "warning", "fas fa-ban");
           this.initApproveUsersList();
         } catch (err) {
-          alert("Lỗi khi từ chối người dùng.");
+          showNotification("Lỗi khi từ chối người dùng.", "error", "fas fa-times-circle");
         }
       });
     });
