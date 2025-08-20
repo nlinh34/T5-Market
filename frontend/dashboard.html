@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="./styles/styleadmin.css" />
+    <link rel="stylesheet" href="./styles/notification.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -19,77 +20,77 @@
       <!-- Menu -->
       <div class="menu">
         <!-- Quản lý người dùng -->
-        <div class="menu-section">
+        <div class="menu-section has-submenu">
           <h2 data-section="user-management">
-            <i class="fas fa-box"></i> QUẢN LÝ NGƯỜI DÙNG
+            <i class="fas fa-users"></i> QUẢN LÝ NGƯỜI DÙNG
           </h2>
           <ul class="submenu">
             <li>
-              <a href="#" data-page="users"
-                ><i class="fas fa-cube"></i> Danh sách người dùng</a
-              >
+              <a href="#" data-page="users">
+                <i class="fas fa-user-friends"></i> Danh sách người dùng
+              </a>
             </li>
             <li>
-              <a href="#" data-page="upgrade-sellers"
-                ><i class="fas fa-cube"></i> Xét duyệt người bán</a
-              >
+              <a href="#" data-page="upgrade-sellers">
+                <i class="fas fa-user-check"></i> Xét duyệt người bán
+              </a>
             </li>
           </ul>
         </div>
 
         <!-- Quản lý Sản phẩm -->
-        <div class="menu-section">
+        <div class="menu-section has-submenu">
           <h2 data-section="product-management">
-            <i class="fas fa-users"></i> QUẢN LÝ SẢN PHẨM
+            <i class="fas fa-boxes"></i> QUẢN LÝ SẢN PHẨM
           </h2>
           <ul class="submenu">
             <li>
-              <a href="#" data-page="all-products"
-                ><i class="fas fa-shopping-cart"></i> Tất cả bài đăng</a
-              >
+              <a href="#" data-page="all-products">
+                <i class="fas fa-box-open"></i> Tất cả bài đăng
+              </a>
             </li>
             <li>
-              <a href="#" data-page="categories"
-                ><i class="fas fa-shopping-cart"></i> Quản lý danh mục</a
-              >
+              <a href="#" data-page="categories">
+                <i class="fas fa-sitemap"></i> Quản lý danh mục
+              </a>
             </li>
             
           </ul>
         </div>
 
         <!-- Quản lý Blog -->
-        <div class="menu-section">
+        <div class="menu-section has-submenu">
           <h2 data-section="management">
-            <i class="fas fa-blog"></i> QUẢN LÝ KIỂM DUYỆT
+            <i class="fas fa-shield-alt"></i> QUẢN LÝ KIỂM DUYỆT
           </h2>
           <ul class="submenu">
             <li>
-              <a href="#" data-page="approve-user"
-                ><i class="fas fa-newspaper"></i> Kiểm duyệt tài khoản</a
-              >
+              <a href="#" data-page="approve-user">
+                <i class="fas fa-user-shield"></i> Kiểm duyệt tài khoản
+              </a>
             </li>
             <li>
-              <a href="#" data-page="approve-products"
-                ><i class="fas fa-newspaper"></i> Kiểm duyệt bài đăng</a
-              >
+              <a href="#" data-page="approve-products">
+                <i class="fas fa-file-invoice"></i> Kiểm duyệt bài đăng
+              </a>
             </li>
           </ul>
         </div>
 
-        <div class="menu-section">
+        <div class="menu-section has-submenu">
           <h2 data-section="management">
-            <i class="fas fa-blog"></i> QUẢN LÝ VI PHẠM
+            <i class="fas fa-exclamation-triangle"></i> QUẢN LÝ VI PHẠM
           </h2>
           <ul class="submenu">
             <li>
-              <a href="#" data-page="blog-posts"
-                ><i class="fas fa-newspaper"></i> Sản phẩm vi phạm</a
-              >
+              <a href="#" data-page="blog-posts">
+                <i class="fas fa-ban"></i> Sản phẩm vi phạm
+              </a>
             </li>
             <li>
-              <a href="#" data-page="blog-posts"
-                ><i class="fas fa-newspaper"></i> Tài khoản vi phạm</a
-              >
+              <a href="#" data-page="blog-posts">
+                <i class="fas fa-user-slash"></i> Tài khoản vi phạm
+              </a>
             </li>
           </ul>
         </div>
@@ -160,6 +161,22 @@
       </div>
     </div>
   </div>
+  <!-- Modal xác nhận xóa danh mục -->
+  <div id="deleteCategoryModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Xác nhận xóa danh mục</h2>
+        <span class="close" onclick="document.getElementById('deleteCategoryModal').classList.remove('active')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa danh mục này?</p>
+        <div class="form-actions">
+          <button id="confirmDeleteCategoryBtn" class="delete-btn">Xóa</button>
+          <button onclick="document.getElementById('deleteCategoryModal').classList.remove('active')" class="btn-cancel">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Blog Modal -->
   <div id="blogModal" class="modal">
     <div class="modal-content">
@@ -187,6 +204,22 @@
             <button type="button" class="btn-cancel">Hủy</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+  <!-- Modal xác nhận xóa sản phẩm -->
+  <div id="deleteProductModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Xác nhận xóa sản phẩm</h2>
+        <span class="close" onclick="document.getElementById('deleteProductModal').classList.remove('active')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa sản phẩm này?</p>
+        <div class="form-actions">
+          <button id="confirmDeleteProductBtn" class="delete-btn">Xóa</button>
+          <button onclick="document.getElementById('deleteProductModal').classList.remove('active')" class="btn-cancel">Hủy</button>
+        </div>
       </div>
     </div>
   </div>

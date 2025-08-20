@@ -43,6 +43,16 @@ function initializeMenu() {
     });
   });
 
+  // Handle submenu toggling
+  document.querySelectorAll(".menu-section.has-submenu h2").forEach((header) => {
+    header.addEventListener("click", (e) => {
+      const parentSection = e.target.closest(".menu-section.has-submenu");
+      if (parentSection) {
+        parentSection.classList.toggle("open");
+      }
+    });
+  });
+
   // Xử lý đăng xuất
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("token");
@@ -59,7 +69,7 @@ function loadPage(page) {
     case "users":
       contentDiv.innerHTML =`
           <div class="page-header">
-            <h3>Người dùng</h3>
+            <h3>Người Dùng</h3>
             <button class="add-btn" id="addUserBtn">
               <i class="fas fa-plus"></i> Thêm người dùng
             </button>
@@ -84,7 +94,7 @@ function loadPage(page) {
     case "all-products":
       contentDiv.innerHTML = `
                 <div class="page-header">
-                    <h3>Tất cả bài đăng</h3>
+                    <h3>Tất Cả Bài Đăng</h3>
                 </div>
                 <div id="productListContainer"></div>
             `;
@@ -95,7 +105,7 @@ function loadPage(page) {
     case "categories":
       contentDiv.innerHTML = `
                 <div class="page-header">
-                    <h3>Quản lý danh mục</h3>
+                    <h3>Quản Lý Danh Mục</h3>
                     <button class="add-btn" id="addCategoryBtn">
                         <i class="fas fa-plus"></i> Tạo danh mục mới
                     </button>
@@ -109,7 +119,7 @@ function loadPage(page) {
     case "approve-user":
       contentDiv.innerHTML = `
                 <div class="page-header">
-                    <h3>Kiểm duyệt tài khoản</h3>
+                    <h3>Kiểm Duyệt Tài Khoản</h3>
                 </div>
                 <div id="approveUserListContainer"></div>
             `;
@@ -120,12 +130,12 @@ function loadPage(page) {
       case "approve-products":
       contentDiv.innerHTML = `
                 <div class="page-header">
-                    <h3>Kiểm duyệt bài đăng</h3>
+                    <h3>Kiểm Duyệt Bài Đăng</h3>
                 </div>
                 <div id="ApproveProduct"></div>
             `;
       new ApproveProduct("ApproveProduct");
-      breadcrumb.textContent = "Quản lý kiểm duyệt";
+      breadcrumb.textContent = "Quản Lý Kiểm Duyệt";
       break;
 
 

@@ -142,9 +142,9 @@ async initUsersList() {
   renderPagination() {
   const paginationHTML = `
     <div class="pagination">
-      <button id="prevPage" ${this.currentPage === 1 ? "disabled" : ""}>◀</button>
+      <button id="prevPage" ${this.currentPage === 1 ? "disabled" : ""}><i class="fas fa-chevron-left"></i></button>
       <span>Trang ${this.currentPage} / ${this.totalPages}</span>
-      <button id="nextPage" ${this.currentPage === this.totalPages ? "disabled" : ""}>▶</button>
+      <button id="nextPage" ${this.currentPage === this.totalPages ? "disabled" : ""}><i class="fas fa-chevron-right"></i></button>
     </div>
   `;
 
@@ -182,15 +182,17 @@ async initUsersList() {
         <td>${roleDisplayVN[user.role] || "Chưa cập nhật"}</td>
         <td>${statusDisplayVN[user.status] || "Chưa cập nhật"}</td>
         <td>${accountStatusDisplayVN[user.accountStatus] || "Chưa cập nhật"}</td>
-        <td class="action-buttons">
-                    <button class="edit-btn" data-category='${JSON.stringify(
-                      user
-                    )}'>
-                        <i class="fas fa-edit"></i> Sửa
-                    </button>
-                    <button class="delete-btn" data-id="${user._id}">
-                        <i class="fas fa-trash"></i> Xóa
-                    </button>
+        <td>
+          <div class="action-buttons">
+            <button class="edit-btn" data-category='${JSON.stringify(
+              user
+            )}'>
+                <i class="fas fa-edit"></i> Sửa
+            </button>
+            <button class="delete-btn" data-id="${user._id}">
+                <i class="fas fa-trash"></i> Xóa
+            </button>
+          </div>
         </td>
       </tr>
     `;

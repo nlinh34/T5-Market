@@ -1,4 +1,5 @@
 import { ShopAPI } from "../../APIs/shopAPI.js";
+import { showNotification } from "../../APIs/utils/notification.js";
 
 export class ApproveShopList {
   constructor(containerId) {
@@ -81,9 +82,11 @@ export class ApproveShopList {
         <td class="ellipsis">${shop.owner?.fullName || "Không rõ"}</td>
         <td>${shop.phone}</td>
         <td class="ellipsis">${shop.description || "Không mô tả"}</td>
-        <td class="action-buttons">
-          <button class="approve-btn" data-id="${shop._id}">✅ Duyệt</button>
-          <button class="reject-btn" data-id="${shop._id}">❌ Từ chối</button>
+        <td>
+          <div class="action-buttons">
+            <button class="approve-btn" data-id="${shop._id}"><i class="fas fa-check"></i> Duyệt</button>
+            <button class="reject-btn" data-id="${shop._id}"><i class="fas fa-times"></i> Từ chối</button>
+          </div>
         </td>
       </tr>
     `;
@@ -95,10 +98,10 @@ export class ApproveShopList {
         const shopId = e.currentTarget.dataset.id;
         try {
           await ShopAPI.approveShop(shopId);
-          alert("✅ Đã duyệt cửa hàng.");
+          showNotification("Đã duyệt cửa hàng.", "success", "fas fa-check-circle");
           this.initApproveShopList();
         } catch (err) {
-          alert("❌ Lỗi khi duyệt cửa hàng.");
+          showNotification("Lỗi khi duyệt cửa hàng.", "error", "fas fa-times-circle");
         }
       });
     });
@@ -108,10 +111,10 @@ export class ApproveShopList {
         const shopId = e.currentTarget.dataset.id;
         try {
           await ShopAPI.rejectShop(shopId); // nếu có API từ chối
-          alert("🚫 Đã từ chối cửa hàng.");
+          showNotification("Đã từ chối cửa hàng.", "warning", "fas fa-ban");
           this.initApproveShopList();
         } catch (err) {
-          alert("❌ Lỗi khi từ chối cửa hàng.");
+          showNotification("Lỗi khi từ chối cửa hàng.", "error", "fas fa-times-circle");
         }
       });
     });

@@ -80,7 +80,7 @@ export class ProductList {
     this.container.querySelectorAll(".delete-btn").forEach((button) => {
       button.onclick = (e) => {
         const productId = e.target.closest("button").dataset.id;
-        this.handleDelete(productId);
+        this.showDeleteConfirmation(productId);
       };
     });
   }
@@ -93,7 +93,7 @@ export class ProductList {
         <td class="product-image">
           <img loading="lazy" src="${product.image_url}" alt="${product.name}">
         </td>
-        <td>${product.name}</td>
+        <td class="ellipsis">${product.name}</td>
         <td>${new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
@@ -101,10 +101,12 @@ export class ProductList {
         <td>${categoryName}</td>
         <td>${statusDisplayVN[product.status] || "Chưa cập nhật"}</td>
         <td>${shopName}</td>
-        <td class="action-buttons">
-          <button class="delete-btn" data-id="${product._id}">
-            <i class="fas fa-trash"></i> Xóa
-          </button>
+        <td>
+          <div class="action-buttons">
+            <button class="delete-btn" data-id="${product._id}">
+              <i class="fas fa-trash"></i> Xóa
+            </button>
+          </div>
         </td>
       </tr>
     `;
@@ -112,19 +114,32 @@ export class ProductList {
 
 
   async handleDelete(productId) {
-    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      try {
-        const result = await ProductAPI.deleteProduct(productId);
-        if (result.success) {
-          alert("Xóa sản phẩm thành công!");
-          this.loadProducts();
-        } else {
-          alert(result.message || "Có lỗi xảy ra!");
-        }
-      } catch (error) {
-        console.error("Delete error:", error);
-        alert("Có lỗi xảy ra khi xóa sản phẩm!");
+    try {
+      const result = await ProductAPI.deleteProduct(productId);
+      if (result.success) {
+        alert("Xóa sản phẩm thành công!");
+        this.loadProducts();
+      } else {
+        alert(result.message || "Có lỗi xảy ra!");
       }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Có lỗi xảy ra khi xóa sản phẩm!");
     }
+  }
+
+  showDeleteConfirmation(productId) {
+    const deleteModal = document.getElementById('deleteProductModal');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteProductBtn');
+    
+    deleteModal.classList.add('active');
+
+    // Remove any previous event listeners to prevent multiple calls
+    confirmDeleteBtn.onclick = null;
+    
+    confirmDeleteBtn.onclick = async () => {
+      deleteModal.classList.remove('active');
+      await this.handleDelete(productId);
+    };
   }
 }

@@ -62,47 +62,65 @@ export class CategoryList {
     });
 
     this.container.querySelectorAll(".delete-btn").forEach((button) => {
-      button.onclick = (e) => this.handleDelete(e.target.dataset.id);
+      button.onclick = (e) => {
+        const categoryId = e.target.dataset.id;
+        this.showDeleteConfirmation(categoryId);
+      };
     });
   }
 
   renderCategoryRow(category) {
     return `
             <tr>
-                <td>${category.name}</td>
+                <td class="ellipsis">${category.name}</td>
                 <td class="product-image">
                     <img loading="lazy" src="${category.imageURL}" alt="${category.name}" 
                          onerror="this.src='../../../assets/images/default-product.png'">
                 </td>
                 <td>15</td>
-                <td class="action-buttons">
-                    <button class="edit-btn" data-category='${JSON.stringify(
-                      category
-                    )}'>
-                        <i class="fas fa-edit"></i> Sửa
-                    </button>
-                    <button class="delete-btn" data-id="${category._id}">
-                        <i class="fas fa-trash"></i> Xóa
-                    </button>
+                <td>
+                    <div class="action-buttons">
+                        <button class="edit-btn" data-category='${JSON.stringify(
+                          category
+                        )}'>
+                            <i class="fas fa-edit"></i> Sửa
+                        </button>
+                        <button class="delete-btn" data-id="${category._id}">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
   }
 
   async handleDelete(categoryId) {
-    if (confirm("Bạn có chắc chắn muốn xóa danh mục này?")) {
-      try {
-        const result = await CategoryAPI.deleteCombo(categoryId);
-        if (result.success) {
-          alert("Xóa danh mục thành công!");
-          this.loadCategories();
-        } else {
-          alert(result.message || "Có lỗi xảy ra!");
-        }
-      } catch (error) {
-        console.error("Delete error:", error);
-        alert("Có lỗi xảy ra khi xóa danh mục!");
+    try {
+      const result = await CategoryAPI.deleteCombo(categoryId);
+      if (result.success) {
+        alert("Xóa danh mục thành công!");
+        this.loadCategories();
+      } else {
+        alert(result.message || "Có lỗi xảy ra!");
       }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Có lỗi xảy ra khi xóa danh mục!");
     }
+  }
+
+  showDeleteConfirmation(categoryId) {
+    const deleteModal = document.getElementById('deleteCategoryModal');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteCategoryBtn');
+    
+    deleteModal.classList.add('active');
+
+    // Remove any previous event listeners to prevent multiple calls
+    confirmDeleteBtn.onclick = null;
+    
+    confirmDeleteBtn.onclick = async () => {
+      deleteModal.classList.remove('active');
+      await this.handleDelete(categoryId);
+    };
   }
 }

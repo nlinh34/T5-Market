@@ -1,0 +1,414 @@
+{
+    "designSystem": {
+      "name": "Windster Admin Dashboard",
+      "version": "1.0.0",
+      "description": "Modern admin dashboard design system with clean aesthetics and functional layouts"
+    },
+    
+    "colorPalette": {
+      "primary": {
+        "brand": "#0ea5e9",
+        "brandHover": "#0284c7",
+        "brandLight": "#e0f2fe"
+      },
+      "semantic": {
+        "success": "#10b981",
+        "successLight": "#dcfce7",
+        "danger": "#ef4444",
+        "dangerLight": "#fee2e2",
+        "warning": "#f59e0b",
+        "info": "#3b82f6",
+        "offline": "#ef4444"
+      },
+      "neutral": {
+        "white": "#ffffff",
+        "gray50": "#f9fafb",
+        "gray100": "#f3f4f6",
+        "gray200": "#e5e7eb",
+        "gray300": "#d1d5db",
+        "gray400": "#9ca3af",
+        "gray500": "#6b7280",
+        "gray600": "#4b5563",
+        "gray700": "#374151",
+        "gray800": "#1f2937",
+        "gray900": "#111827"
+      },
+      "background": {
+        "primary": "#ffffff",
+        "secondary": "#f9fafb",
+        "sidebar": "#ffffff",
+        "card": "#ffffff"
+      }
+    },
+  
+    "typography": {
+      "fontFamily": {
+        "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      },
+      "fontSizes": {
+        "xs": "12px",
+        "sm": "14px",
+        "base": "16px",
+        "lg": "18px",
+        "xl": "20px",
+        "2xl": "24px",
+        "3xl": "30px",
+        "4xl": "36px"
+      },
+      "fontWeights": {
+        "normal": "400",
+        "medium": "500",
+        "semibold": "600",
+        "bold": "700"
+      },
+      "lineHeights": {
+        "tight": "1.25",
+        "normal": "1.5",
+        "relaxed": "1.75"
+      }
+    },
+  
+    "spacing": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "16px",
+      "lg": "24px",
+      "xl": "32px",
+      "2xl": "48px",
+      "3xl": "64px",
+      "4xl": "80px"
+    },
+  
+    "borderRadius": {
+      "none": "0",
+      "sm": "4px",
+      "md": "6px",
+      "lg": "8px",
+      "xl": "12px",
+      "full": "9999px"
+    },
+  
+    "shadows": {
+      "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+      "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
+    },
+  
+    "layout": {
+      "sidebar": {
+        "width": "256px",
+        "background": "#ffffff",
+        "borderRight": "1px solid #e5e7eb",
+        "padding": "16px 0"
+      },
+      "header": {
+        "height": "64px",
+        "background": "#ffffff",
+        "borderBottom": "1px solid #e5e7eb",
+        "padding": "0 24px"
+      },
+      "mainContent": {
+        "padding": "24px",
+        "background": "#f9fafb",
+        "minHeight": "calc(100vh - 64px)"
+      },
+      "container": {
+        "maxWidth": "1200px",
+        "margin": "0 auto"
+      }
+    },
+  
+    "components": {
+      "navigation": {
+        "sidebar": {
+          "structure": "Vertical navigation with icons and labels",
+          "items": {
+            "padding": "12px 24px",
+            "borderRadius": "6px",
+            "margin": "2px 12px",
+            "iconSize": "20px",
+            "iconSpacing": "12px",
+            "fontSize": "14px",
+            "fontWeight": "500"
+          },
+          "states": {
+            "default": {
+              "background": "transparent",
+              "color": "#6b7280"
+            },
+            "hover": {
+              "background": "#f3f4f6",
+              "color": "#374151"
+            },
+            "active": {
+              "background": "#e0f2fe",
+              "color": "#0ea5e9"
+            }
+          }
+        },
+        "breadcrumb": {
+          "fontSize": "14px",
+          "color": "#6b7280",
+          "separator": ">",
+          "activeColor": "#374151"
+        }
+      },
+  
+      "buttons": {
+        "primary": {
+          "background": "#0ea5e9",
+          "color": "#ffffff",
+          "padding": "8px 16px",
+          "borderRadius": "6px",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "border": "none",
+          "hover": {
+            "background": "#0284c7"
+          }
+        },
+        "secondary": {
+          "background": "#ffffff",
+          "color": "#374151",
+          "padding": "8px 16px",
+          "borderRadius": "6px",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "border": "1px solid #d1d5db",
+          "hover": {
+            "background": "#f9fafb"
+          }
+        },
+        "danger": {
+          "background": "#ef4444",
+          "color": "#ffffff",
+          "padding": "8px 16px",
+          "borderRadius": "6px",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "border": "none",
+          "hover": {
+            "background": "#dc2626"
+          }
+        }
+      },
+  
+      "cards": {
+        "default": {
+          "background": "#ffffff",
+          "borderRadius": "8px",
+          "padding": "24px",
+          "shadow": "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+          "border": "1px solid #e5e7eb"
+        },
+        "metric": {
+          "background": "#ffffff",
+          "borderRadius": "8px",
+          "padding": "20px",
+          "shadow": "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+          "structure": "Title, value, change indicator"
+        }
+      },
+  
+      "tables": {
+        "container": {
+          "background": "#ffffff",
+          "borderRadius": "8px",
+          "overflow": "hidden",
+          "shadow": "0 1px 3px 0 rgba(0, 0, 0, 0.1)"
+        },
+        "header": {
+          "background": "#f9fafb",
+          "padding": "12px 16px",
+          "fontSize": "12px",
+          "fontWeight": "600",
+          "color": "#6b7280",
+          "textTransform": "uppercase",
+          "letterSpacing": "0.05em"
+        },
+        "row": {
+          "padding": "16px",
+          "borderBottom": "1px solid #e5e7eb",
+          "fontSize": "14px",
+          "color": "#374151",
+          "hover": {
+            "background": "#f9fafb"
+          }
+        },
+        "cell": {
+          "verticalAlign": "middle",
+          "padding": "16px"
+        }
+      },
+  
+      "forms": {
+        "input": {
+          "background": "#ffffff",
+          "border": "1px solid #d1d5db",
+          "borderRadius": "6px",
+          "padding": "8px 12px",
+          "fontSize": "14px",
+          "color": "#374151",
+          "focus": {
+            "borderColor": "#0ea5e9",
+            "outline": "0",
+            "boxShadow": "0 0 0 3px rgba(14, 165, 233, 0.1)"
+          }
+        },
+        "searchInput": {
+          "background": "#f9fafb",
+          "border": "1px solid #e5e7eb",
+          "borderRadius": "6px",
+          "padding": "8px 12px 8px 36px",
+          "fontSize": "14px",
+          "placeholder": "#9ca3af",
+          "iconPosition": "left",
+          "iconSize": "16px",
+          "iconColor": "#6b7280"
+        }
+      },
+  
+      "badges": {
+        "status": {
+          "active": {
+            "background": "#dcfce7",
+            "color": "#16a34a",
+            "padding": "4px 12px",
+            "borderRadius": "999px",
+            "fontSize": "12px",
+            "fontWeight": "500"
+          },
+          "offline": {
+            "background": "#fee2e2",
+            "color": "#dc2626",
+            "padding": "4px 12px",
+            "borderRadius": "999px",
+            "fontSize": "12px",
+            "fontWeight": "500"
+          }
+        }
+      },
+  
+      "charts": {
+        "areaChart": {
+          "fillColor": "rgba(14, 165, 233, 0.1)",
+          "strokeColor": "#0ea5e9",
+          "strokeWidth": "2px",
+          "gridColor": "#f3f4f6",
+          "axisColor": "#9ca3af",
+          "fontSize": "12px"
+        }
+      },
+  
+      "metrics": {
+        "container": {
+          "display": "grid",
+          "gap": "24px",
+          "gridColumns": "repeat(auto-fit, minmax(200px, 1fr))"
+        },
+        "item": {
+          "background": "#ffffff",
+          "padding": "20px",
+          "borderRadius": "8px",
+          "shadow": "0 1px 3px 0 rgba(0, 0, 0, 0.1)"
+        },
+        "value": {
+          "fontSize": "24px",
+          "fontWeight": "700",
+          "color": "#111827",
+          "marginBottom": "4px"
+        },
+        "label": {
+          "fontSize": "14px",
+          "color": "#6b7280",
+          "marginBottom": "8px"
+        },
+        "change": {
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "positive": {
+            "color": "#16a34a"
+          },
+          "negative": {
+            "color": "#dc2626"
+          }
+        }
+      },
+  
+      "avatars": {
+        "size": "40px",
+        "borderRadius": "50%",
+        "border": "2px solid #ffffff",
+        "shadow": "0 1px 3px 0 rgba(0, 0, 0, 0.1)"
+      }
+    },
+  
+    "patterns": {
+      "dashboardLayout": {
+        "structure": "Sidebar + Header + Main Content Area",
+        "contentGrid": "Cards and widgets in responsive grid",
+        "spacing": "Consistent 24px gaps between major sections"
+      },
+      "dataTable": {
+        "structure": "Header with actions + Search + Table + Pagination",
+        "rowActions": "Edit and Delete buttons on each row",
+        "bulkActions": "Checkbox selection with bulk operations"
+      },
+      "metricCards": {
+        "structure": "Value + Label + Trend indicator",
+        "layout": "Responsive grid layout",
+        "trendColors": "Green for positive, red for negative"
+      }
+    },
+  
+    "iconography": {
+      "style": "Outline icons (Lucide or similar)",
+      "sizes": {
+        "sm": "16px",
+        "md": "20px",
+        "lg": "24px"
+      },
+      "strokeWidth": "1.5px",
+      "usage": {
+        "navigation": "Left-aligned with 12px spacing from text",
+        "buttons": "Left-aligned with 8px spacing from text",
+        "status": "Inline with badges and status indicators"
+      }
+    },
+  
+    "animations": {
+      "transitions": {
+        "default": "150ms ease-in-out",
+        "hover": "100ms ease-in-out",
+        "modal": "200ms ease-out"
+      },
+      "hover": {
+        "buttons": "Scale and color transition",
+        "cards": "Subtle shadow elevation",
+        "tableRows": "Background color change"
+      }
+    },
+  
+    "responsive": {
+      "breakpoints": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px"
+      },
+      "behavior": {
+        "sidebar": "Collapsible on mobile",
+        "tables": "Horizontal scroll on mobile",
+        "metrics": "Stack vertically on mobile",
+        "charts": "Maintain aspect ratio, scale width"
+      }
+    },
+  
+    "accessibility": {
+      "contrast": "WCAG AA compliant color combinations",
+      "focusStates": "Visible focus rings on interactive elements",
+      "semanticMarkup": "Proper heading hierarchy and ARIA labels",
+      "keyboardNavigation": "Full keyboard accessibility for all interactions"
+    }
+  }
