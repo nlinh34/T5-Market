@@ -8,13 +8,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="./styles/header.css" />
   <link rel="stylesheet" href="./styles/menu1.css">
+  <link rel="stylesheet" href="./styles/notification.css">
   <script src="./components/header/header.js" type="module"></script>
 </head>
 <style>
-  body {
-
-  }
+  body {}
 </style>
+
 <body>
   <!-- Header -->
   <header-component></header-component>
@@ -28,10 +28,10 @@
       <aside class="sidebar">
         <!-- Bảng điều khiển -->
         <h4>Danh mục</h4>
-        <ul class="category-filter-list"> 
+        <ul class="category-filter-list">
           <!-- Checkbox danh mục sẽ được render ở đây bằng JS -->
         </ul>
-<!-- Bộ lọc giá -->
+        <!-- Bộ lọc giá -->
         <div class="price-filter">
           <h5>Khoảng giá (VND)</h5>
           <div>
@@ -47,9 +47,10 @@
           <button id="applyPriceFilter">Áp dụng</button>
         </div>
 
-       <div style="position: relative; width: 100%; max-width: 600px; height: 300px; overflow: hidden; border-radius: 12px;">
+        <div
+          style="position: relative; width: 100%; max-width: 600px; height: 300px; overflow: hidden; border-radius: 12px;">
           <img loading="lazy" src="./assests/images/laptop.jpg" alt="Khuyến mãi Laptop"
-              style="width: 100%; height: 100%; object-fit: cover;" />
+            style="width: 100%; height: 100%; object-fit: cover;" />
           <div style="
               position: absolute;
               bottom: 0;
@@ -61,7 +62,8 @@
               -webkit-backdrop-filter: blur(6px);
               color: white;
             ">
-            <p style="margin: 4px 0 0; font-size: 24px; font-weight: bold;">Giảm giá <span style="font-size: 28px;">50%</span> Laptop Gaming</p>
+            <p style="margin: 4px 0 0; font-size: 24px; font-weight: bold;">Giảm giá <span
+                style="font-size: 28px;">50%</span> Laptop Gaming</p>
             <p style="margin: 4px 0 0; font-size: 11px;">Chỉ trong tuần này - Ưu đãi có hạn</p>
             <a href="#" style="
                 display: inline-block;
@@ -81,7 +83,7 @@
       <div class="product-area">
         <h2 class="product-title">Danh mục sản phẩm</h2>
         <div class="product-grid"></div>
-<div class="pagination-container"></div>
+        <div class="pagination-container"></div>
 
 
         <!-- Quảng cáo dạng lưới giữa sản phẩm -->
@@ -157,8 +159,7 @@
           <h3>Liên hệ</h3>
           <ul>
             <li>
-              <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1,
-              TP.HCM
+              <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1, TP.HCM
             </li>
             <li><i class="fas fa-phone"></i> 1900 1234</li>
             <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
@@ -181,7 +182,8 @@
           <img loading="lazy"
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
             alt="Amex" />
-          <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
+          <img loading="lazy"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
             alt="Momo" />
         </div>
       </div>

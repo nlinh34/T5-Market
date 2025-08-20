@@ -7,21 +7,21 @@ const CLOUDINARY_UPLOAD_PRESET = "t5market_assets";
 
 // Hàm upload 1 ảnh lên Cloudinary
 async function uploadToCloudinary(base64Image) {
-  const formData = new FormData();
-  formData.append("file", base64Image);
-  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    const formData = new FormData();
+    formData.append("file", base64Image);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
-  const response = await fetch(CLOUDINARY_URL, {
-    method: "POST",
-    body: formData,
-  });
+    const response = await fetch(CLOUDINARY_URL, {
+        method: "POST",
+        body: formData,
+    });
 
-  const data = await response.json();
-  if (!response.ok || !data.secure_url) {
-    throw new Error("Upload ảnh thất bại");
-  }
+    const data = await response.json();
+    if (!response.ok || !data.secure_url) {
+        throw new Error("Upload ảnh thất bại");
+    }
 
-  return data.secure_url;
+    return data.secure_url;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("Lỗi submit:", error);
 
-            if (error?.response?.data?.error) {
+            if (error && error.response && error.response.data && error.response.data.error) {
                 showNotification(`❌ ${error.response.data.error}`, "error");
             } else {
                 showNotification("❌ Lỗi khi gửi dữ liệu.", "error");
