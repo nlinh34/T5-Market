@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("Lỗi submit:", error);
 
-            if (error ? .response ? .data ? .error) {
+            if (error && error.response && error.response.data && error.response.data.error) {
                 showNotification(`❌ ${error.response.data.error}`, "error");
             } else {
                 showNotification("❌ Lỗi khi gửi dữ liệu.", "error");

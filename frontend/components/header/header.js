@@ -57,26 +57,26 @@ class Header extends HTMLElement {
   }
 
   initializeCartCount() {
-  const updateCartCountUI = async () => {
-    try {
-      const res = await CartAPI.getCart();
-      const items = res.cart?.items || [];
+    const updateCartCountUI = async () => {
+      try {
+        const res = await CartAPI.getCart();
+        const items = (res.cart && res.cart.items) || [];
 
-      // Tính tổng số lượng sản phẩm
-      const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
-      
-      this.querySelector(".cart-count").textContent = totalCount;
-    } catch (err) {
-      console.error("❌ Lỗi khi lấy số lượng giỏ hàng:", err);
-      this.querySelector(".cart-count").textContent = "0";
-    }
-  };
+        // Tính tổng số lượng sản phẩm
+        const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  updateCartCountUI(); // Lần đầu khi load
+        this.querySelector(".cart-count").textContent = totalCount;
+      } catch (err) {
+        console.error("❌ Lỗi khi lấy số lượng giỏ hàng:", err);
+        this.querySelector(".cart-count").textContent = "0";
+      }
+    };
 
-  // Cập nhật lại khi có sự kiện cartUpdated
-  window.addEventListener("cartUpdated", updateCartCountUI);
-}
+    updateCartCountUI(); // Lần đầu khi load
+
+    // Cập nhật lại khi có sự kiện cartUpdated
+    window.addEventListener("cartUpdated", updateCartCountUI);
+  }
 
 
   async updateUserInterface() {
@@ -96,7 +96,7 @@ class Header extends HTMLElement {
           if (response.success && response.data) {
             localStorage.setItem("user", JSON.stringify(response.data)); // Update localStorage with full user data
             user.avatarUrl = response.data.avatarUrl; // Update current user object
-            user.fullName = response.data.fullName;   // Update current user object
+            user.fullName = response.data.fullName; // Update current user object
           }
         } catch (error) {
           console.error("Error fetching current user data:", error);
@@ -121,24 +121,30 @@ class Header extends HTMLElement {
       try {
         const shopResponse = await ShopAPI.getMyShop();
         if (shopResponse.success && shopResponse.data) {
-            const shop = shopResponse.data;
-            if (shop.status === 'approved') {
-                shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
-            } else {
-                // Shop exists but is not approved (e.g., pending, rejected)
-                shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
-            }
+          const shop = shopResponse.data;
+          if (shop.status === 'approved') {
+            shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
+          } else {
+            // Shop exists but is not approved (e.g., pending, rejected)
+            shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
+          }
         } else {
-            // API call succeeded, but no shop data returned (e.g., success: false from backend, or data is null/undefined)
-            shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
+          // API call succeeded, but no shop data returned (e.g., success: false from backend, or data is null/undefined)
+          shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
         }
       } catch (error) {
-          // API call failed (e.g., 404 Not Found from backend, or network error)
-          shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
+        // API call failed (e.g., 404 Not Found from backend, or network error)
+        shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
       }
 
 
       let html = `
+        <div class="account-menu-header">
+          <div class="account-menu-avatar">
+            <img loading="lazy" src="${user.avatarUrl || './assests/images/default-product.png'}" alt="User Avatar">
+          </div>
+          <div class="account-menu-username">${user.fullName || 'Tài khoản của bạn'}</div>
+        </div>
         <a href="./favorites.html"><i class="fa fa-heart"></i>Mục yêu thích</a>
         <a href="./order-detail.html"><i class="fa fa-tasks"></i>Lịch Sử Mua Hàng</a>
         ${shopLinkHtml}
