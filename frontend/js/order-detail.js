@@ -182,31 +182,59 @@ document.addEventListener("DOMContentLoaded", () => {
       productList.insertAdjacentHTML(
         "beforeend",
         `
-      <div class="review-item" data-product-id="${productId}" style="border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:6px;">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <img src="${image}" alt="${item.name}" width="60" height="60" style="object-fit:cover; border-radius:6px;" />
-          <span style="font-size: 14px"><strong>${item.name}</strong></span>
+        <div class="review-item" data-product-id="${productId}" style="border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:6px;">
+          <div style="display:flex; align-items:center; gap:10px; border-bottom: 1px solid #ccc; padding-bottom: 10px">
+            <img src="${image}" alt="${item.name}" width="60" height="60" style="object-fit:cover; border-radius:6px;" />
+            <span style="font-size: 14px"><strong>${item.name}</strong></span>
+          </div>
+          <div class="review-stars" style="margin: 6px 0;">
+            ${[1, 2, 3, 4, 5].map(v => `
+              <i class="fa fa-star star" data-value="${v}" 
+                style="cursor:pointer; font-size:18px; color:#ccc; margin-right:4px;"></i>
+            `).join("")}
+            <input type="hidden" class="review-rating" value="5" />
+          </div>
+          <br />
+          <textarea class="review-content" placeholder="Nhập nội dung đánh giá..." style="width:100%; margin-top:6px;"></textarea>
+          <br />
+          <button class="submit-product-review-btn" style="margin-top:5px; background:#28a745; color:white;">Gửi đánh giá</button>
         </div>
-        <label>Đánh giá sao:
-          <select class="review-rating" style="margin-left: 10px;">
-            <option value="5">5 sao</option>
-            <option value="4">4 sao</option>
-            <option value="3">3 sao</option>
-            <option value="2">2 sao</option>
-            <option value="1">1 sao</option>
-          </select>
-        </label>
-        <br />
-        <textarea class="review-content" placeholder="Nhập nội dung đánh giá..." style="width:100%; margin-top:6px;"></textarea>
-        <br />
-        <button class="submit-product-review-btn" style="margin-top:5px; background:#28a745; color:white;">Gửi đánh giá</button>
-      </div>
     `
       );
+          // Sau khi render xong mỗi sản phẩm
+    ReviewAPI.getReviewsByProduct(productId).then(res => {
+      if (res.success && res.data.length > 0) {
+        const btn = productList.querySelector(
+          `.review-item[data-product-id="${productId}"] .submit-product-review-btn`
+        );
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Đã đánh giá";
+          btn.style.background = "#ccc";
+        }
+      }
+    });
     });
 
-    reviewModal.style.display = "flex";
 
+
+
+    reviewModal.style.display = "flex";
+    productList.querySelectorAll(".review-item").forEach(item => {
+      const stars = item.querySelectorAll(".star");
+      const ratingInput = item.querySelector(".review-rating");
+
+      stars.forEach(star => {
+        star.addEventListener("click", () => {
+          const value = parseInt(star.dataset.value);
+          ratingInput.value = value;
+          // Tô màu lại các sao
+          stars.forEach(s => {
+            s.style.color = parseInt(s.dataset.value) <= value ? "#f5b301" : "#ccc";
+          });
+        });
+      });
+    });
     // Sự kiện gửi đánh giá
     document.querySelectorAll(".submit-product-review-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {

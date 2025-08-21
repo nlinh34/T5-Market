@@ -1,13 +1,10 @@
 /* ===== BASE STYLES ===== */
 body {
-    padding-top: 95px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     background-color: #f8f9fa;
     line-height: 1.6;
 }
-
-
 
 .related-products {
     padding: 3rem;
