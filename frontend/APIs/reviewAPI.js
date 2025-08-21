@@ -25,4 +25,11 @@ export const ReviewAPI = {
       method: "GET",
     });
   },
+
+  getReviewedProductsByOrder: async (orderId) => {
+    return await apiCall({
+      endpoint: `/reviews/${orderId}/reviewed`,
+      method: "GET",
+    });
+  },
 };

@@ -56,6 +56,22 @@ exports.createReview = async (req, res) => {
   }
 };
 
+exports.getReviewedProductsByOrder = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { orderId } = req.params;
+
+    const reviews = await Review.find({ user: userId, order: orderId }).select("product");
+
+    const reviewedProductIds = reviews.map(r => r.product.toString());
+
+    res.status(200).json({ success: true, data: reviewedProductIds });
+  } catch (error) {
+    console.error("Get reviewed products error:", error);
+    res.status(500).json({ error: "Lỗi server khi lấy trạng thái đánh giá" });
+  }
+};
+
 
 exports.getReviewsByProduct = async (req, res) => {
   try {
