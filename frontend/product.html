@@ -14,105 +14,114 @@
     <script src="./js/index.js" type="module"></script>
 </head>
 <body>
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="spinner"></div>
+    </div>
+
     <!-- Header -->
     <header-component></header-component>
 
-    <!-- Product Section -->
-    <section class="product-detail" id="productDetail" style="display: none;">
-        <div class="breadcrumb"></div>
-        <div class="container">
-            <div class="product-content">
-                <div class="product-gallery">
-                    <div class="image-slider-wrapper">
-                        <button id="prevImage" class="slider-arrow left"><i class="fas fa-chevron-left"></i></button>
+    <!-- Main Content Container -->
+    <div class="container" style="visibility: hidden;">
+        <!-- Product Section -->
+        <section class="product-detail" id="productDetail">
+            <div class="breadcrumb"></div>
+            <div class="container">
+                <div class="product-content">
+                    <div class="product-gallery">
+                        <div class="image-slider-wrapper">
+                            <button id="prevImage" class="slider-arrow left"><i class="fas fa-chevron-left"></i></button>
 
-                        <img loading="lazy" id="mainImage" src="./images/default.jpg" class="main-product-image" />
+                            <img loading="lazy" id="mainImage" src="./images/default.jpg" class="main-product-image" />
 
-                        <button id="nextImage" class="slider-arrow right"><i class="fas fa-chevron-right"></i></button>
+                            <button id="nextImage" class="slider-arrow right"><i class="fas fa-chevron-right"></i></button>
 
-                        <div id="imageIndex" class="image-index-overlay">1/1</div>
+                            <div id="imageIndex" class="image-index-overlay">1/1</div>
+                        </div>
+                        <!-- Thumbnail nằm dưới -->
+                        <div id="thumbnailContainer" class="thumbnail-container"></div>
                     </div>
-                    <!-- Thumbnail nằm dưới -->
-                    <div id="thumbnailContainer" class="thumbnail-container"></div>
-                </div>
 
-                <div class="product-info">
-                    <h1 class="product-title">2020 Apple MusicBook Pro v4i Apple MI Chrp (13-inch, 8GB RAM, 256GB SSD Storage)</h1>
-                    <div class="product-category"></div>
-                    <div class="product-meta">
-                        <span class="current-price">44.032.983 VND</span>
-                        <span class="stock in-stock"><i class="fas fa-check-circle"></i> Còn hàng</span>
-                    </div>
-                    <div class="product-meta">
-                        <span class="location"><i class="fas fa-map-marker-alt"></i> Hà Nội</span>
-                    </div>
-                    <div class="product-meta">
-                        <span class="time"><i class="fas fa-clock"></i> Đăng 2 ngày trước</span>
-                    </div>
-                    
-            
-                    <!-- Seller Info -->
-                    <div class="seller-info" style="margin-top:20px;">
-                        <div class="seller-header">
-                            <div class="seller-avatar">
-                                <img loading="lazy" src="../images/avatar/default-avatar.jpg" alt="Nguyễn Văn A">
-                            </div>
-                            <div>
-                                <div class="name-shop">
-                                    <div class="seller-name">Nguyễn Văn A</div>
-                                    <div class="seller-status verified">Đã xác thực</div>
-                                </div>
-                                <div class="seller-meta">
-                                    <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
-                                    <span><i class="fas fa-star"></i> 4.8 (56 đánh giá)</span>
-                                    <span><i class="fas fa-clock"></i> Tham gia 1 năm trước</span>
-                                </div>
-                            </div>
-                            
+                    <div class="product-info">
+                        <h1 class="product-title">2020 Apple MusicBook Pro v4i Apple MI Chrp (13-inch, 8GB RAM, 256GB SSD Storage)</h1>
+                        <div class="product-category"></div>
+                        <div class="product-meta">
+                            <span class="current-price">44.032.983 VND</span>
+                            <span class="stock in-stock"><i class="fas fa-check-circle"></i> Còn hàng</span>
+                        </div>
+                        <div class="product-meta">
+                            <span class="location"><i class="fas fa-map-marker-alt"></i> Hà Nội</span>
+                        </div>
+                        <div class="product-meta">
+                            <span class="time"><i class="fas fa-clock"></i> Đăng 2 ngày trước</span>
                         </div>
                         
-                        <div class="seller-actions">
-                            <button class="btn btn-primary" style="background: green">Xem cửa hàng</button>
-                            <button class="btn-report">Báo cáo</button>
+                
+                        <!-- Seller Info -->
+                        <div class="seller-info" style="margin-top:20px;">
+                            <div class="seller-header">
+                                <div class="seller-avatar">
+                                    <img loading="lazy" src="../images/avatar/default-avatar.jpg" alt="Nguyễn Văn A">
+                                </div>
+                                <div>
+                                    <div class="name-shop">
+                                        <div class="seller-name">Nguyễn Văn A</div>
+                                        <div class="seller-status verified">Đã xác thực</div>
+                                    </div>
+                                    <div class="seller-meta">
+                                        <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
+                                        <span><i class="fas fa-star"></i> 4.8 (56 đánh giá)</span>
+                                        <span><i class="fas fa-clock"></i> Tham gia 1 năm trước</span>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="seller-actions">
+                                <button class="btn btn-primary" style="background: green">Xem cửa hàng</button>
+                                <button class="btn-report">Báo cáo</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="tabs-box">
-            <div class="container">
-                <div class="product-tabs">
-                    <ul class="tabs-header-product">
-                        <li class="active" data-tab="description">Mô tả sản phẩm</li>
-                    </ul>
-                    <div class="tabs-content-product">
-                        <div class="tab-pane active" id="description"></div>
+            <div class="tabs-box">
+                <div class="container">
+                    <div class="product-tabs">
+                        <ul class="tabs-header-product">
+                            <li class="active" data-tab="product-description"><i class="fas fa-file-alt"></i> Mô tả sản phẩm</li>
+                        </ul>
+                        <div class="tabs-content-product">
+                            <div class="tab-pane active" id="product-description"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="review-tabs">
-                    <ul class="tabs-header-review">
-                        <li class="active" data-tab="description">Mô tả sản phẩm</li>
-                    </ul>
-                    <div class="tabs-content-review">
-                        <div class="tab-pane active" id="description"></div>
+                    <div class="review-tabs">
+                        <ul class="tabs-header-review">
+                            <li class="active" data-tab="description"><i class="fas fa-star"></i> Đánh giá sản phẩm</li>
+                        </ul>
+                        <div class="tabs-content-review">
+                            <div class="tab-pane active" id="description">
+                                <div class="review-list"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>    
-        </div>
-    </section>
+                </div>    
+            </div>
+        </section>
 
-    <!-- Seller Products -->
-    <section class="seller-products container">
-            <h3 class="section-title">Sản phẩm khác từ người bán</h3>
-            <div class="products-grid"></div>
-    </section>
+        <!-- Seller Products -->
+        <section class="seller-products container">
+                <h3 class="section-title">Sản phẩm khác từ người bán</h3>
+                <div class="products-grid"></div>
+        </section>
 
-    <!-- Related Products -->
-    <section class="related-products container">
-            <h2 class="section-title">Sản phẩm tương tự</h2>
-            <div class="products-grid"></div>
-    </section>
-
+        <!-- Related Products -->
+        <section class="related-products container">
+                <h2 class="section-title">Sản phẩm tương tự</h2>
+                <div class="products-grid"></div>
+        </section>
+    </div>
 
     <!-- Footer -->
     <footer class="main-footer">

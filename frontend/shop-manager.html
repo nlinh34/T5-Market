@@ -6,7 +6,6 @@
     <title>Quản lý cửa hàng - T5Market</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./styles/shop-manager.css">
-    <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/footer.css">
     <link rel="stylesheet" href="./styles/header.css">
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
@@ -17,7 +16,7 @@
     </div>
     <header-component></header-component>
 
-    <div class="container" style="visibility: hidden;">
+    <div class="container">
         <!-- Shop Header -->
         <div class="shop-header">
             <div class="shop-header-top">
@@ -29,7 +28,7 @@
                         <h1 id="shopName">Admin </h1>
                         <div class="shop-status" id="shopStatus">
                             <i class="fas fa-circle"></i>
-                            Hoạt động 8 giờ trước
+                            Hoạt động 
                         </div>
                         <div class="shop-rating">
                             <div class="stars" id="headerShopStars">
@@ -212,21 +211,6 @@
                                         <button class="btn1 btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
                                     </td>
                                 </tr>
-                                <!-- Example Row 2 -->
-                                <tr>
-                                    <td>
-                                        <div class="staff-info">
-                                            <div class="staff-avatar">TB</div>
-                                            <span class="staff-name">Trần Thị B</span>
-                                        </div>
-                                    </td>
-                                    <td>Nhân viên</td>
-                                    <td>15/05/2024</td>
-                                    <td>
-                                        <button class="btn1 btn-icon" title="Sửa quyền"><i class="fas fa-user-shield"></i></button>
-                                        <button class="btn1 btn-icon btn-danger" title="Xóa"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -246,8 +230,6 @@
                     </div>
                     <div class="review-tabs-container">
                         <button class="review-tab active" data-tab="all-reviews">TẤT CẢ (<span id="allReviewsCount">0</span>)</button>
-                        <button class="review-tab" data-tab="buyer-reviews">TỪ NGƯỜI MUA (<span id="buyerReviewsCount">0</span>)</button>
-                        <button class="review-tab" data-tab="seller-reviews">TỪ NGƯỜI BÁN (<span id="sellerReviewsCount">0</span>)</button>
                     </div>
                     <div class="review-list" id="reviewList">
                         <!-- Review items will be loaded here by JS -->
@@ -557,6 +539,23 @@
                         <button type="submit" class="btn1 btn-primary1">Lưu quyền</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Xác nhận xóa sản phẩm</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn1 btn-secondary close-button">Hủy</button>
+                <button type="button" class="btn1 btn-danger" id="confirmDeleteBtn">Xóa</button>
             </div>
         </div>
     </div>

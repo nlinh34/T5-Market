@@ -1,12 +1,53 @@
 import { ProductAPI } from "../APIs/productAPI.js";
 import CartAPI from "../APIs/cartAPI.js";
 import FavoriteAPI from "../APIs/favoriteAPI.js";
-
+import { ReviewAPI } from "../APIs/reviewAPI.js";
 
 document.addEventListener('DOMContentLoaded', async function () {
+    const pageLoader = document.getElementById('page-loader');
+    const pageContainer = document.querySelector('.container');
+    const productDetail = document.getElementById('productDetail');
 
     let favoriteProductIds = [];
 
+    // Function to show loading
+    function showLoading() {
+        if (pageLoader) {
+            pageLoader.style.display = 'flex';
+        }
+        if (pageContainer) {
+            pageContainer.style.visibility = 'hidden';
+        }
+    }
+
+    // Function to hide loading
+    function hideLoading() {
+        if (pageLoader) {
+            pageLoader.style.opacity = '0';
+            setTimeout(() => {
+                pageLoader.style.display = 'none';
+            }, 300);
+        }
+        if (pageContainer) {
+            pageContainer.style.visibility = 'visible';
+        }
+    }
+
+    // Function to show error state
+    function showError(message) {
+        if (pageContainer) {
+            pageContainer.innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <h2>Đã xảy ra lỗi</h2>
+                    <p>${message}</p>
+                    <a href="./index.html" class="btn btn-primary" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; margin-top: 20px; display: inline-block;">Quay lại trang chủ</a>
+                </div>
+            `;
+        }
+        hideLoading();
+    }
+
+    // Load favorites in background
     const loadFavorites = async () => {
         try {
             const favorites = await FavoriteAPI.getFavorites();
@@ -17,25 +58,35 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     };
 
-    await loadFavorites();
     // Function to get product ID from URL
     function getProductIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
-        return /^[0-9a-fA-F]{24}$/.test(id) ? id : null; // validate ObjectId luôn
+        return /^[0-9a-fA-F]{24}$/.test(id) ? id : null;
     }
 
-    // Function to fetch product data
+    // Function to fetch product data with timeout
     async function fetchProductData(productId) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
         try {
-            const response = await fetch(`https://t5-market.onrender.com/products/${productId}`);
+            const response = await fetch(`https://t5-market.onrender.com/products/${productId}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
             if (!response.ok) throw new Error('Failed to fetch product data');
             const result = await response.json();
             if (!result.success) throw new Error('API returned unsuccessful response');
             return result.data;
         } catch (error) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout - vui lòng thử lại');
+            }
             console.error('Error fetching product data:', error);
-            return null;
+            throw error;
         }
     }
 
@@ -53,18 +104,23 @@ document.addEventListener('DOMContentLoaded', async function () {
         return diffDays;
     }
 
-    // Function to display "Product Not Found" card
-    function displayNotFoundCard() {
-        const productSection = document.querySelector('.product-detail .container');
-        productSection.innerHTML = `
-            <div class="product-not-found" style="text-align: center; padding: 50px;">
-                <h2>Sản phẩm không tồn tại</h2>
-                <p>Xin lỗi, sản phẩm bạn tìm kiếm không có trong hệ thống. Vui lòng kiểm tra lại hoặc xem các sản phẩm khác.</p>
-                <a href="./index.html" class="btn btn-primary" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none;">Quay lại trang chủ</a>
-            </div>
-        `;
+    function formatDate(dateString) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('vi-VN', options);
     }
 
+    // Function to display "Product Not Found" card
+    function displayNotFoundCard() {
+        if (pageContainer) {
+            pageContainer.innerHTML = `
+                <div class="product-not-found" style="text-align: center; padding: 50px;">
+                    <h2>Sản phẩm không tồn tại</h2>
+                    <p>Xin lỗi, sản phẩm bạn tìm kiếm không có trong hệ thống. Vui lòng kiểm tra lại hoặc xem các sản phẩm khác.</p>
+                    <a href="./index.html" class="btn btn-primary" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none;">Quay lại trang chủ</a>
+                </div>
+            `;
+        }
+    }
 
     function updateProductUI(data) {
         if (!data) {
@@ -91,8 +147,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Tạo thumbnails
         thumbnailContainer.innerHTML = images.map((img, index) => `
-    <img loading="lazy" src="${img}" data-index="${index}" class="product-thumbnail ${index === 0 ? 'active' : ''}" />
-`).join("");
+            <img loading="lazy" src="${img}" data-index="${index}" class="product-thumbnail ${index === 0 ? 'active' : ''}" />
+        `).join("");
 
         // Click thumbnail
         thumbnailContainer.querySelectorAll(".product-thumbnail").forEach(img => {
@@ -124,25 +180,28 @@ document.addEventListener('DOMContentLoaded', async function () {
                 img.classList.toggle("active", idx === currentImageIndex);
             });
         }
+
         const breadcrumb = document.querySelector('.breadcrumb');
         if (breadcrumb) {
             breadcrumb.innerHTML = `
-        <a href="./index.html">Trang chủ</a> › 
-        <span>${data.category.name}</span> › 
-        <span>${data.name}</span>
-    `;
+                <a href="./index.html">Trang chủ</a> › 
+                <span>${data.category.name}</span> › 
+                <span>${data.name}</span>
+            `;
         }
 
-
         // Update product name
-        document.querySelector(".product-title").textContent = data.name; document.querySelector('.product-category').innerHTML = `
+        document.querySelector(".product-title").textContent = data.name;
+        document.querySelector('.product-category').innerHTML = `
             <span class="pro-category">• ${data.category.name}</span>
         `;
+
         // Update product meta (price, stock, location, time)
         const isLiked = favoriteProductIds.includes(data._id);
         const heartIcon = isLiked ? "fa-solid" : "fa-regular";
         const likedClass = isLiked ? "liked" : "";
         const productMeta = document.querySelectorAll('.product-meta');
+        
         productMeta[0].innerHTML = `
             <span class="current-price">${formatPrice(data.price)}</span>
             <span class="stock ${data.isAvailable ? 'in-stock' : 'out-of-stock'}">
@@ -150,9 +209,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 ${data.isAvailable ? 'Còn hàng' : 'Hết hàng'}
             </span>
         `;
+        
         productMeta[1].innerHTML = `
             <span class="location"><i class="fas fa-map-marker-alt"></i> ${data.shop.address}</span>
         `;
+        
         productMeta[2].innerHTML = `
             <div>
                 <span class="time"><i class="fas fa-clock"></i> Đăng ${daysAgo(data.createdAt)} ngày trước</span>
@@ -163,7 +224,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                     </button>           
                 </div>
             </div>
-
         `;
 
         // Update seller info
@@ -179,7 +239,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
         sellerInfo.querySelector('.seller-meta').innerHTML = `
             <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
-              <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0'} (${data.totalReviews} đánh giá)</span>
+            <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0'} (${data.totalReviews} đánh giá)</span>
             <span><i class="fas fa-clock"></i> Tham gia ${daysJoined} ngày trước</span>
         `;
         sellerInfo.querySelector('.seller-avatar img').src = data.shop.logoUrl || './images/avatar/default-avatar.jpg';
@@ -189,162 +249,167 @@ document.addEventListener('DOMContentLoaded', async function () {
         `;
 
         // Update product description
-        const descriptionTab = document.querySelector('#description');
+        const descriptionTab = document.querySelector('#product-description');
         descriptionTab.innerHTML = `
             <h3>${data.name}</h3>
             <p>${data.description}</p>
         `;
     }
 
-    // Existing UI interaction code
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    const mainImage = document.getElementById('mainImage');
-    thumbnails.forEach(thumb => {
-        thumb.addEventListener('click', function () {
-            thumbnails.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            mainImage.src = this.getAttribute('data-image');
-        });
-    });
+    // Initialize page
+    async function initializePage() {
+        showLoading();
 
-    // Quantity selector
-    const minusBtn = document.querySelector('.quantity-btn.minus');
-    const plusBtn = document.querySelector('.quantity-btn.plus');
-    const quantityInput = document.querySelector('.quantity-input');
+        try {
+            // Load favorites in background (non-blocking)
+            const favoritesPromise = loadFavorites();
 
-    if (minusBtn && plusBtn && quantityInput) {
-        minusBtn.addEventListener('click', function () {
-            let currentValue = parseInt(quantityInput.value);
-            if (currentValue > 1) {
-                quantityInput.value = currentValue - 1;
+            // Get product ID and validate
+            const productId = getProductIdFromUrl();
+            if (!productId) {
+                displayNotFoundCard();
+                hideLoading();
+                return;
             }
-        });
 
-        plusBtn.addEventListener('click', function () {
-            let currentValue = parseInt(quantityInput.value);
-            quantityInput.value = currentValue + 1;
-        });
+            // Fetch product data with timeout
+            const productData = await fetchProductData(productId);
+            
+            // Wait for favorites to load
+            await favoritesPromise;
+
+            if (!productData) {
+                displayNotFoundCard();
+                hideLoading();
+                return;
+            }
+
+            // Preload product images for better performance
+            if (productData.images && productData.images.length > 0) {
+                productData.images.forEach(imgSrc => {
+                    const img = new Image();
+                    img.src = imgSrc;
+                });
+            }
+
+            // Update UI with product data
+            updateProductUI(productData);
+
+            // Load additional data in parallel
+            const loadPromises = [
+                loadReviews(productId),
+                loadOtherProductsFromShop(productData.shop._id, productData._id),
+                loadSimilarProducts(productData.category._id, productData._id)
+            ];
+
+            // Update seller title
+            const sellerTitle = document.querySelector(".seller-products .section-title");
+            if (sellerTitle && productData?.shop?.name) {
+                sellerTitle.textContent = `Sản phẩm khác của ${productData.shop.name}`;
+            }
+
+            // Wait for all data to load
+            await Promise.allSettled(loadPromises);
+
+            // Setup lazy loading for images
+            setupLazyLoading();
+
+            // Hide loading and show content
+            hideLoading();
+
+        } catch (error) {
+            console.error('Error initializing page:', error);
+            showError(error.message || 'Đã xảy ra lỗi khi tải dữ liệu sản phẩm');
+        }
     }
 
-    // Tab switching
-    const tabHeaders = document.querySelectorAll('.tabs-header li');
-    const tabPanes = document.querySelectorAll('.tab-pane');
-
-    tabHeaders.forEach((header, index) => {
-        header.addEventListener('click', function () {
-            tabHeaders.forEach(h => h.classList.remove('active'));
-            tabPanes.forEach(p => p.classList.remove('active'));
-            this.classList.add('active');
-            tabPanes[index].classList.add('active');
-        });
-    });
-
-    // Star rating in review form
-    const stars = document.querySelectorAll('.rating-input i');
-
-    stars.forEach(star => {
-        star.addEventListener('click', function () {
-            const rating = parseInt(this.getAttribute('data-rating'));
-            stars.forEach((s, i) => {
-                if (i < rating) {
-                    s.classList.add('fas', 'active');
-                    s.classList.remove('far');
-                } else {
-                    s.classList.add('far');
-                    s.classList.remove('fas', 'active');
+    // Setup lazy loading for images
+    function setupLazyLoading() {
+        const images = document.querySelectorAll('img[loading="lazy"]');
+        
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
                 }
             });
         });
-    });
 
-    // Mobile menu toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navLinks = document.getElementById('navLinks');
-
-    if (mobileMenuBtn && navLinks) {
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
+        images.forEach(img => {
+            imageObserver.observe(img);
         });
     }
 
-    // Quantity controls
-    const quantityBtns = document.querySelectorAll('.quantity-btn');
-    const quantityInputs = document.querySelectorAll('.quantity-input');
-    const removeBtns = document.querySelectorAll('.remove-btn');
+    // Initialize the page
+    await initializePage();
 
-    quantityBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const input = e.target.parentElement.querySelector('.quantity-input');
-            let value = parseInt(input.value);
+    // Tab switching functionality
+    const productTabHeaders = document.querySelectorAll('.tabs-header-product li');
+    const productTabPanes = document.querySelectorAll('.tabs-content-product .tab-pane');
 
-            if (e.target.textContent === '+' || e.target.classList.contains('fa-plus')) {
-                input.value = value + 1;
-            } else if (e.target.textContent === '-' || e.target.classList.contains('fa-minus')) {
-                if (value > 1) {
-                    input.value = value - 1;
-                }
+    productTabHeaders.forEach((header) => {
+        header.addEventListener('click', function () {
+            productTabHeaders.forEach(h => h.classList.remove('active'));
+            productTabPanes.forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById(this.dataset.tab).classList.add('active');
+        });
+    });
+
+    const reviewTabHeaders = document.querySelectorAll('.tabs-header-review li');
+    const reviewTabPanes = document.querySelectorAll('.tabs-content-review .tab-pane');
+
+    reviewTabHeaders.forEach((header) => {
+        header.addEventListener('click', function () {
+            reviewTabHeaders.forEach(h => h.classList.remove('active'));
+            reviewTabPanes.forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById(this.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Load and display reviews
+    async function loadReviews(productId) {
+        const reviewListDiv = document.querySelector('#description .review-list');
+        if (!reviewListDiv) return;
+
+        reviewListDiv.innerHTML = '<p>Đang tải đánh giá...</p>';
+
+        try {
+            const res = await ReviewAPI.getReviewsByProduct(productId);
+            if (!res.success || !Array.isArray(res.data) || res.data.length === 0) {
+                reviewListDiv.innerHTML = '<p>Chưa có đánh giá nào cho sản phẩm này.</p>';
+                return;
             }
-            updateCartTotal();
-        });
-    });
 
-    quantityInputs.forEach(input => {
-        input.addEventListener('change', () => {
-            if (input.value < 1) input.value = 1;
-            updateCartTotal();
-        });
-    });
+            reviewListDiv.innerHTML = res.data.map(review => `
+                <div class="review-item">
+                    <div class="reviewer-avatar">
+                        <img loading="lazy" src="./assets/images/avatar/default-avatar.jpg" alt="${review.user?.fullName || 'Người dùng'}">
+                    </div>
+                    <div class="review-content-container">
+                        <div class="reviewer-name">${review.user?.fullName || 'Người dùng ẩn danh'}</div>
+                        <div class="review-meta-info">
+                            <div class="review-rating">${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</div>
+                            <span class="review-date"> | ${formatDate(review.createdAt)}</span>
+                        </div>
+                        <p class="review-comment-text">${review.comment || 'Không có bình luận.'}</p>
+                    </div>
+                </div>
+            `).join('');
 
-    removeBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.target.closest('tr').remove();
-            updateCartTotal();
-        });
-    });
-
-    function updateCartTotal() {
-        console.log('Cart updated');
+        } catch (error) {
+            console.error('Lỗi khi tải đánh giá:', error);
+            reviewListDiv.innerHTML = '<p>Không thể tải đánh giá.</p>';
+        }
     }
 
-    //Lấy sp từ shop
-    const productId = getProductIdFromUrl();
-    if (productId) {
-        const productData = await fetchProductData(productId);
-        updateProductUI(productData);
-
-        if (productData && productData.shop && productData.shop._id) {
-            loadOtherProductsFromShop(productData.shop._id, productData._id);
-        }
-
-        const sellerTitle = document.querySelector(".seller-products .section-title");
-        if (sellerTitle && productData?.shop?.name) {
-            sellerTitle.textContent = `Sản phẩm khác của ${productData.shop.name}`;
-        }
-        if (productData && productData.category && productData.category._id) {
-            loadSimilarProducts(productData.category._id, productData._id);
-        }
-
-        const detailSection = document.getElementById("productDetail");
-        const loadingIndicator = document.getElementById("loadingIndicator");
-
-        if (productData) {
-            // Nếu có dữ liệu -> ẩn loading, hiện chi tiết
-            if (detailSection) detailSection.style.display = "block";
-            if (loadingIndicator) loadingIndicator.style.display = "none";
-        } else {
-            // Nếu không có dữ liệu -> giữ nguyên hoặc show thông báo
-            if (loadingIndicator) loadingIndicator.innerHTML = `<p>Không tìm thấy sản phẩm.</p>`;
-        }
-    } else {
-        displayNotFoundCard();
-    }
-
-    // Hàm mới: Load sản phẩm khác từ shop
+    // Load other products from the same shop
     async function loadOtherProductsFromShop(shopId, currentProductId) {
-        const grid = document.querySelector(".products-grid");
+        const grid = document.querySelector(".seller-products .products-grid");
         if (!grid) return;
-
-        grid.innerHTML = "<p>Đang tải các sản phẩm khác...</p>";
 
         try {
             const res = await ProductAPI.getApprovedProductsByShopId(shopId);
@@ -353,65 +418,69 @@ document.addEventListener('DOMContentLoaded', async function () {
                 return;
             }
 
-            // Lọc bỏ sản phẩm hiện tại
+            // Filter out current product
             const otherProducts = res.data.filter(p => p._id !== currentProductId);
             if (otherProducts.length === 0) {
                 grid.innerHTML = "<p>Người bán không có sản phẩm nào khác.</p>";
                 return;
             }
 
-            // Hiển thị sản phẩm khác
+            // Display other products
             grid.innerHTML = otherProducts.map(product => {
-    const isLiked = favoriteProductIds.includes(product._id);
-    const likedClass = isLiked ? "liked" : "";
-    const heartIcon = isLiked ? "fa-solid" : "fa-regular";
+                const isLiked = favoriteProductIds.includes(product._id);
+                const likedClass = isLiked ? "liked" : "";
+                const heartIcon = isLiked ? "fa-solid" : "fa-regular";
 
-    return `
-        <div class="new-product-card">
-            <div class="card-top">
-                <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
-                <button class="like-btn ${likedClass}" data-id="${product._id}" title="Thêm yêu thích">
-                    <i class="${heartIcon} fa-heart"></i>
-                </button>
-                <div class="action-icons">
-                    <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
-                        <i class="fa-regular fa-eye"></i>
-                    </button>
-                    <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">${product.name}</h3>
-                <div class="price-wrapper">
-                    <span class="current-price-card">${product.price.toLocaleString("vi-VN")} đ</span>
-                </div>
-                <div class="rating">
-                    ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
-                    <span>${(product.rating || 4.33).toFixed(2)}</span>
-                </div>
-                <div class="store">Cửa hàng: <strong>${product.shop?.name || 'Unknown'}</strong></div>
-            </div>
-        </div>
-    `;
-}).join("");
-
+                return `
+                    <div class="new-product-card">
+                        <div class="card-top">
+                            <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
+                            <button class="like-btn ${likedClass}" data-id="${product._id}" title="Thêm yêu thích">
+                                <i class="${heartIcon} fa-heart"></i>
+                            </button>
+                            <div class="action-icons">
+                                <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                                <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            <div class="price-wrapper">
+                                <span class="current-price-card">${product.price.toLocaleString("vi-VN")} đ</span>
+                            </div>
+                            <div class="rating">
+                                ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
+                                <span>${(product.rating || 4.33).toFixed(2)}</span>
+                            </div>
+                            <div class="store">Cửa hàng: <strong>${product.shop?.name || 'Unknown'}</strong></div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
 
         } catch (error) {
             console.error("Lỗi khi tải sản phẩm khác từ shop:", error);
             grid.innerHTML = "<p>Không thể tải sản phẩm từ người bán.</p>";
         }
     }
-    // Hàm mới: Load sản phẩm tương tự theo danh mục
+
+    // Load similar products by category
     async function loadSimilarProducts(categoryId, currentProductId) {
-        const container = document.querySelector(".similar-products-grid");
+        const container = document.querySelector(".related-products .products-grid");
         if (!container) return;
 
-        container.innerHTML = "<p>Đang tải sản phẩm tương tự...</p>";
-
         try {
-            const res = await ProductAPI.getProductsByCategory(categoryId); // 💡 Bạn cần có API này
+            // Use filtered products API with category filter
+            const res = await ProductAPI.getAllProductsByFilter({ 
+                category: [categoryId], 
+                page: 1, 
+                limit: 8 
+            });
+            
             if (!res.success || !Array.isArray(res.data)) {
                 container.innerHTML = "<p>Không có sản phẩm tương tự để hiển thị.</p>";
                 return;
@@ -423,34 +492,40 @@ document.addEventListener('DOMContentLoaded', async function () {
                 return;
             }
 
-            container.innerHTML = similarProducts.map(product => `
-            <div class="new-product-card">
-                <div class="card-top">
-                    <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
-                    <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <div class="action-icons">
-                        <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
-                            <i class="fa-regular fa-eye"></i>
-                        </button>
-                        <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
-                            <i class="fa-solid fa-cart-shopping""></i>
-                        </button>
+            container.innerHTML = similarProducts.map(product => {
+                const isLiked = favoriteProductIds.includes(product._id);
+                const likedClass = isLiked ? "liked" : "";
+                const heartIcon = isLiked ? "fa-solid" : "fa-regular";
+
+                return `
+                    <div class="new-product-card">
+                        <div class="card-top">
+                            <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
+                            <button class="like-btn ${likedClass}" data-id="${product._id}" title="Thêm yêu thích">
+                                <i class="${heartIcon} fa-heart"></i>
+                            </button>
+                            <div class="action-icons">
+                                <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                                <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h4 class="product-name">${product.name}</h4>
+                            <div class="price-wrapper">
+                                <span class="current-price">${formatPrice(product.price)}</span>
+                            </div>
+                            <div class="rating">
+                                ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
+                                <span>${(product.rating || 4.3).toFixed(2)}</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="product-info">
-                    <h4 class="product-name">${product.name}</h4>
-                    <div class="price-wrapper">
-                        <span class="current-price">${formatPrice(product.price)}</span>
-                    </div>
-                    <div class="rating">
-                        ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
-                        <span>${(product.rating || 4.3).toFixed(2)}</span>
-                    </div>
-                </div>
-            </div>
-        `).join("");
+                `;
+            }).join("");
 
         } catch (error) {
             console.error("Lỗi khi tải sản phẩm tương tự:", error);
@@ -458,6 +533,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    // Toggle favorite functionality
     async function toggleFavorite(button) {
         const productId = button.dataset.id;
         const icon = button.querySelector("i");
@@ -486,6 +562,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    // Global event listeners for interactive elements
     let isAdding = false;
 
     document.addEventListener("click", async (e) => {

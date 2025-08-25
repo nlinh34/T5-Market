@@ -1,4 +1,5 @@
 import { ShopAPI } from "../APIs/shopAPI.js";
+import { showNotification } from '../APIs/utils/notification.js'; // Import the global notification function
 
 async function checkExistingShop() {
     const shopCreationSection = document.getElementById('shopCreationSection');
@@ -103,6 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const prevBtn = document.querySelector(".slider-btn.prev-btn");
   const nextBtn = document.querySelector(".slider-btn.next-btn");
   let currentImageIndex = 0;
+  let autoSlideInterval; /* New: Variable to hold the auto-slide interval */
+  const slideIntervalTime = 5000; /* New: Auto-slide interval in milliseconds */
 
   // Step 2 Toggle elements
   const step2Header = document.querySelector("#step2 .step-2-header");
@@ -186,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let customPolicyCount = 0;
   const MAX_CUSTOM_POLICIES = 4; // Limit to 4 custom policies
 
+  let policiesAtModalOpen = []; // New: To store policies when modal is opened for potential revert
 
   const editInfoBtn = document.querySelector("#step4 .btn-edit-info");
   const editPolicyBtn = document.querySelector("#step4 .btn-edit-policy");
@@ -230,7 +234,7 @@ const registerShopHandler = async (avatarFile = null) => {
             if (!uploadData.secure_url) throw new Error("Không upload được ảnh logo.");
             logoUrl = uploadData.secure_url;
         } catch (error) {
-            showNotification("❌ Upload ảnh logo thất bại: " + error.message, "error");
+            showNotification(" Upload ảnh logo thất bại: " + error.message, "error");
             return false;
         }
     } else if (avatarPreview.src && !avatarPreview.src.startsWith("data:image")) {
@@ -259,22 +263,22 @@ const registerShopHandler = async (avatarFile = null) => {
             if (response.data && response.data._id) {
                 window.currentShopId = response.data._id;
             }
-            showNotification("✅ Cập nhật/Đăng ký cửa hàng thành công!", "success");
+            showNotification("Cập nhật/Đăng ký cửa hàng thành công!", "success");
             submissionSuccess = true;
         } else {
-            showNotification(response.error || "❌ Thao tác thất bại.", "error");
+            showNotification(response.error || " Thao tác thất bại.", "error");
         }
     } catch (error) {
         console.error("Lỗi submit shop:", error);
-        let message = "❌ Lỗi không xác định.";
+        let message = " Lỗi không xác định.";
         try {
             const parsed = JSON.parse(error.message);
             if (parsed?.error) {
-                message = `❌ ${parsed.error}`;
+                message = ` ${parsed.error}`;
             }
         } catch (_) {
             if (error.message) {
-                message = `❌ ${error.message}`;
+                message = ` ${error.message}`;
             }
         }
         showNotification(message, "error");
@@ -300,8 +304,12 @@ const registerShopHandler = async (avatarFile = null) => {
       const stepNumber = parseInt(stepEl.dataset.step);
       if (stepNumber === currentStep) {
         stepEl.classList.add("active");
-      } else {
+        stepEl.classList.remove("completed"); /* Ensure active step is not also completed */
+      } else if (stepNumber < currentStep) { /* New: Mark steps before current as completed */
         stepEl.classList.remove("active");
+        stepEl.classList.add("completed");
+      } else {
+        stepEl.classList.remove("active", "completed"); /* New: Remove both for future steps */
       }
     });
 
@@ -322,16 +330,39 @@ const registerShopHandler = async (avatarFile = null) => {
       const imageWidth = sliderImages[0].clientWidth; // Assuming all images have same width
       sliderWrapper.style.transform = `translateX(${-currentImageIndex * imageWidth}px)`;
 
-      // Hide/show navigation buttons
-      if (prevBtn) {
-        prevBtn.style.display = currentImageIndex === 0 ? 'none' : 'flex';
-      }
-      if (nextBtn) {
-        nextBtn.style.display = sliderImages.length > 1 && currentImageIndex === sliderImages.length - 1 ? 'none' : 'flex';
+      // New: Hide/show navigation buttons only if there's more than one image
+      if (sliderImages.length > 1) {
+        if (prevBtn) {
+            prevBtn.style.display = 'flex';
+        }
+        if (nextBtn) {
+            nextBtn.style.display = 'flex';
+        }
       } else {
-        nextBtn.style.display = 'none'; // Hide if only one image
+        if (prevBtn) {
+            prevBtn.style.display = 'none';
+        }
+        if (nextBtn) {
+            nextBtn.style.display = 'none';
+        }
       }
     }
+  };
+
+  /* New: Function to start auto-sliding */
+  const startAutoSlide = () => {
+    if (sliderImages.length > 1) {
+        updateSlider(); /* Display first image immediately */
+        autoSlideInterval = setInterval(() => {
+            currentImageIndex = (currentImageIndex + 1) % sliderImages.length;
+            updateSlider();
+        }, slideIntervalTime);
+    }
+  };
+
+  /* New: Function to stop auto-sliding */
+  const stopAutoSlide = () => {
+    clearInterval(autoSlideInterval);
   };
 
   // Function to setup image preview for single file inputs (cover/avatar)
@@ -548,49 +579,6 @@ const registerShopHandler = async (avatarFile = null) => {
     return policies;
   };
 
-  // Universal notification display function
-  const showNotification = (message, type = "success") => {
-    const notification = document.createElement("div");
-    notification.className = `notification ${type}`;
-
-    let iconHtml = '';
-    if (type === 'success') {
-      iconHtml = '<i class="fas fa-check-circle"></i> ';
-    } else if (type === 'error') {
-      iconHtml = '<i class="fas fa-times-circle"></i> ';
-    } else if (type === 'info') {
-      iconHtml = '<i class="fas fa-info-circle"></i> ';
-    } else if (type === 'warning') {
-        iconHtml = '<i class="fas fa-exclamation-triangle"></i> '; // Warning icon
-    }
-
-    notification.innerHTML = iconHtml + message; // Add icon before the message
-
-    // Calculate dynamic top position to prevent overlapping
-    const existingNotifications = document.querySelectorAll('.notification');
-    let currentOffset = 20; // Initial top offset from the top of the viewport
-    existingNotifications.forEach(notif => {
-        // Only consider notifications that are currently visible and not removed yet
-        // We assume notifications are removed after their animation
-        // Add height of existing notification plus a small margin (e.g., 10px)
-        currentOffset += notif.offsetHeight + 10;
-    });
-
-    notification.style.top = `${currentOffset}px`;
-    notification.style.right = `20px`; // Keep it aligned to the right
-
-    document.body.appendChild(notification);
-
-    // Automatically remove after 3 seconds
-    setTimeout(() => {
-      notification.remove();
-      // Optional: Re-adjust positions of other notifications after one is removed
-      // This is more complex and might involve looping through remaining notifications
-      // and recalculating their `top` based on their new relative positions.
-      // For now, new notifications will just stack on top of the current highest one.
-    }, 3000);
-  };
-
   // Helper to show/hide error messages
   const toggleError = (element, hasError, errorMessageElement = null) => {
     if (hasError) {
@@ -607,6 +595,33 @@ const registerShopHandler = async (avatarFile = null) => {
   updateSlider();
   setupSingleImagePreview(avatarInput, avatarPreview);
   setupMultipleImagePreview(shopImagesInput, shopImagesPreview);
+  startAutoSlide(); /* New: Start auto-sliding on load */
+
+  // New: Event listeners for slider navigation
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      stopAutoSlide(); /* Stop auto-slide on manual navigation */
+      currentImageIndex = (currentImageIndex - 1 + sliderImages.length) % sliderImages.length;
+      updateSlider();
+      startAutoSlide(); /* Resume auto-slide after a brief pause */
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      stopAutoSlide(); /* Stop auto-slide on manual navigation */
+      currentImageIndex = (currentImageIndex + 1) % sliderImages.length;
+      updateSlider();
+      startAutoSlide(); /* Resume auto-slide after a brief pause */
+    });
+  }
+
+  // New: Pause auto-slide on hover over intro-images
+  const introImagesSection = document.querySelector(".intro-images");
+  if (introImagesSection) {
+    introImagesSection.addEventListener('mouseenter', stopAutoSlide);
+    introImagesSection.addEventListener('mouseleave', startAutoSlide);
+  }
 
   // Event listener for the new "Chọn ảnh" button
   if (selectShopImagesBtn) {
@@ -631,61 +646,92 @@ const registerShopHandler = async (avatarFile = null) => {
   if (openPolicyModalBtn) {
     openPolicyModalBtn.addEventListener('click', () => {
       policyEditModal.style.display = 'flex'; // Use flex to enable centering
-      // Load current policy values into modal inputs
-      const policies = collectPolicyData();
-      policies.forEach(policy => {
+
+      // 1. Store current policies when modal is opened for potential revert
+      policiesAtModalOpen = collectPolicyData();
+
+      // 2. Clear all current modal inputs before populating
+      shippingPolicyToggle.checked = false; shippingPolicyInput.value = ''; handlePolicyToggle(shippingPolicyToggle, shippingPolicyInputGroup);
+      warrantyPolicyToggle.checked = false; warrantyPolicyInput.value = ''; handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup);
+      returnPolicyToggle.checked = false; returnPolicyInput.value = ''; handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup);
+      installmentPolicyToggle.checked = false; installmentPolicyInput.value = ''; handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup);
+      tradeinPolicyToggle.checked = false; tradeinPolicyInput.value = ''; handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup);
+      customPolicyContainer.innerHTML = ''; // Clear custom policies
+      customPolicyCount = 0; // Reset custom policy count
+
+      // 3. Populate modal inputs with policiesAtModalOpen
+      policiesAtModalOpen.forEach(policy => {
         if (policy.type === 'shipping' && shippingPolicyInput) { shippingPolicyInput.value = policy.value; shippingPolicyToggle.checked = true; handlePolicyToggle(shippingPolicyToggle, shippingPolicyInputGroup); }
-        if (policy.type === 'warranty' && warrantyPolicyInput) { warrantyPolicyInput.value = policy.value; warrantyPolicyToggle.checked = true; handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup); }
-        if (policy.type === 'return' && returnPolicyInput) { returnPolicyInput.value = policy.value; returnPolicyToggle.checked = true; handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup); }
-        if (policy.type === 'installment' && installmentPolicyInput) { installmentPolicyInput.value = policy.value; installmentPolicyToggle.checked = true; handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup); }
-        if (policy.type === 'tradein' && tradeinPolicyInput) { tradeinPolicyInput.value = policy.value; tradeinPolicyToggle.checked = true; handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup); }
-        // For custom policies, re-add them if they exist
-        if (policy.type === 'custom') {
-            const existingCustomInput = customPolicyContainer.querySelector(`input[value="${policy.value}"]`);
-            if (!existingCustomInput) {
-                // If it doesn't exist, create it
-                customPolicyCount++;
-                const newPolicyHtml = `
-                    <div class="policy-input-group custom-policy-input" data-custom-policy-id="${customPolicyCount}">
-                        <input type="text" value="${policy.value}">
-                        <button type="button" class="remove-custom-policy-btn" data-custom-policy-id="${customPolicyCount}">Xóa</button>
-                    </div>
-                `;
-                customPolicyContainer.insertAdjacentHTML('beforeend', newPolicyHtml);
-                const newRemoveBtn = customPolicyContainer.querySelector(`.remove-custom-policy-btn[data-custom-policy-id="${customPolicyCount}"]`);
-                if (newRemoveBtn) {
-                    newRemoveBtn.addEventListener('click', (event) => {
-                        const policyIdToRemove = event.target.dataset.customPolicyId;
-                        const policyElementToRemove = customPolicyContainer.querySelector(`.custom-policy-input[data-custom-policy-id="${policyIdToRemove}"]`);
-                        if (policyElementToRemove) {
-                            policyElementToRemove.remove();
-                            customPolicyCount--;
-                        }
-                    });
-                }
+        else if (policy.type === 'warranty' && warrantyPolicyInput) { warrantyPolicyInput.value = policy.value; warrantyPolicyToggle.checked = true; handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup); }
+        else if (policy.type === 'return' && returnPolicyInput) { returnPolicyInput.value = policy.value; returnPolicyToggle.checked = true; handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup); }
+        else if (policy.type === 'installment' && installmentPolicyInput) { installmentPolicyInput.value = policy.value; installmentPolicyToggle.checked = true; handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup); }
+        else if (policy.type === 'tradein' && tradeinPolicyInput) { tradeinPolicyInput.value = policy.value; tradeinPolicyToggle.checked = true; handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup); }
+        else if (policy.type === 'custom') {
+            // This will add new custom policy fields if they were in policiesAtModalOpen
+            addCustomPolicyField(); // Call to create the div
+            const lastCustomInput = customPolicyContainer.querySelector(`.custom-policy-input[data-custom-policy-id="${customPolicyCount}"] input[type="text"]`);
+            if (lastCustomInput) {
+                lastCustomInput.value = policy.value;
             }
         }
       });
+
+      // Scroll to policy section in modal if needed (no change here)
+      // policyEditModal.querySelector('.policy-modal-content').scrollIntoView({ behavior: 'smooth' }); // This line might be problematic if policy-modal-content doesn't exist
     });
   }
 
   if (closePolicyModalBtn) {
     closePolicyModalBtn.addEventListener('click', () => {
       policyEditModal.style.display = 'none';
+      revertPoliciesToModalOpen(); // New: Revert policies on close
     });
   }
 
   if (cancelPolicyBtn) {
     cancelPolicyBtn.addEventListener('click', () => {
       policyEditModal.style.display = 'none';
+      revertPoliciesToModalOpen(); // New: Revert policies on cancel
     });
   }
+
+  // New: Function to revert policy modal inputs to policiesAtModalOpen state
+  const revertPoliciesToModalOpen = () => {
+      // Clear all current modal inputs
+      shippingPolicyToggle.checked = false; shippingPolicyInput.value = ''; handlePolicyToggle(shippingPolicyToggle, shippingPolicyInputGroup);
+      warrantyPolicyToggle.checked = false; warrantyPolicyInput.value = ''; handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup);
+      returnPolicyToggle.checked = false; returnPolicyInput.value = ''; handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup);
+      installmentPolicyToggle.checked = false; installmentPolicyInput.value = ''; handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup);
+      tradeinPolicyToggle.checked = false; tradeinPolicyInput.value = ''; handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup);
+      customPolicyContainer.innerHTML = ''; // Clear custom policies
+      customPolicyCount = 0; // Reset custom policy count
+
+      // Populate modal inputs with policiesAtModalOpen
+      policiesAtModalOpen.forEach(policy => {
+          if (policy.type === 'shipping' && shippingPolicyInput) { shippingPolicyInput.value = policy.value; shippingPolicyToggle.checked = true; handlePolicyToggle(shippingPolicyToggle, shippingPolicyInputGroup); }
+          else if (policy.type === 'warranty' && warrantyPolicyInput) { warrantyPolicyInput.value = policy.value; warrantyPolicyToggle.checked = true; handlePolicyToggle(warrantyPolicyToggle, warrantyPolicyInputGroup); }
+          else if (policy.type === 'return' && returnPolicyInput) { returnPolicyInput.value = policy.value; returnPolicyToggle.checked = true; handlePolicyToggle(returnPolicyToggle, returnPolicyInputGroup); }
+          else if (policy.type === 'installment' && installmentPolicyInput) { installmentPolicyInput.value = policy.value; installmentPolicyToggle.checked = true; handlePolicyToggle(installmentPolicyToggle, installmentPolicyInputGroup); }
+          else if (policy.type === 'tradein' && tradeinPolicyInput) { tradeinPolicyInput.value = policy.value; tradeinPolicyToggle.checked = true; handlePolicyToggle(tradeinPolicyToggle, tradeinPolicyInputGroup); }
+          else if (policy.type === 'custom') {
+              addCustomPolicyField(); // Call to create the div
+              const lastCustomInput = customPolicyContainer.querySelector(`.custom-policy-input[data-custom-policy-id="${customPolicyCount}"] input[type="text"]`);
+              if (lastCustomInput) {
+                  lastCustomInput.value = policy.value;
+              }
+          }
+      });
+  };
 
   if (confirmPolicyBtn) {
     confirmPolicyBtn.addEventListener('click', async () => { // Make it async
       const policies = collectPolicyData();
       if (!window.currentShopId) {
-          showNotification("Không thể cập nhật chính sách khi chưa có cửa hàng.", "error");
+          // If no current shop ID, just store policies locally and close modal
+          // Policies will be submitted with the rest of the shop data during initial registration
+          showNotification("Chính sách đã được lưu tạm thời.", "success");
+          policyEditModal.style.display = 'none';
+          updateSummary(); // Update summary with locally collected policies
           return;
       }
       try {

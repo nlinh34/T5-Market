@@ -151,8 +151,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const uploadedUrl = await uploadToCloudinary(compressedBase64);
                 allImages.push(uploadedUrl);
             } catch (err) {
-                console.error("❌ Upload ảnh lỗi:", err);
-                showNotification("❌ Upload ảnh thất bại.", "error");
+                console.error("Upload ảnh lỗi:", err);
+                showNotification("Upload ảnh thất bại.", "error");
                 return;
             }
         }
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             if (response.success) {
-                showNotification("✅ Sản phẩm đã đăng!", "success");
+                showNotification("Sản phẩm đã đăng!", "success");
                 form.reset();
                 imagePreviewContainer.innerHTML = "";
                 existingImages = [];
@@ -187,15 +187,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                     window.location.href = '/frontend/shop-manager.html?tab=cuaHang';
                 }, 1500);
             } else {
-                showNotification(`❌ ${productId ? "Cập nhật" : "Đăng"} sản phẩm thất bại.`, "error");
+                showNotification(`${productId ? "Cập nhật" : "Đăng"} sản phẩm thất bại.`, "error");
             }
         } catch (error) {
             console.error("Lỗi submit:", error);
 
             if (error && error.response && error.response.data && error.response.data.error) {
-                showNotification(`❌ ${error.response.data.error}`, "error");
+                showNotification(`${error.response.data.error}`, "error");
             } else {
-                showNotification("❌ Lỗi khi gửi dữ liệu.", "error");
+                showNotification("Lỗi khi gửi dữ liệu.", "error");
             }
         }
     }
