@@ -185,35 +185,40 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="review-item" data-product-id="${productId}" style="border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:6px;">
           <div style="display:flex; align-items:center; gap:10px; border-bottom: 1px solid #ccc; padding-bottom: 10px">
             <img src="${image}" alt="${item.name}" width="60" height="60" style="object-fit:cover; border-radius:6px;" />
-            <span style="font-size: 14px"><strong>${item.name}</strong></span>
+            <span style="font-size: 14px"><strong>${item.name}</strong>
+            <br />
+            <span style="color: #888; font-size: 13px;">Số lượng: ${item.quantity}</span>
+        </span>
+            </span>
           </div>
-          <div class="review-stars" style="margin: 6px 0;">
+          <div class="review-stars" style="margin: 30px 0;">
             ${[1, 2, 3, 4, 5].map(v => `
-              <i class="fa fa-star star" data-value="${v}" 
-                style="cursor:pointer; font-size:18px; color:#ccc; margin-right:4px;"></i>
+              <i class="fa fa-star star" data-value="${v}"></i>
             `).join("")}
             <input type="hidden" class="review-rating" value="5" />
           </div>
-          <br />
-          <textarea class="review-content" placeholder="Nhập nội dung đánh giá..." style="width:100%; margin-top:6px;"></textarea>
-          <br />
-          <button class="submit-product-review-btn" style="margin-top:5px; background:#28a745; color:white;">Gửi đánh giá</button>
-        </div>
+      <textarea class="review-content" placeholder="Nhập nội dung đánh giá..."></textarea>
+      <div class="submit-btn-container">
+        <button class="submit-product-review-btn">Gửi đánh giá</button>
+      </div>
     `
       );
-          // Sau khi render xong mỗi sản phẩm
-    ReviewAPI.getReviewsByProduct(productId).then(res => {
-      if (res.success && res.data.length > 0) {
-        const btn = productList.querySelector(
-          `.review-item[data-product-id="${productId}"] .submit-product-review-btn`
-        );
-        if (btn) {
-          btn.disabled = true;
-          btn.textContent = "Đã đánh giá";
-          btn.style.background = "#ccc";
+
+      ReviewAPI.getReviewedProductsByOrder(order._id).then(res => {
+        if (res.success) {
+          const reviewedIds = res.data; // mảng productId đã review trong đơn này
+          if (reviewedIds.includes(productId)) {
+            const btn = productList.querySelector(
+              `.review-item[data-product-id="${productId}"] .submit-product-review-btn`
+            );
+            if (btn) {
+              btn.disabled = true;
+              btn.textContent = "Đã đánh giá";
+              btn.style.background = "#ccc";
+            }
+          }
         }
-      }
-    });
+      });
     });
 
 
