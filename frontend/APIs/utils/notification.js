@@ -3,17 +3,35 @@ export function showNotification(message, type = "success", icon = "") {
   const notificationContainer = getOrCreateNotificationContainer();
 
   const notification = document.createElement("div");
-  notification.classList.add("notification", `notification-${type}`);
+  notification.classList.add("notification", type);
 
   let iconHtml = "";
   if (icon) {
-    iconHtml = `<i class="${icon} notification-icon"></i>`;
+    iconHtml = `<i class="${icon}"></i>`;
+  } else {
+    // Default icons based on type
+    switch (type) {
+      case "success":
+        iconHtml = '<i class="fas fa-check-circle"></i>';
+        break;
+      case "error":
+        iconHtml = '<i class="fas fa-times-circle"></i>';
+        break;
+      case "warning":
+        iconHtml = '<i class="fas fa-exclamation-triangle"></i>';
+        break;
+      case "info":
+        iconHtml = '<i class="fas fa-info-circle"></i>';
+        break;
+      default:
+        iconHtml = '<i class="fas fa-info-circle"></i>';
+    }
   }
 
   notification.innerHTML = `
     ${iconHtml}
-    <span class="notification-message">${message}</span>
-    <button class="notification-close">&times;</button>
+    <span>${message}</span>
+    <button class="close-btn">&times;</button>
   `;
 
   notificationContainer.appendChild(notification);
@@ -23,7 +41,7 @@ export function showNotification(message, type = "success", icon = "") {
 
   notification.classList.add("show");
 
-  const closeButton = notification.querySelector(".notification-close");
+  const closeButton = notification.querySelector(".close-btn");
   closeButton.addEventListener("click", () => {
     hideNotification(notification);
   });

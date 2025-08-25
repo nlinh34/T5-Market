@@ -1,81 +1,103 @@
 /* Notification Container */
 #notification-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1050; /* Ensure it's above most other elements */
+  margin-top: 80px;
+  top: 0;
+  right: 10px;
+  z-index: 10000;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 350px; /* Limit width for better readability */
+  max-width: 400px;
+  pointer-events: none;
+  /* Ensure container is always on top */
+  position: fixed !important;
+  z-index: 999999 !important;
+}
+
+#notification-container .notification {
+  pointer-events: auto;
+  margin-top: 5px;
+  top: 0;
+  right: 10px;
 }
 
 /* Base Notification Style */
 .notification {
-    margin-top: 85px;
-    position: fixed;
-    top: 0px;
-    right: 20px;
     padding: 15px 25px;
     border-radius: 8px;
-    color: var(--color-text);
+    color: #333;
     font-weight: 600;
-    z-index: 10000;
     opacity: 0;
     transform: translateY(-20px);
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-    box-shadow: 0 4px 12px var(--shadow);
+    transition: all 0.4s ease-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(4px);
-    /* Làm mờ nền phía sau */
+    background: white;
+    border-left: 4px solid #ccc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 300px;
+    max-width: 400px;
 }
 
 .notification.show {
   opacity: 1;
-  transform: translateX(0); /* Slide in from right */
+  transform: translateY(0); /* Slide in from top */
 }
 
 .notification.hide {
   opacity: 0;
-  transform: translateX(100%); /* Slide out to right */
+  transform: translateY(-20px); /* Slide out to top */
 }
 
 /* Notification Types */
-.notification-success {
-  border-left-color: var(--success-color);
+.notification.success {
+  border-left-color: #28a745;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
 }
 
-.notification-error {
-  border-left-color: var(--danger-color);
+.notification.error {
+  border-left-color: #dc3545;
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
 }
 
-.notification-warning {
-  border-left-color: var(--warning-color);
+.notification.warning {
+  border-left-color: #ffc107;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  color: #856404;
 }
 
-.notification-info {
-  border-left-color: var(--info-color);
+.notification.info {
+  border-left-color: #17a2b8;
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+  color: #0c5460;
 }
 
 /* Notification Icon */
-.notification-icon {
+.notification i {
   font-size: 18px;
+  flex-shrink: 0;
 }
 
-.notification-success .notification-icon {
-  color: var(--success-color);
+.notification.success i {
+  color: #28a745;
 }
-.notification-error .notification-icon {
-  color: var(--danger-color);
+.notification.error i {
+  color: #dc3545;
 }
-.notification-warning .notification-icon {
-  color: var(--warning-color);
+.notification.warning i {
+  color: #ffc107;
 }
-.notification-info .notification-icon {
-  color: var(--info-color);
+.notification.info i {
+  color: #17a2b8;
 }
 
 /* Notification Message */
-.notification-message {
+.notification span {
   flex-grow: 1;
   font-size: 14px;
   line-height: 1.4;
@@ -83,16 +105,71 @@
 }
 
 /* Close Button */
-.notification-close {
+.notification .close-btn {
   background: none;
   border: none;
-  font-size: 20px;
-  color: var(--neutral-gray400); /* Light gray for close button */
+  font-size: 18px;
+  color: #666;
   cursor: pointer;
   padding: 0 5px;
   transition: color 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 
-.notification-close:hover {
-  color: var(--neutral-gray700); /* Darker on hover */
+.notification .close-btn:hover {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #notification-container {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .notification {
+    min-width: auto;
+    max-width: none;
+    padding: 12px 20px;
+  }
+  
+  .notification span {
+    font-size: 13px;
+  }
+  
+  .notification i {
+    font-size: 16px;
+  }
+  
+  .notification .close-btn {
+    font-size: 16px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  #notification-container {
+    top: 10px;
+    right: 5px;
+    left: 5px;
+  }
+  
+  .notification {
+    padding: 10px 15px;
+    gap: 8px;
+  }
+  
+  .notification span {
+    font-size: 12px;
+  }
 }
