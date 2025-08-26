@@ -1,24 +1,42 @@
 header {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    gap: 35px;
-    background-color: #0e699f;
+    justify-content: space-between;
+    gap: 24px;
+    background-color: #ffffff;
     margin-bottom: 0;
-    color: white;
-    padding: 15px 0;
+    color: #222;
+    padding: 12px 24px;
     width: 100%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 990;
+    transition: padding 0.3s ease, box-shadow 0.3s ease;
+}
+
+header.scrolled {
+    padding: 8px 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 5px;
-    margin-left: 20px;
-    font-size: 24px;
-    font-weight: bold;
+    gap: 8px;
+    margin-left: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: inherit;
+    /* Kế thừa màu từ thẻ cha */
+    text-decoration: none;
+    /* Bỏ gạch chân */
+}
+
+.logo a {
+    text-decoration: none;
+    color: inherit;
 }
 
 .logo-img {
@@ -29,30 +47,48 @@ header {
     display: flex;
     align-items: center;
     margin: 0 20px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 999px;
+    height: 45px;
+    padding: 0 12px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.search:focus-within {
+    border-color: #cfe3ff;
+    box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.08);
 }
 
 .search input {
     outline: none;
-    padding: 5px 10px;
-    width: 350px;
-    border: #000;
-    border-radius: 4px 0 0 4px;
-    height: 40px;
+    padding: 0 12px;
+    width: clamp(220px, 28vw, 350px);
+    border: none;
+    border-radius: 999px;
+    height: 100%;
+    color: #444;
 }
 
 .search button {
-    padding: 0 15px;
-    border: #000;
-    border-radius: 0 4px 4px 0;
-    height: 40px;
+    padding: 0 14px;
+    border: none;
+    border-radius: 999px;
+    height: 100%;
     cursor: pointer;
+    background: transparent;
+    color: #666;
+    transition: color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
 }
 
 .search button:hover {
-    background: #262626;
-    color: white;
-    transition: ease-in;
-    transition-duration: 0.2s;
+    background: rgba(26, 115, 232, 0.08);
+    color: #111;
+    transition: color 0.2s ease-in;
+}
+
+.search button i {
+    font-size: 16px;
 }
 
 .menu {
@@ -60,32 +96,65 @@ header {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 50px;
+    gap: 40px;
 }
 
 .menu a {
     text-decoration: none;
-    color: white;
+    color: #222;
     font-size: 16px;
     font-weight: 500 !important;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.menu a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    height: 2px;
+    width: 0;
+    background: #1a73e8;
+    border-radius: 2px;
+    transition: width 0.25s ease;
 }
 
 .menu a:hover {
-    color: #dddddd;
+    color: #0070f3;
+}
+
+.menu a:hover::after,
+.menu a.active::after {
+    width: 100%;
 }
 
 .cart {
     display: flex;
     align-items: center;
+    gap: 14px;
 }
 
 .cart-icon {
-    color: white;
-    font-size: large;
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    border-radius: 50%;
+    background: #fff;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .cart-icon:hover {
-    color: #dddddd;
+    color: #111;
+    border-color: #ddd;
+    background-color: #f8fbff;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .post-btn {
@@ -141,17 +210,38 @@ header {
     justify-content: center;
     gap: 8px;
     /* Space between icon/avatar and text */
-    margin-top: 7px;
-    background-color: transparent;
+    margin-top: 0;
+    background-color: rgba(26, 115, 232, 0.06);
     /* width: 150px; */
     /* Remove fixed width to allow content to dictate width */
-    padding: 7px 15px;
-    border: none;
+    padding: 7px 12px;
+    border: 1px solid #d6e4ff;
+    /* light blue */
     cursor: pointer;
     font-size: 16px;
-    border-radius: 4px;
-    color: white;
-    /* Changed from black to white */
+    border-radius: 999px;
+    color: #1a73e8;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.account-toggle .fas,
+.account-toggle .username,
+.account-toggle .arrow {
+    color: #1a73e8;
+}
+
+.account-toggle:hover {
+    background-color: rgba(26, 115, 232, 0.08);
+    border-color: #1a73e8;
+    /* brand blue */
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.18);
+    color: #1a73e8;
+}
+
+.account-toggle:hover .fas,
+.account-toggle:hover .username,
+.account-toggle:hover .arrow {
+    color: #1a73e8;
 }
 
 .logged-out-info {
@@ -162,7 +252,7 @@ header {
 
 .logged-out-info .fas.fa-user {
     font-size: 14px;
-    color: white;
+    color: #222;
 }
 
 .user-info {
@@ -189,13 +279,13 @@ header {
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid #ccc;
+    border: 1px solid #d0d0d0;
 }
 
 .account-toggle .fas.fa-user-circle {
     font-size: 24px;
     /* Default icon size */
-    color: white;
+    color: #666;
 }
 
 .account-toggle .arrow {
@@ -260,7 +350,7 @@ header {
     margin-bottom: 10px;
     border-bottom: 1px solid #e9ecef;
     /* Lighter, more subtle border */
-    background-color: #f8f9fa;
+    /*background-color: #f8f9fa;
     /* Slightly off-white background for header */
 }
 
@@ -361,15 +451,15 @@ nav ul li {
 }
 
 nav ul li a {
-    color: white;
+    color: #222;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s;
+    transition: color 0.2s ease;
 }
 
 nav ul li a:hover,
 nav ul li a.active {
-    color: #ffd700;
+    color: #0070f3;
 }
 
 .cart-icon {
@@ -379,17 +469,19 @@ nav ul li a.active {
 
 .cart-count {
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #ff6b6b;
+    top: -4px;
+    right: -4px;
+    background-color: #0070f3;
     color: white;
     border-radius: 50%;
-    width: 18px;
+    min-width: 18px;
     height: 18px;
+    padding: 0 4px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 18px;
 }
 
 .user-section {
@@ -412,27 +504,28 @@ nav ul li a.active {
 
 .auth-btn {
     align-items: center;
-    gap: 5px;
-    border-radius: 5px;
+    gap: 6px;
+    border-radius: 999px;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
     border: none;
-    padding: 4px 8px;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 8px 16px;
     display: inline-flex;
     align-items: center;
 }
 
 .login-btn {
-    background-color: #4caf50;
+    background-color: #1a73e8;
     color: white;
+    box-shadow: 0 6px 16px rgba(26, 115, 232, 0.25);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
 }
 
 .login-btn:hover {
-    background-color: #45a049;
+    background-color: #1767cf;
+    box-shadow: 0 8px 22px rgba(26, 115, 232, 0.35);
 }
 
 .register-btn {
@@ -463,4 +556,160 @@ nav ul li a.active {
     display: flex;
     align-items: center;
     gap: 15px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.mobile-menu {
+    display: none;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 12px 24px;
+}
+
+.mobile-menu a {
+    padding: 12px 0;
+    text-decoration: none;
+    color: #222;
+    border-bottom: 1px solid #eee;
+}
+
+.mobile-menu a:last-child {
+    border-bottom: none;
+}
+
+.mobile-menu.active {
+    display: flex;
+}
+
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    /* Dưới header nhưng trên phần còn lại */
+}
+
+.mobile-menu-overlay.active {
+    display: block;
+}
+
+@media (max-width: 1024px) {
+    .menu {
+        gap: 20px;
+    }
+
+    .search input {
+        width: clamp(180px, 25vw, 300px);
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        align-items: center;
+        /* Căn giữa các item theo chiều dọc */
+    }
+
+    .menu,
+    .post-btn,
+    .account-dropdown .username,
+    .account-dropdown .account-text {
+        display: none;
+    }
+
+    .search {
+        order: 3;
+        width: 100%;
+        margin: 12px 0 0;
+        flex-grow: 1;
+    }
+
+    .search input {
+        width: 100%;
+    }
+
+    .logo {
+        font-size: 22px;
+        flex-shrink: 0;
+        /* Ngăn logo bị co lại */
+    }
+
+    .header-right {
+        margin-left: auto;
+        /* Đẩy các icon sang phải */
+        gap: 8px;
+        /* Giảm khoảng cách giữa các icon */
+    }
+
+    .hamburger {
+        display: block;
+        margin-left: 8px;
+        font-size: 22px;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        /* Bắt đầu từ ngoài màn hình */
+        width: 300px;
+        max-width: 80%;
+        /* Giới hạn chiều rộng trên các màn hình rất nhỏ */
+        height: 100%;
+        background-color: #fff;
+        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.15);
+        flex-direction: column;
+        padding: 20px;
+        transition: right 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+        /* Hiệu ứng mượt mà hơn */
+        z-index: 1000;
+        /* Đảm bảo menu hiển thị trên cùng */
+        display: flex;
+        /* Luôn là flex để có thể ẩn/hiện */
+    }
+
+    .mobile-menu.active {
+        right: 0;
+        /* Trượt vào trong màn hình */
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #333;
+        cursor: pointer;
+        align-self: flex-end;
+        margin-bottom: 20px;
+        line-height: 1;
+    }
+
+    .mobile-menu a {
+        padding: 15px 0;
+        font-size: 18px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .account-toggle {
+        padding: 7px 8px;
+    }
 }

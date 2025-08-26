@@ -4,7 +4,7 @@ import FavoriteAPI from "../APIs/favoriteAPI.js";
 import CartAPI from "../APIs/cartAPI.js";
 import { showNotification } from "../APIs/utils/notification.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async() => {
     const container = document.querySelector(".product-grid");
     const paginationContainer = document.querySelector(".pagination-container");
     const minPriceInput = document.getElementById("minPrice");
@@ -16,7 +16,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentPage = 1;
     const limit = 15;
     let favoriteProductIds = [];
-    const loadFavorites = async () => {
+
+    const getSearchParams = () => {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            searchQuery: params.get("search"),
+            categoryId: params.get("category"),
+        };
+    };
+
+    const loadFavorites = async() => {
         try {
             const favorites = await FavoriteAPI.getFavorites();
             favoriteProductIds = favorites.map(p => p._id);
@@ -28,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const attachFavoriteEvents = () => {
         document.querySelectorAll(".like-btn").forEach(btn => {
-            btn.onclick = async () => {
+            btn.onclick = async() => {
                 const productId = btn.dataset.id;
                 const isLiked = btn.classList.contains("liked");
                 try {
@@ -56,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const formatPriceVND = (price) => price.toLocaleString("vi-VN") + " đ";
 
-    const loadPriceRange = async () => {
+    const loadPriceRange = async() => {
         try {
             const result = await ProductAPI.getPriceRange();
             const { min, max } = result;
@@ -126,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
 
-    const renderProducts = async (products) => {
+    const renderProducts = async(products) => {
         container.innerHTML = "";
         if (!products || !products.length) {
             container.innerHTML = "<p>Không có sản phẩm nào.</p>";
@@ -150,7 +159,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const attachAddToCartEvents = () => {
         document.querySelectorAll(".add-to-cart-btn").forEach(button => {
-            button.onclick = async () => {
+            button.onclick = async() => {
                 const productId = button.dataset.id;
                 const token = localStorage.getItem("token");
                 if (!token) return alert("⚠️ Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
@@ -196,24 +205,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     };
 
-    const handleFilter = async (page = 1) => {
+    const handleFilter = async(page = 1) => {
         const selectedIds = [...document.querySelectorAll(".category-filter:checked")]
             .map(cb => cb.value)
             .filter(id => /^[a-f\d]{24}$/i.test(id)); // chỉ giữ ObjectId hợp lệ
         console.log("Selected categoryIds:", selectedIds);
         const minPrice = parseInt(minPriceInput.value) || 0;
         const maxPrice = parseInt(maxPriceInput.value) || 999999999;
+        const { searchQuery } = getSearchParams();
 
         container.innerHTML = "🔍 Đang lọc sản phẩm...";
 
         try {
-            const result = await ProductAPI.getAllProductsByFilter({
+            const filterParams = {
+                name: searchQuery, // Thêm tham số tên
                 category: selectedIds,
                 minPrice,
                 maxPrice,
                 page,
                 limit
-            });
+            };
+            console.log("Filtering products with:", filterParams);
+            const result = await ProductAPI.getAllProductsByFilter(filterParams);
+            console.log("Filter API result:", result);
             const products = result.data;
             const pagination = result.pagination;
 
@@ -232,7 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
 
-    const loadCategorySidebar = async () => {
+    const loadCategorySidebar = async() => {
         try {
             const result = await CategoryAPI.getAllCategories();
             const categories = result.data;
@@ -246,6 +260,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         </li>`).join("");
 
             document.querySelectorAll(".category-filter").forEach(cb => cb.addEventListener("change", () => handleFilter(1)));
+
+            // Nếu URL có category param, pre-check tương ứng
+            const params = new URLSearchParams(window.location.search);
+            const categoryParam = params.get("category");
+            if (categoryParam) {
+                // hỗ trợ danh sách id phân tách bởi comma
+                const ids = categoryParam.split(',').map(s => s.trim()).filter(Boolean);
+                ids.forEach(id => {
+                    const checkbox = document.querySelector(`.category-filter[value="${id}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
         } catch (err) {
             console.error("Lỗi khi tải danh mục:", err);
         }
@@ -268,6 +294,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     updatePriceValues();
     await loadPriceRange();
     await loadFavorites();
-    loadCategorySidebar();
-    loadAllProducts();
+    await loadCategorySidebar();
+    const { searchQuery, categoryId } = getSearchParams();
+    // Nếu có searchQuery thì điền vào ô tìm kiếm (header) để người dùng thấy từ khoá
+    try {
+        if (searchQuery) {
+            const headerSearchInput = document.querySelector('.search input[type="text"]');
+            if (headerSearchInput) headerSearchInput.value = searchQuery;
+        }
+    } catch (e) {
+        // ignore if header not yet available
+    }
+
+    if (searchQuery || categoryId) {
+        handleFilter(1);
+    } else {
+        loadAllProducts();
+    }
 });

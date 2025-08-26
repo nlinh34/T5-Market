@@ -14,7 +14,7 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes")
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5500;
 
 // Middleware
 app.use(cors(corsOptions));
@@ -23,32 +23,32 @@ app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 
 // Connect to Database
 connectDatabase()
-  .then(() => {
-    app.get("/test", (req, res) => {
-      res.json({ message: "CORS test successful" });
+    .then(() => {
+        app.get("/test", (req, res) => {
+            res.json({ message: "CORS test successful" });
+        });
+
+        // Routes
+        app.use("/auth", userRoutes);
+        app.use("/products", productRoutes);
+        app.use("/categories", categoryRoutes);
+        app.use("/cart", cartRoutes);
+        app.use("/order", orderRoutes);
+        app.use("/shop", shopRoutes);
+        app.use("/reviews", reviewRoutes)
+        app.use("/favorites", favoriteRoutes)
+
+        app.use((err, req, res, next) => {
+            console.error(err.stack);
+            res.status(500).json({ error: "Internal Server Error" });
+        });
+
+        app.listen(port, () => {
+            console.log(`🚀 Server is running on port ${port}`);
+        });
+
+    })
+    .catch((error) => {
+        console.error("Failed to start server:", error);
+        process.exit(1);
     });
-
-    // Routes
-    app.use("/auth", userRoutes);
-    app.use("/products", productRoutes);
-    app.use("/categories", categoryRoutes);
-    app.use("/cart", cartRoutes);
-    app.use("/order", orderRoutes);
-    app.use("/shop", shopRoutes);
-    app.use("/reviews", reviewRoutes)
-    app.use("/favorites", favoriteRoutes)
-
-    app.use((err, req, res, next) => {
-      console.error(err.stack);
-      res.status(500).json({ error: "Internal Server Error" });
-    });
-
-    app.listen(port, () => {
-      console.log(`🚀 Server is running on port ${port}`);
-    });
-
-  })
-  .catch((error) => {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  });
