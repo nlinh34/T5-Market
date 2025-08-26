@@ -14,9 +14,10 @@
 }
 
 .contact-banner .banner-text {
-  font-size: 1.2rem;
+  /* font-size: 1.2rem;
   max-width: 600px;
-  margin: 0 auto 30px;
+  margin: 0 auto 30px; */
+  text-align: center;
 }
 
 /* Contact Section */
@@ -202,4 +203,8 @@
     margin-bottom: 10px;
     margin-right: 0;
   }
+}
+.contact-info h2,
+.contact-form h2 {
+  color: #0e699f; /* Đây là màu mặc định */
 }

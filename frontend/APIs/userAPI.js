@@ -15,7 +15,6 @@ export const UserAPI = {
     });
   },
 
-   // 👇 Thêm API cập nhật trạng thái duyệt
   updateUserStatus: async (userId, status) => {
     return await apiCall({
       endpoint: `/auth/user/${userId}/status`,

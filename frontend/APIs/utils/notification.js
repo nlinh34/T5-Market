@@ -1,4 +1,3 @@
-// frontend/utils/notification.js
 export function showNotification(message, type = "success", icon = "") {
   const notificationContainer = getOrCreateNotificationContainer();
 
@@ -9,7 +8,6 @@ export function showNotification(message, type = "success", icon = "") {
   if (icon) {
     iconHtml = `<i class="${icon}"></i>`;
   } else {
-    // Default icons based on type
     switch (type) {
       case "success":
         iconHtml = '<i class="fas fa-check-circle"></i>';
@@ -36,7 +34,6 @@ export function showNotification(message, type = "success", icon = "") {
 
   notificationContainer.appendChild(notification);
 
-  // Force reflow to ensure animation plays
   void notification.offsetWidth;
 
   notification.classList.add("show");

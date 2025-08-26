@@ -8,8 +8,7 @@ const {
 const { protect } = require("../middlewares/authMiddleware");
 
 router.post("/", protect, createReview);
-router.get("/:productId", getReviewsByProduct);
-router.get("/:orderId/reviewed", getReviewedProductsByOrder);
-
+router.get("/:orderId/reviewed",protect, getReviewedProductsByOrder);
+router.get("/:productId", protect, getReviewsByProduct);
 
 module.exports = router;

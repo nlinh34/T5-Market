@@ -1,4 +1,3 @@
-// controllers/reviewController.js
 const Review = require("../models/Review");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
@@ -6,13 +5,14 @@ const mongoose = require("mongoose");
 
 exports.createReview = async (req, res) => {
   try {
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ error: "Bạn chưa đăng nhập" });
+    }
     const userId = req.user.userId;
     const { productId, orderId, rating, comment } = req.body;
-
     if (!productId || !orderId || !rating) {
       return res.status(400).json({ error: "Thiếu thông tin đánh giá." });
     }
-
     const order = await Order.findOne({
       _id: orderId,
       user: userId,
@@ -23,15 +23,12 @@ exports.createReview = async (req, res) => {
     if (!order) {
       return res.status(403).json({ error: "Bạn không có quyền đánh giá sản phẩm này." });
     }
+
     if (rating < 1 || rating > 5) {
       return res.status(400).json({ error: "Số sao không hợp lệ (1-5)" });
     }
 
-    const existing = await Review.findOne({
-      user: userId,
-      product: productId,
-      order: orderId, // đánh giá 1 sản phẩm 1 lần trong mỗi đơn
-    });
+    const existing = await Review.findOne({ user: userId, product: productId, order: orderId });
     if (existing) {
       return res.status(409).json({ error: "Bạn đã đánh giá sản phẩm này rồi." });
     }
@@ -45,27 +42,28 @@ exports.createReview = async (req, res) => {
     });
 
     await review.save();
-
-    // ✅ Cập nhật rating trung bình cho Product
     await updateProductRating(productId);
 
     res.status(201).json({ success: true, message: "Đánh giá thành công", data: review });
   } catch (error) {
     console.error("Create Review Error:", error);
-    res.status(500).json({ error: "Lỗi server khi tạo đánh giá" });
+    if (error.code === 11000) {
+      return res.status(409).json({ error: "Trùng review (duplicate key)", detail: error.keyValue });
+    }
+    res.status(500).json({ error: "Lỗi server khi tạo đánh giá", detail: error.message });
   }
 };
+
 
 exports.getReviewedProductsByOrder = async (req, res) => {
   try {
     const userId = req.user.userId;
     const { orderId } = req.params;
 
-    const reviews = await Review.find({ user: userId, order: orderId }).select("product");
+    const reviews = await Review.find({ user: userId, order: orderId })
+      .select("product rating comment");
 
-    const reviewedProductIds = reviews.map(r => r.product.toString());
-
-    res.status(200).json({ success: true, data: reviewedProductIds });
+    res.status(200).json({ success: true, data: reviews });
   } catch (error) {
     console.error("Get reviewed products error:", error);
     res.status(500).json({ error: "Lỗi server khi lấy trạng thái đánh giá" });

@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".review-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const idx = parseInt(btn.dataset.index);
-        console.log("orders[idx] = ", orders[idx]); //
+        console.log("orders[idx] = ", orders[idx]); 
         showReviewModal(orders[idx]);
       });
     });
@@ -204,25 +204,46 @@ document.addEventListener("DOMContentLoaded", () => {
     `
       );
 
-      ReviewAPI.getReviewedProductsByOrder(order._id).then(res => {
-        if (res.success) {
-          const reviewedIds = res.data; // mảng productId đã review trong đơn này
-          if (reviewedIds.includes(productId)) {
-            const btn = productList.querySelector(
-              `.review-item[data-product-id="${productId}"] .submit-product-review-btn`
-            );
-            if (btn) {
-              btn.disabled = true;
-              btn.textContent = "Đã đánh giá";
-              btn.style.background = "#ccc";
-            }
+ReviewAPI.getReviewedProductsByOrder(order._id).then(res => {
+  if (res.success) {
+    const reviewedList = res.data; 
+
+    reviewedList.forEach(reviewed => {
+      const productId = reviewed.product;
+
+      const btn = productList.querySelector(
+        `.review-item[data-product-id="${productId}"] .submit-product-review-btn`
+      );
+      if (btn) {
+        btn.remove()
+      }
+      const starContainer = productList.querySelector(
+        `.review-item[data-product-id="${productId}"] .review-stars`
+      );
+      if (starContainer) {
+        const stars = starContainer.querySelectorAll(".star");
+        stars.forEach((star, index) => {
+          if (index < reviewed.rating) {
+            star.style.color = "#f5b301"; 
+          } else {
+            star.style.color = "#ccc"; 
           }
-        }
-      });
+        });
+      }
+
+      const textarea = productList.querySelector(
+        `.review-item[data-product-id="${productId}"] textarea`
+      );
+      if (textarea) {
+        textarea.value = reviewed.comment;
+        textarea.readOnly = true;
+      }
     });
+  }
+});
 
 
-
+    });
 
     reviewModal.style.display = "flex";
     productList.querySelectorAll(".review-item").forEach(item => {
@@ -233,14 +254,12 @@ document.addEventListener("DOMContentLoaded", () => {
         star.addEventListener("click", () => {
           const value = parseInt(star.dataset.value);
           ratingInput.value = value;
-          // Tô màu lại các sao
           stars.forEach(s => {
             s.style.color = parseInt(s.dataset.value) <= value ? "#f5b301" : "#ccc";
           });
         });
       });
     });
-    // Sự kiện gửi đánh giá
     document.querySelectorAll(".submit-product-review-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const container = btn.closest(".review-item");
@@ -295,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>`;
     }).join("") || "";
 
-    const discount = 0; // bạn có thể tự tính nếu có điều kiện nào đó
+    const discount = 0; 
     const total = subTotal - discount;
 
     document.getElementById("order-detail-content").innerHTML = `

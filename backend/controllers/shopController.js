@@ -17,7 +17,7 @@ const approveShop = async (req, res) => {
       });
     }
 
-    const { id } = req.params; // id của 
+    const { id } = req.params; 
     const shop = await Shop.findById(id).populate("owner");
 
     if (!shop || shop.status !== "pending") {
@@ -25,8 +25,6 @@ const approveShop = async (req, res) => {
         error: "Shop không tồn tại hoặc không cần duyệt",
       });
     }
-
-    // Cập nhật shop và role người dùng
     shop.status = "approved";
     shop.approvedBy = req.user.userId;
     await shop.save();
@@ -55,7 +53,7 @@ const rejectShop = async (req, res) => {
     }
 
     const { id } = req.params;
-    const { reason } = req.body; // 👈 Nhận lý do từ client
+    const { reason } = req.body; 
 
     const shop = await Shop.findById(id).populate("owner");
     if (!shop || shop.status !== "pending") {
@@ -93,7 +91,6 @@ const requestUpgradeToSeller = async (req, res) => {
       });
     }
 
-    // Lấy thông tin người dùng từ DB để kiểm tra status
     const dbUser = await User.findById(userId);
     if (!dbUser || dbUser.status !== "approved") {
       return res.status(403).json({
@@ -103,20 +100,18 @@ const requestUpgradeToSeller = async (req, res) => {
 
     const { name, address, phone, description, logoUrl, policies } = req.body;
 
-    // Kiểm tra đã có shop chưa
     const existingShop = await Shop.findOne({ owner: userId });
     if (existingShop) {
       if (existingShop.status === "rejected") {
-        // Nếu shop đã bị từ chối, cập nhật lại thông tin và chuyển về pending
         existingShop.name = name;
         existingShop.address = address;
         existingShop.phone = phone;
         existingShop.description = description;
         existingShop.logoUrl = logoUrl;
         existingShop.policies = policies;
-        existingShop.status = "pending"; // Chuyển lại về trạng thái chờ duyệt
-        existingShop.rejectionReason = null; // Xóa lý do từ chối
-        existingShop.rejectedBy = null; // Xóa người từ chối
+        existingShop.status = "pending"; 
+        existingShop.rejectionReason = null;
+        existingShop.rejectedBy = null;
         await existingShop.save();
         return res.status(200).json({ success: true, message: "Yêu cầu mở shop đã được gửi lại, vui lòng chờ admin duyệt.", data: existingShop });
       } else if (existingShop.status === "approved" || existingShop.status === "pending") {
@@ -124,7 +119,6 @@ const requestUpgradeToSeller = async (req, res) => {
       }
     }
 
-    // Tạo shop mới nếu chưa có
     const newShop = new Shop({
       owner: userId,
       name,
@@ -183,8 +177,6 @@ const getApprovedShops = async (req, res) => {
 const getShopWithProducts = async (req, res) => {
   try {
     const { shopId } = req.params;
-
-    // Lấy thông tin shop
     const shop = await Shop.findById(shopId)
       .populate("owner", "fullName email")
       .populate("approvedBy", "fullName")
@@ -193,17 +185,13 @@ const getShopWithProducts = async (req, res) => {
     if (!shop) {
       return res.status(404).json({ success: false, message: "Không tìm thấy shop" });
     }
-
-    // Lấy sản phẩm của shop (chỉ lấy sản phẩm đã duyệt)
     const products = await Product.find({ shop: shopId, status: "approved" })
       .populate("category", "name")
       .populate("seller", "fullName")
       .lean();
-
-    // Tính toán các chỉ số sản phẩm và lấy đánh giá
     const soldCount = products.reduce((acc, product) => acc + (product.sold_count || 0), 0);
 
-    const productIds = products.map(p => p._id); // Lấy IDs từ các sản phẩm đã duyệt
+    const productIds = products.map(p => p._id);
     
     let averageRating = 0;
     let totalReviews = 0;
@@ -293,7 +281,6 @@ const updateShopPolicies = async (req, res) => {
       return res.status(httpStatusCodes.NOT_FOUND).json({ success: false, message: "Shop không tìm thấy." });
     }
 
-    // Validate policies structure if necessary (e.g., each policy has type and value)
     if (!Array.isArray(policies)) {
       return res.status(httpStatusCodes.BAD_REQUEST).json({ success: false, message: "Chính sách phải là một mảng." });
     }
@@ -331,14 +318,12 @@ const getShopRating = async (req, res) => {
       });
     }
 
-    // Get reviews and populate necessary data
     const reviews = await Review.find({ product: { $in: productIds } })
       .populate("user", "fullName email avatar")
       .populate("product", "name images price")
       .sort({ createdAt: -1 })
       .lean();
 
-    // Calculate overall stats
     let totalRating = 0;
     const reviewCriteria = {};
     reviews.forEach((review) => {
@@ -370,7 +355,6 @@ const getShopRating = async (req, res) => {
   }
 };
 
-// ================= STAFF MANAGEMENT =================
 
 const getShopStaff = async (req, res) => {
   try {
@@ -420,7 +404,7 @@ const addStaff = async (req, res) => {
 
         shop.staff.push({
             user: userToAdd._id,
-            permissions: [] // Mặc định không có quyền
+            permissions: [] 
         });
         
         await shop.save();
@@ -507,44 +491,38 @@ const createStaffAccount = async (req, res) => {
         const ownerId = req.user.userId;
         const { fullName, email, password } = req.body;
 
-        // Basic validation
         if (!fullName || !email || !password) {
             return res.status(400).json({ success: false, message: "Vui lòng cung cấp đầy đủ thông tin: họ tên, email và mật khẩu." });
         }
         
-        // Check if user with this email already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ success: false, message: "Email này đã được sử dụng. Vui lòng chọn một email khác." });
         }
 
-        // Find the owner's shop
         const shop = await Shop.findOne({ owner: ownerId });
         if (!shop) {
             return res.status(404).json({ success: false, message: "Không tìm thấy cửa hàng của bạn." });
         }
 
-        // Create new user for staff - The pre-save hook in User.js will hash the password
         const newStaffUser = new User({
             fullName,
-            username: email, // Use email as username for consistency
+            username: email,
             email,
-            password: password, // Pass the plain password
-            role: Role.STAFF, // Staff should have the STAFF role, not CUSTOMER
-            status: 'pending', // Staff account must be approved by admin
+            password: password,
+            role: Role.STAFF, 
+            status: 'pending', 
         });
 
         const savedUser = await newStaffUser.save();
 
-        // Add new user to the shop's staff list
         shop.staff.push({
             user: savedUser._id,
-            permissions: [] // Default with no permissions
+            permissions: [] 
         });
         
         await shop.save();
 
-        // Populate user details for the response
         await shop.populate('staff.user', 'fullName email avatar');
         const newStaffMember = shop.staff.find(s => s.user._id.equals(savedUser._id));
         
@@ -563,9 +541,8 @@ const getShopAnalytics = async (req, res) => {
     try {
         const userId = req.user.userId;
         const { shopId } = req.params;
-        const { period, startDate, endDate } = req.query; // period: '7'|'30'|'month'|'week' or custom startDate/endDate
+        const { period, startDate, endDate } = req.query; 
 
-        // Verify shop exists and user is owner or staff
         const shop = await Shop.findOne({
             _id: shopId,
             $or: [
@@ -578,13 +555,11 @@ const getShopAnalytics = async (req, res) => {
             return res.status(403).json({ success: false, error: 'Bạn không có quyền xem báo cáo cho shop này' });
         }
 
-        // Determine date range
         let start = new Date();
         let end = new Date();
         if (startDate && endDate) {
             start = new Date(startDate);
             end = new Date(endDate);
-            // include end day
             end.setHours(23,59,59,999);
         } else if (period) {
             const p = String(period);
@@ -592,14 +567,11 @@ const getShopAnalytics = async (req, res) => {
             else if (p === '30' || p === 'month') start.setDate(start.getDate() - 29);
             else start.setDate(start.getDate() - 29);
         } else {
-            // default last 30 days
             start.setDate(start.getDate() - 29);
         }
 
-        // Fetch orders in range and relevant statuses
         const orders = await Order.find({ shop: shopId, createdAt: { $gte: start, $lte: end }, status: { $in: ['confirmed','shipped','delivered'] } }).lean();
 
-        // Build daily map between start..end
         const daily = {};
         const dayCount = Math.ceil((end - start) / (1000*60*60*24)) + 1;
         for (let i = 0; i < dayCount; i++) {
@@ -609,7 +581,6 @@ const getShopAnalytics = async (req, res) => {
             daily[key] = { revenue: 0, orders: 0 };
         }
 
-        // Top products map
         const productSales = {};
 
         orders.forEach(o => {
@@ -634,18 +605,15 @@ const getShopAnalytics = async (req, res) => {
         const totalOrders = orders.length;
         const totalRevenue = orders.reduce((s, o) => s + (o.totalAmount || 0), 0);
 
-        // Build top products with percent contribution (used as proxy for conversion share)
         const topProducts = Object.entries(productSales)
             .map(([id, v]) => ({ productId: id, name: v.name, qty: v.qty, revenue: v.revenue }))
             .sort((a,b) => b.qty - a.qty);
 
-        // Add percent contribution
         const revenueByProduct = topProducts.map(p => ({
             ...p,
             percentContribution: totalRevenue > 0 ? +( (p.revenue / totalRevenue) * 100 ).toFixed(2) : 0
         }));
 
-        // If requested, slice top 10
         const top10 = revenueByProduct.slice(0, 10);
 
         return res.json({ success: true, data: { daily: dailyData, topProducts: top10, revenueByProduct, totalOrders, totalRevenue, period: { start: start.toISOString(), end: end.toISOString() } } });

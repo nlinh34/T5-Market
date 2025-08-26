@@ -16,9 +16,6 @@ const createProduct = async (req, res) => {
         if (req.body.images.length > 5) {
             return res.status(400).json({ success: false, error: "Chỉ được phép tải lên tối đa 5 ảnh." });
         }
-
-        //Tìm shop mà user là chủ hoặc nhân viên (đã được duyệt)
-        // Lưu ý: Danh sách nhân viên có thể lưu trong `staffs` (mảng ObjectId) hoặc `staff` (mảng object có trường `user`).
         const shop = await Shop.findOne({
             status: "approved",
             $or: [
@@ -34,7 +31,6 @@ const createProduct = async (req, res) => {
             });
         }
 
-        // Xác định seller chính là chủ shop
         const product = new Product({
             name,
             price,
@@ -52,7 +48,7 @@ const createProduct = async (req, res) => {
         await product.save();
 
         return res.status(httpStatusCodes.CREATED).json({
-            success: true, // Thêm thuộc tính success: true
+            success: true, 
             message: "Sản phẩm đã được tạo, đang chờ duyệt",
             data: product,
         });
@@ -77,8 +73,6 @@ const updateProduct = async (req, res) => {
         if (req.body.images && req.body.images.length > 5) {
             return res.status(400).json({ success: false, error: "Chỉ được phép lưu tối đa 5 ảnh." });
         }
-
-        // Kiểm tra quyền: chỉ seller (chủ shop) hoặc người tạo mới được sửa
         if (
             product.seller._id.toString() !== userId &&
             product.createdBy._id.toString() !== userId
@@ -102,8 +96,6 @@ const updateProduct = async (req, res) => {
         }
 
         product.updatedAt = new Date();
-
-        // Nếu sửa => trạng thái trở lại pending để duyệt lại
         product.status = "pending";
         await product.save();
 
@@ -129,8 +121,6 @@ const deleteProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
         }
-
-        // Check role
         const isSeller =
             (product.seller && product.seller.toString() === userId) ||
             (product.createdBy && product.createdBy.toString() === userId);
@@ -276,7 +266,7 @@ const getRejectedProducts = async (req, res) => {
     try {
         const rejectedProducts = await Product.find({ status: "rejected" })
             .populate("shop", "name logoUrl address status owner shopStatus createdAt")
-            .populate("seller", "name email") // hoặc createdBy nếu bạn muốn hiển thị người tạo bài
+            .populate("seller", "name email") 
             .populate("category", "name");
 
         res.status(httpStatusCodes.OK).json({
@@ -294,8 +284,6 @@ const getRejectedProducts = async (req, res) => {
 const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
-
-        // 🔒 Kiểm tra ID có phải ObjectId hợp lệ không
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: "ID sản phẩm không hợp lệ" });
         }
@@ -315,7 +303,7 @@ const getProductById = async (req, res) => {
         });
     } catch (error) {
         console.error("❌ Lỗi khi lấy chi tiết sản phẩm:", error);
-        console.log("DEBUG: Full error in getProductById:", error); // Add this line
+        console.log("DEBUG: Full error in getProductById:", error); 
         res.status(500).json({ error: `Lỗi server khi lấy chi tiết sản phẩm: ${error.message}` });
     }
 };
@@ -347,7 +335,7 @@ const getAllProductsByShopId = async (req, res) => {
             .populate("category", "name")
             .populate("createdBy", "name")
             .populate("shop", "name logoUrl address status owner shopStatus createdAt")
-            .sort(sortOptions); // Áp dụng sắp xếp
+            .sort(sortOptions); 
 
         res.status(200).json({ success: true, data: products });
     } catch (error) {
@@ -520,17 +508,16 @@ const getFilteredProducts = async (req, res) => {
 
 const getFeaturedProducts = async (req, res) => {
     try {
-        // Sử dụng aggregation để lấy các sản phẩm có đánh giá gần đây nhất
         const products = await Review.aggregate([
-            { $sort: { createdAt: -1 } }, // Sắp xếp các đánh giá theo ngày mới nhất
+            { $sort: { createdAt: -1 } },
             {
                 $group: {
                     _id: "$product",
-                    latestReview: { $first: "$$ROOT" }, // Lấy toàn bộ document đánh giá mới nhất
+                    latestReview: { $first: "$$ROOT" }, 
                 },
             },
-            { $sort: { "latestReview.createdAt": -1 } }, // Sắp xếp các sản phẩm dựa trên ngày đánh giá mới nhất
-            { $limit: 15 }, // Giới hạn 15 sản phẩm
+            { $sort: { "latestReview.createdAt": -1 } },
+            { $limit: 15 },
             {
                 $lookup: {
                     from: "products",
@@ -541,7 +528,7 @@ const getFeaturedProducts = async (req, res) => {
             },
             { $unwind: "$productInfo" },
             { $replaceRoot: { newRoot: "$productInfo" } },
-            { $match: { status: "approved" } }, // Chỉ lấy sản phẩm đã được duyệt
+            { $match: { status: "approved" } }, 
             {
                 $lookup: {
                     from: "shops",

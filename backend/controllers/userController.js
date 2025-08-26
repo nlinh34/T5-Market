@@ -33,7 +33,7 @@ const handleSignIn = async(req, res) => {
         const tokenOptions = rememberMe ? { expiresIn: "7d" } : { expiresIn: "1h" };
         const userToken = jwt.sign({
                 userId: user._id,
-                role: Number(user.role), // Thêm role vào token
+                role: Number(user.role), 
             },
             process.env.SECRET_KEY,
             tokenOptions
@@ -46,7 +46,7 @@ const handleSignIn = async(req, res) => {
                 email: user.email,
                 phone: user.phone,
                 role: Number(user.role),
-                avatarUrl: user.avatarUrl, // Add avatarUrl here
+                avatarUrl: user.avatarUrl, 
             },
             message: "Đăng nhập thành công",
         });
@@ -86,14 +86,14 @@ const handleSignUp = async(req, res) => {
             fullName,
             email,
             phone,
-            password, // Mặc định role là user
+            password, 
         });
 
         await newUser.save();
 
         const userToken = jwt.sign({
                 userId: newUser._id,
-                role: newUser.role, // Thêm role vào token
+                role: newUser.role, 
             },
             process.env.SECRET_KEY, { expiresIn: "24h" }
         );
@@ -105,7 +105,7 @@ const handleSignUp = async(req, res) => {
                 email: newUser.email,
                 phone: newUser.phone,
                 role: newUser.role,
-                avatarUrl: newUser.avatarUrl, // Add avatarUrl here for signup as well
+                avatarUrl: newUser.avatarUrl, 
             },
             message: "Đăng ký thành công",
         });
@@ -118,7 +118,6 @@ const handleSignUp = async(req, res) => {
 
 const getAllUsers = async(req, res) => {
     try {
-        // Kiểm tra quyền admin
         const { Role } = require("../constants/roleEnum");
         if (req.user.role !== Role.ADMIN) {
             return res.status(httpStatusCodes.FORBIDDEN).json({
@@ -143,7 +142,7 @@ const getAllUsers = async(req, res) => {
         res.status(httpStatusCodes.OK).json({
             success: true,
             currentPage: page,
-            totalPages: Math.ceil(totalUsers / limit), // 👈 CÁI NÀY ĐANG BỊ THIẾU
+            totalPages: Math.ceil(totalUsers / limit), 
             totalUsers,
             data: users,
         });
@@ -157,7 +156,6 @@ const getAllUsers = async(req, res) => {
 };
 
 
-// Thêm hàm để lấy thông tin user hiện tại
 const getCurrentUser = async(req, res) => {
     try {
         const user = await User.findById(req.user.userId).select("-password");
@@ -177,7 +175,6 @@ const deleteUserById = async(req, res) => {
     try {
         const userId = req.params.id;
 
-        // Kiểm tra quyền admin
         const { Role } = require("../constants/roleEnum");
         if (req.user.role !== Role.ADMIN) {
             return res.status(httpStatusCodes.FORBIDDEN).json({
@@ -211,7 +208,7 @@ const deleteUserById = async(req, res) => {
 const updateUserStatus = async(req, res) => {
     try {
         const userId = req.params.id;
-        const { status } = req.body; // 'approve' hoặc 'reject'
+        const { status } = req.body; 
 
         const { Role } = require("../constants/roleEnum");
         if (req.user.role !== Role.ADMIN) {
@@ -229,7 +226,6 @@ const updateUserStatus = async(req, res) => {
             });
         }
 
-        // Xác định status mới
         let newStatus;
         if (status === "approve") {
             newStatus = "approved";
@@ -242,7 +238,6 @@ const updateUserStatus = async(req, res) => {
             });
         }
 
-        // Cập nhật trạng thái
         user.status = newStatus;
         user.approvedBy = req.user.userId;
         await user.save();
@@ -287,7 +282,6 @@ const updateUserProfile = async(req, res) => {
             });
         }
 
-        // Cập nhật các trường
         if (fullName) user.fullName = fullName;
         if (email) {
             const existingEmail = await User.findOne({ email, _id: { $ne: userId } });
@@ -312,14 +306,14 @@ const updateUserProfile = async(req, res) => {
         if (gender) user.gender = gender;
         if (dateofbirth) user.dateofbirth = dateofbirth;
         if (address) user.address = address;
-        if (avatarUrl) user.avatarUrl = avatarUrl; // Assuming you add avatarUrl to User model
+        if (avatarUrl) user.avatarUrl = avatarUrl; 
 
         await user.save();
 
         res.status(httpStatusCodes.OK).json({
             success: true,
             message: "Cập nhật thông tin thành công",
-            data: user.toObject(), // Trả về đối tượng đã cập nhật
+            data: user.toObject(), 
         });
     } catch (error) {
         console.error("Lỗi khi cập nhật profile người dùng:", error);
@@ -366,7 +360,7 @@ const changeUserPassword = async(req, res) => {
             });
         }
 
-        user.password = newPassword; // Mongoose pre-save hook will hash this
+        user.password = newPassword; 
         await user.save();
 
         res.status(httpStatusCodes.OK).json({

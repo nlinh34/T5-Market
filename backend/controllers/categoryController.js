@@ -1,7 +1,6 @@
 const Categories = require("../models/Categories");
 const { httpStatusCodes } = require("../utils/constants");
 
-// Tạo danh mục mới
 exports.createCategory = async (req, res) => {
   try {
     const { name, imageURL } = req.body;
@@ -20,7 +19,6 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-// Lấy tất cả danh mục
 exports.getAllCategories = async (req, res) => {
   try {
     const categories = await Categories.find();
@@ -38,7 +36,6 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-// Lấy danh mục theo ID
 exports.getCategoryById = async (req, res) => {
   try {
     const category = await Categories.findById(req.params.id);
@@ -62,7 +59,6 @@ exports.getCategoryById = async (req, res) => {
   }
 };
 
-// Cập nhật danh mục
 exports.updateCategory = async (req, res) => {
   try {
     const { name, imageURL } = req.body;
@@ -92,7 +88,6 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-// Xóa danh mục
 exports.deleteCategory = async (req, res) => {
   try {
     const category = await Categories.findByIdAndDelete(req.params.id);

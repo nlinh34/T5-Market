@@ -103,28 +103,26 @@ class Header extends HTMLElement {
         const loggedOutUserDisplay = this.querySelector("#loggedOutUserDisplay");
 
         if (token && user) {
-            // If user object from localStorage is missing avatarUrl or fullName, fetch full user data
             if (!user.avatarUrl || !user.fullName) {
                 try {
                     const response = await UserAPI.getCurrentUser();
                     if (response.success && response.data) {
-                        localStorage.setItem("user", JSON.stringify(response.data)); // Update localStorage with full user data
-                        user.avatarUrl = response.data.avatarUrl; // Update current user object
-                        user.fullName = response.data.fullName; // Update current user object
+                        localStorage.setItem("user", JSON.stringify(response.data));
+                        user.avatarUrl = response.data.avatarUrl;
+                        user.fullName = response.data.fullName;
                     }
                 } catch (error) {
                     console.error("Error fetching current user data:", error);
-                    // Handle error, e.g., clear localStorage and force re-login
                     localStorage.removeItem("token");
                     localStorage.removeItem("user");
                     window.location.href = "./login.html";
-                    return; // Stop execution if an error occurs
+                    return; 
                 }
             }
 
             if (userAvatar && usernameDisplay) {
-                userAvatar.src = user.avatarUrl || "./assests/images/default-product.png"; // Use user.avatarUrl
-                usernameDisplay.textContent = user.fullName || "Tài khoản"; // Use user.fullName
+                userAvatar.src = user.avatarUrl || "./assests/images/default-product.png"; 
+                usernameDisplay.textContent = user.fullName || "Tài khoản"; 
             }
             if (loggedInUserDisplay && loggedOutUserDisplay) {
                 loggedInUserDisplay.style.display = 'flex';
@@ -139,15 +137,12 @@ class Header extends HTMLElement {
                     if (shop.status === 'approved') {
                         shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
                     } else {
-                        // Shop exists but is not approved (e.g., pending, rejected)
                         shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
                     }
                 } else {
-                    // API call succeeded, but no shop data returned (e.g., success: false from backend, or data is null/undefined)
                     shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
                 }
             } catch (error) {
-                // API call failed (e.g., 404 Not Found from backend, or network error)
                 shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
             }
 
@@ -226,27 +221,25 @@ class Header extends HTMLElement {
             const openMenu = () => {
                 mobileMenu.classList.add("active");
                 overlay.classList.add("active");
-                document.body.style.overflow = 'hidden'; // Ngăn cuộn trang
+                document.body.style.overflow = 'hidden';
             };
 
             const closeMenu = () => {
                 mobileMenu.classList.remove("active");
                 overlay.classList.remove("active");
-                document.body.style.overflow = ''; // Cho phép cuộn lại
+                document.body.style.overflow = ''; 
             };
 
             hamburger.addEventListener("click", openMenu);
             closeBtn.addEventListener("click", closeMenu);
             overlay.addEventListener("click", closeMenu);
 
-            // Đóng menu khi người dùng thay đổi kích thước màn hình về desktop
             window.addEventListener('resize', () => {
                 if (window.innerWidth > 768) {
                     closeMenu();
                 }
             });
 
-            // Đóng menu khi người dùng điều hướng (ví dụ: nhấn nút back/forward)
             window.addEventListener('popstate', closeMenu);
         }
     }
@@ -259,8 +252,6 @@ class Header extends HTMLElement {
                 const searchInput = this.querySelector('.search input[type="text"]');
                 const query = (searchInput.value || "").trim();
 
-                // Chuyển hướng đến trang menu với query
-                // Trang menu.html sẽ tự xử lý logic tìm kiếm
                 window.location.href = `./menu.html?search=${encodeURIComponent(query)}`;
             });
         }

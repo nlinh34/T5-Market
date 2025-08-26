@@ -184,9 +184,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         const breadcrumb = document.querySelector('.breadcrumb');
         if (breadcrumb) {
             breadcrumb.innerHTML = `
+                <div class="container">
                 <a href="./index.html">Trang chủ</a> › 
                 <span>${data.category.name}</span> › 
-                <span>${data.name}</span>
+                <span><strong>${data.name}</strong></span>
+                </div>
             `;
         }
 

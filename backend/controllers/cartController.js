@@ -4,7 +4,6 @@ const Shop = require("../models/Shop");
 
 const mongoose = require("mongoose")
 
-// Thêm vào giỏ hàng
 exports.addToCart = async (req, res) => {
   try {
     const userId = req.user?.userId;
@@ -28,7 +27,6 @@ exports.addToCart = async (req, res) => {
       return res.status(404).json({ success: false, message: "Sản phẩm không tồn tại" });
     }
 
-    // 🚫 Chặn mua sản phẩm từ shop của chính mình (trả về 200 để không log lỗi đỏ ở console)
     const ownShop = await Shop.findOne({ owner: new mongoose.Types.ObjectId(userId) }).select("_id");
     if (ownShop && productExists.shop && productExists.shop._id.toString() === ownShop._id.toString()) {
       return res.status(200).json({
@@ -54,7 +52,6 @@ exports.addToCart = async (req, res) => {
 
     await cart.save();
 
-    // ❗Lấy lại giỏ hàng sau khi cập nhật
     const updatedCart = await Cart.findOne({ user: userId }).populate("items.product");
 
     res.status(200).json({ success: true, message: "Đã thêm vào giỏ hàng", data: updatedCart });
@@ -121,8 +118,6 @@ exports.getCart = async (req, res) => {
   }
 };
 
-
-// Xoá sản phẩm khỏi giỏ
 exports.removeFromCart = async (req, res) => {
   const userId = req.user.userId;
   const { productId } = req.params;
@@ -140,7 +135,6 @@ exports.removeFromCart = async (req, res) => {
   }
 };
 
-// Cập nhật số lượng
 exports.updateQuantity = async (req, res) => {
   const userId = req.user.userId;
   const { productId, quantity } = req.body;

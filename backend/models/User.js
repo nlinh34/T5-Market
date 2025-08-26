@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
 const { Role } = require("../constants/roleEnum");
 
-// Định nghĩa schema User
 const UserSchema = new mongoose.Schema(
   {
     fullName: {
@@ -76,18 +75,15 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Tạo compound index cho phone
 UserSchema.index(
   { phone: 1 },
   {
     unique: true,
     sparse: true,
-    // Chỉ áp dụng unique khi phone có giá trị
     partialFilterExpression: { phone: { $type: "string" } },
   }
 );
 
-// Hash password trước khi lưu
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -102,12 +98,10 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-// Phương thức so sánh password
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcryptjs.compare(enteredPassword, this.password);
 };
 
-// Tạo mô hình User
 const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

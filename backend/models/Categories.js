@@ -18,13 +18,6 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-// Virtual để populate products
-// comboSchema.virtual("products", {
-//   ref: "ComboProduct",
-//   localField: "_id",
-//   foreignField: "combo_id",
-//   justOne: false, // Đảm bảo trả về array
-// });
 
 
 module.exports = mongoose.model("Category", categorySchema);

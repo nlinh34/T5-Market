@@ -1,6 +1,5 @@
 const User = require("../models/User");
 
-// Thêm vào danh sách yêu thích
 exports.addToFavorites = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -47,7 +46,6 @@ exports.removeFromFavorites = async (req, res) => {
 };
 
 
-// Lấy danh sách sản phẩm yêu thích (chi tiết sản phẩm)
 exports.getFavorites = async (req, res) => {
   try {
     const userId = req.user.userId;

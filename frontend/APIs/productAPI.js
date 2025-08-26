@@ -129,7 +129,6 @@ export const ProductAPI = {
     getAllProductsByFilter: async({ name, category, minPrice, maxPrice, page = 1, limit = 15 }) => {
         const queryParams = [];
 
-        // CHỈ PUSH nếu category là mảng và có ít nhất 1 ObjectId hợp lệ
         if (Array.isArray(category) && category.length > 0) {
             const validCategoryIds = category.filter(id => /^[a-f\d]{24}$/i.test(id));
             if (validCategoryIds.length > 0) {

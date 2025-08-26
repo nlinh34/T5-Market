@@ -35,7 +35,6 @@ router.get("/:shopId/reviews", getShopRating);
 router.get("/featured", getFeaturedShops);
 router.get('/my-shop/:shopId/analytics', protect, getShopAnalytics);
 
-// Staff management routes
 router.route("/my-shop/staff")
   .get(protect, getShopStaff)
   .post(protect, addStaff);
