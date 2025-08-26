@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Analytics - T5 Market</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/shop-analytics.css">
+  <link rel="stylesheet" href="styles/shop-manager.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Báo cáo cửa hàng</h1>
+
+    <div class="controls" style="display:flex;gap:12px;align-items:center;margin:10px 0 20px 0;">
+      <label for="periodSelect">Khoảng thời gian:</label>
+      <select id="periodSelect" class="select-custom">
+        <option value="7">7 ngày</option>
+        <option value="30" selected>30 ngày</option>
+        <option value="month">Tháng này</option>
+        <option value="custom">Tùy chỉnh</option>
+      </select>
+
+      <div id="customRange" style="display:none;align-items:center;gap:8px;">
+        <input type="date" id="startDate" class="date-input"> - <input type="date" id="endDate" class="date-input">
+        <button id="applyRangeBtn" class="btn btn-primary">
+          <i class="fas fa-check"></i> Áp dụng
+        </button>
+      </div>
+
+      <div style="margin-left:auto;">
+        <button id="exportCsvBtn" class="btn btn-light">
+          <i class="fas fa-download"></i> Export CSV
+        </button>
+      </div>
+    </div>
+
+    <div id="summary" class="analytics-summary">
+      <div class="card">
+        <div class="card-icon"><i class="fas fa-shopping-bag"></i></div>
+        <div class="card-content">
+          <h3>Tổng đơn</h3>
+          <div id="totalOrders" class="animate-value">-</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon"><i class="fas fa-coins"></i></div>
+        <div class="card-content">
+          <h3>Doanh thu</h3>
+          <div id="totalRevenue" class="animate-value">-</div>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <h2>Doanh thu theo ngày</h2>
+      <div id="chartDaily" class="simple-chart">
+        <canvas id="chartDailyCanvas" width="800" height="160"></canvas>
+      </div>
+    </section>
+
+    <section style="margin-top:18px; display:flex; gap:20px;">
+      <div style="flex:1">
+        <h2><i class="fas fa-fire"></i> Sản phẩm bán chạy</h2>
+        <table id="topProducts" class="table table-hover">
+          <thead><tr>
+            <th>#</th>
+            <th><i class="fas fa-box"></i> Tên</th>
+            <th><i class="fas fa-sort-amount-up"></i> Số lượng</th>
+            <th><i class="fas fa-coins"></i> Doanh thu</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div style="width:380px;">
+        <h2><i class="fas fa-chart-pie"></i> Doanh thu theo sản phẩm</h2>
+        <table id="revenueByProduct" class="table table-hover">
+          <thead><tr>
+            <th><i class="fas fa-box"></i> Tên</th>
+            <th><i class="fas fa-coins"></i> Doanh thu</th>
+            <th><i class="fas fa-percentage"></i> </th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p style="margin-top:12px;">
+      <a href="shop-manager.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Quay lại quản lý cửa hàng
+      </a>
+    </p>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="js/shop-analytics.js"></script>
+</body>
+</html>

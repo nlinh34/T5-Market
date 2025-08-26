@@ -2,6 +2,7 @@ const Shop = require("../models/Shop");
 const Product = require("../models/Product");
 const Review = require("../models/Review");
 const User = require("../models/User")
+const Order = require("../models/Order");
 const bcrypt = require("bcryptjs");
 const { httpStatusCodes } = require("../utils/constants");
 const mongoose = require("mongoose")
@@ -558,6 +559,102 @@ const createStaffAccount = async (req, res) => {
     }
 };
 
+const getShopAnalytics = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { shopId } = req.params;
+        const { period, startDate, endDate } = req.query; // period: '7'|'30'|'month'|'week' or custom startDate/endDate
+
+        // Verify shop exists and user is owner or staff
+        const shop = await Shop.findOne({
+            _id: shopId,
+            $or: [
+                { owner: userId },
+                { "staff.user": userId }
+            ]
+        }).lean();
+
+        if (!shop) {
+            return res.status(403).json({ success: false, error: 'Bạn không có quyền xem báo cáo cho shop này' });
+        }
+
+        // Determine date range
+        let start = new Date();
+        let end = new Date();
+        if (startDate && endDate) {
+            start = new Date(startDate);
+            end = new Date(endDate);
+            // include end day
+            end.setHours(23,59,59,999);
+        } else if (period) {
+            const p = String(period);
+            if (p === '7' || p === 'week') start.setDate(start.getDate() - 6);
+            else if (p === '30' || p === 'month') start.setDate(start.getDate() - 29);
+            else start.setDate(start.getDate() - 29);
+        } else {
+            // default last 30 days
+            start.setDate(start.getDate() - 29);
+        }
+
+        // Fetch orders in range and relevant statuses
+        const orders = await Order.find({ shop: shopId, createdAt: { $gte: start, $lte: end }, status: { $in: ['confirmed','shipped','delivered'] } }).lean();
+
+        // Build daily map between start..end
+        const daily = {};
+        const dayCount = Math.ceil((end - start) / (1000*60*60*24)) + 1;
+        for (let i = 0; i < dayCount; i++) {
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            const key = d.toISOString().slice(0,10);
+            daily[key] = { revenue: 0, orders: 0 };
+        }
+
+        // Top products map
+        const productSales = {};
+
+        orders.forEach(o => {
+            const key = new Date(o.createdAt).toISOString().slice(0,10);
+            if (!daily[key]) daily[key] = { revenue: 0, orders: 0 };
+            daily[key].orders += 1;
+            daily[key].revenue += o.totalAmount || 0;
+
+            if (Array.isArray(o.products)) {
+                o.products.forEach(p => {
+                    const pid = p.productId ? p.productId.toString() : 'unknown';
+                    productSales[pid] = productSales[pid] || { name: p.name, qty: 0, revenue: 0 };
+                    productSales[pid].qty += p.quantity || 0;
+                    productSales[pid].revenue += (p.price || 0) * (p.quantity || 0);
+                });
+            }
+        });
+
+        const dates = Object.keys(daily).sort();
+        const dailyData = dates.map(d => ({ date: d, orders: daily[d].orders, revenue: daily[d].revenue }));
+
+        const totalOrders = orders.length;
+        const totalRevenue = orders.reduce((s, o) => s + (o.totalAmount || 0), 0);
+
+        // Build top products with percent contribution (used as proxy for conversion share)
+        const topProducts = Object.entries(productSales)
+            .map(([id, v]) => ({ productId: id, name: v.name, qty: v.qty, revenue: v.revenue }))
+            .sort((a,b) => b.qty - a.qty);
+
+        // Add percent contribution
+        const revenueByProduct = topProducts.map(p => ({
+            ...p,
+            percentContribution: totalRevenue > 0 ? +( (p.revenue / totalRevenue) * 100 ).toFixed(2) : 0
+        }));
+
+        // If requested, slice top 10
+        const top10 = revenueByProduct.slice(0, 10);
+
+        return res.json({ success: true, data: { daily: dailyData, topProducts: top10, revenueByProduct, totalOrders, totalRevenue, period: { start: start.toISOString(), end: end.toISOString() } } });
+    } catch (error) {
+        console.error('Error in getShopAnalytics:', error);
+        return res.status(500).json({ success: false, error: 'Lỗi khi lấy báo cáo shop' });
+    }
+};
+
 module.exports = {
     approveShop,
     requestUpgradeToSeller,
@@ -573,5 +670,6 @@ module.exports = {
     removeStaff,
     updateStaffPermissions,
     createStaffAccount,
-    getShopRating
+    getShopRating,
+    getShopAnalytics
 }

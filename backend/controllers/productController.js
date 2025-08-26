@@ -17,11 +17,13 @@ const createProduct = async (req, res) => {
         }
 
         //Tìm shop mà user là chủ hoặc nhân viên (đã được duyệt)
+        // Lưu ý: Danh sách nhân viên có thể lưu trong `staffs` (mảng ObjectId) hoặc `staff` (mảng object có trường `user`).
         const shop = await Shop.findOne({
             status: "approved",
             $or: [
                 { owner: userId },
                 { staffs: userId },
+                { "staff.user": new mongoose.Types.ObjectId(userId) },
             ],
         }).populate("owner");
 

@@ -569,8 +569,8 @@ input:checked + .slider:before {
 
 @media (max-width: 480px) {
     .account-settings-container {
-        padding: 15px;
-        margin: 10px;
+        padding: 10px; /* Reduced padding for smaller screens */
+        margin: 5px; /* Reduced margin for smaller screens */
         border-radius: 15px;
     }
 
@@ -595,5 +595,9 @@ input:checked + .slider:before {
 
     .default-avatar {
         font-size: 36px;
+    }
+
+    .settings-main-content {
+        padding: 20px; /* Adjust padding for full width on mobile */
     }
 } 

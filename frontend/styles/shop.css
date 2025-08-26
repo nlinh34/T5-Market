@@ -537,76 +537,377 @@ body {
     .products-grid {
         grid-template-columns: repeat(3, 1fr);
     }
-}
 
-@media (max-width: 768px) {
+    /* Adjust shop header for tablets */
     .shop-header-top {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items */
+        text-align: center;
+    }
+
+    .shop-info {
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
 
+    .shop-details {
+        text-align: center; /* Center text within shop details */
+    }
+
     .shop-stats {
-        flex-wrap: wrap;
-        justify-content: center;
-        border-left: none;
-        margin-top: 15px;
+        grid-template-columns: 1fr 1fr; /* Two columns for stats */
         padding-left: 0;
+        border-left: none;
+        margin-top: 20px;
+        width: 100%; /* Take full width */
+        justify-content: center;
+    }
+
+    .stat-item-shop {
+        justify-content: center; /* Center individual stat items */
+    }
+
+    .top-section {
+        flex-direction: column; /* Stack intro and policies cards */
+        display: flex; /* Ensure it's always displayed */
+        min-height: auto; /* Ensure content is not clipped */
+        overflow: visible; /* Prevent content from being hidden */
+    }
+
+    .card-title {
+        white-space: normal; /* Allow title to wrap */
+        text-align: center; /* Center align title */
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .shop-header {
+        padding: 20px; /* Adjust padding for tablets */
+    }
+
+    .shop-header-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 15px; /* Add some padding back */
+    }
+
+    .shop-info {
+        margin-bottom: 20px; /* Space between info and stats */
+    }
+
+    .shop-avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 2rem;
+    }
+
+    .shop-details h1 {
+        font-size: 28px;
+    }
+
+    .shop-rating, .shop-location {
+        font-size: 14px;
+    }
+
+    .shop-stats {
+        grid-template-columns: 1fr; /* Stack stats vertically */
+        gap: 10px; /* Adjust gap */
+        margin-top: 0;
+    }
+
+    .stat-item-shop {
+        justify-content: center;
+        padding: 5px 0; /* Adjust padding */
     }
 
     .content-section {
         flex-direction: column;
+        gap: 15px; /* Adjust gap */
     }
 
     .top-section {
         flex-direction: column;
+        gap: 15px; /* Adjust gap */
+        display: flex; /* Ensure it's always displayed */
+        min-height: auto; /* Ensure content is not clipped */
+        overflow: visible; /* Prevent content from being hidden */
     }
 
     .top-section .card {
         min-width: unset;
         width: 100%;
-    }
-
-    .sidebar {
-        min-width: unset;
-        width: 100%;
+        display: block; /* Ensure cards are always displayed */
+        min-height: auto; /* Ensure content is not clipped */
+        overflow: visible; /* Prevent content from being hidden */
     }
 
     .products-grid {
-        grid-template-columns: repeat(2, 1fr); /* Changed to 2 columns */
-    }
-}
-
-@media (max-width: 480px) {
-    .shop-header {
-        padding: 15px;
+        grid-template-columns: repeat(2, 1fr); /* Two columns for products */
+        gap: 15px;
     }
 
-    .shop-avatar {
-        width: 80px;
-        height: 80px;
-        font-size: 1.5rem;
+    .tab-list {
+        flex-wrap: wrap;
     }
 
-    .shop-details h1 {
-        font-size: 22px;
+    .tab-item {
+        flex-basis: 50%; /* Each tab takes half width */
+    }
+
+    .tab-link {
+        padding: 12px 10px; /* Adjust padding */
+        font-size: 13px;
     }
 
     .card {
-        padding: 15px;
+        padding: 20px; /* Adjust card padding */
+        min-height: auto; /* Ensure content is not clipped */
+        overflow: visible; /* Prevent content from being hidden */
     }
 
     .card-title {
-        font-size: 16px;
+        font-size: 20px;
+        margin-bottom: 15px;
     }
 
     .shop-intro, .contact-item, .policy-item {
         font-size: 0.9em;
     }
 
-    .products-grid {
-        grid-template-columns: 1fr;
+    .review-summary {
+        padding: 20px;
     }
+
+    .overall-rating {
+        min-width: 120px;
+    }
+
+    .rating-score {
+        font-size: 2rem;
+    }
+
+    .rating-stars {
+        font-size: 1.1rem;
+    }
+
+    .total-reviews {
+        font-size: 0.85rem;
+    }
+
+    .review-tabs-container {
+        padding: 12px 20px;
+        gap: 15px;
+    }
+
+    .review-tab {
+        font-size: 0.9em;
+        padding-bottom: 10px;
+    }
+
+    .review-list {
+        padding: 0 20px 20px;
+    }
+
+    .review-item {
+        gap: 12px;
+        padding: 20px 0;
+    }
+
+    .reviewer-avatar {
+        width: 45px;
+        height: 45px;
+    }
+
+    .review-content {
+        font-size: 0.9em;
+    }
+
+    .review-product-image {
+        width: 55px;
+        height: 55px;
+    }
+}
+
+@media (max-width: 480px) {
+    .shop-header {
+        padding: 15px; /* Further reduce padding for very small screens */
+    }
+
+    .shop-avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.2rem;
+        margin: 10px 0; /* Adjust margin */
+    }
+
+    .shop-details h1 {
+        font-size: 20px;
+        margin-bottom: 8px; /* Adjust margin */
+    }
+
+    .shop-rating, .shop-location {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .rating-text {
+        font-size: 12px;
+    }
+
+    .card {
+        padding: 15px;
+        display: block; /* Ensure cards are always displayed */
+        min-height: auto; /* Ensure content is not clipped */
+        overflow: visible; /* Prevent content from being hidden */
+    }
+
+    .card-title {
+        font-size: 18px;
+        margin-bottom: 10px; /* Adjust margin */
+    }
+
+    .shop-intro, .contact-item, .policy-item {
+        font-size: 0.85em;
+        text-align: center; /* Center align text for small screens */
+        justify-content: center;
+        flex-wrap: wrap; /* Allow wrapping */
+    }
+
+    .contact-item i {
+        margin-right: 5px;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr; /* Single column for products on smallest screens */
+        gap: 10px; /* Further reduce gap */
+    }
+
+    .shop-stats {
+        grid-template-columns: 1fr; /* Stack stats vertically on phones */
+        gap: 5px; /* Reduce gap */
+    }
+
+    .tab-item {
+        flex-basis: 100%; /* Each tab takes full width on phones */
+    }
+
+    .tab-link {
+        padding: 10px 8px; /* Adjust padding */
+        font-size: 12px;
+    }
+
+    .review-summary {
+        padding: 15px;
+    }
+
+    .overall-rating {
+        min-width: unset;
+    }
+
+    .rating-score {
+        font-size: 1.8rem;
+    }
+
+    .rating-stars {
+        font-size: 1rem;
+    }
+
+    .total-reviews {
+        font-size: 0.8em;
+    }
+
+    .review-tabs-container {
+        padding: 10px 15px;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .review-tab {
+        font-size: 0.8em;
+        padding-bottom: 8px;
+    }
+
+    .review-list {
+        padding: 0 15px 15px;
+    }
+
+    .review-item {
+        flex-direction: column; /* Stack avatar and content */
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        padding: 15px 0;
+    }
+
+    .reviewer-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .review-content {
+        padding: 0 10px; /* Adjust padding */
+    }
+
+    .reviewer-name {
+        font-size: 0.9em;
+    }
+
+    .criteria-tag {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+    }
+
+    .review-meta {
+        gap: 10px;
+        font-size: 0.75em;
+    }
+
+    .review-product {
+        flex-direction: column; /* Stack product image and details */
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .review-product-image {
+        width: 45px;
+        height: 45px;
+    }
+
+    .review-product-name {
+        font-size: 0.8em;
+    }
+
+    .review-product-price {
+        font-size: 0.9em;
+    }
+}
+
+/* Ensure proper display of the main content on smaller screens */
+.main-content-shop {
+    padding: 15px; /* Default padding for main content */
+}
+
+@media (max-width: 768px) {
+    .main-content-shop {
+        padding: 10px; /* Reduced padding for tablets */
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content-shop {
+        padding: 5px; /* Further reduced padding for phones */
+    }
+}
+
+/* Ensure `bottom-section` is also visible and not clipped */
+.bottom-section {
+    display: block;
+    min-height: auto;
+    overflow: visible;
 }
 
 /* Tab Navigation */
@@ -694,7 +995,7 @@ body {
 }
 
 .overall-rating {
-    display: inline-block;
+    display: flex; /* Use flexbox */
     flex-direction: column;
     align-items: center;
     padding-right: 0;
@@ -714,7 +1015,7 @@ body {
 }
 
 .rating-stars .filled {
-    color: var(--primary-yellow); /* Keep yellow for filled stars */
+    color: #ffc107; /* Yellow color for filled stars */
 }
 
 .total-reviews {
@@ -821,11 +1122,13 @@ body {
 
 .review-meta .stars {
     font-size: 1rem;
-    color: var(--primary-yellow); /* Keep yellow for stars */
+    /* leave color to individual star elements */
 }
-
+.review-meta .stars .star {
+    color: #6f6f6f; /* grey for unfilled stars */
+}
 .review-meta .stars .filled {
-    color: var(--primary-yellow); /* Keep yellow for filled stars */
+    color: var(--primary-yellow); /* yellow for filled stars */
 }
 
 .review-product {
@@ -863,87 +1166,4 @@ body {
 .review-product-price {
     color: var(--text-dark); /* Dark text color */
     font-weight: 600;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) { /* Added new breakpoint for 4 columns */
-    .products-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 992px) { /* Added new breakpoint for 3 columns */
-    .products-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .shop-header-top {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .shop-stats {
-        flex-wrap: wrap;
-        justify-content: center;
-        border-left: none;
-        margin-top: 15px;
-        padding-left: 0;
-    }
-
-    .content-section {
-        flex-direction: column;
-    }
-
-    .top-section {
-        flex-direction: column;
-    }
-
-    .top-section .card {
-        min-width: unset;
-        width: 100%;
-    }
-
-    .sidebar {
-        min-width: unset;
-        width: 100%;
-    }
-
-    .products-grid {
-        grid-template-columns: repeat(2, 1fr); /* Changed to 2 columns */
-    }
-}
-
-@media (max-width: 480px) {
-    .shop-header {
-        padding: 15px;
-    }
-
-    .shop-avatar {
-        width: 80px;
-        height: 80px;
-        font-size: 1.5rem;
-    }
-
-    .shop-details h1 {
-        font-size: 22px;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    .card-title {
-        font-size: 16px;
-    }
-
-    .shop-intro, .contact-item, .policy-item {
-        font-size: 0.9em;
-    }
-
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
 }

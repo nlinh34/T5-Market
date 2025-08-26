@@ -230,11 +230,17 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    .shop-container {
+        margin: 20px auto; /* Adjusted margin for tablets */
+        padding: 20px;
+    }
+
     .stepper {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row; /* Keep horizontal for tablets if needed, but allow wrap */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
         padding: 0;
-        margin-bottom: 30px;
     }
 
     .stepper::before,
@@ -243,39 +249,337 @@ body {
     }
 
     .step {
-        flex-direction: row;
+        flex-direction: column; /* Stack name and number */
         align-items: center;
-        text-align: left;
+        text-align: center;
         padding: 10px 0;
-        width: 100%;
-        justify-content: flex-start;
-        transform: none; /* Remove hover transform on small screens */
+        width: 45%; /* Two steps per row */
+        margin-bottom: 15px; /* Add vertical space */
+        justify-content: center;
+        transform: none;
     }
 
     .step:hover {
-        transform: none; /* Disable hover transform */
+        transform: none;
     }
 
     .step-number {
-        margin-right: 15px;
-        margin-bottom: 0;
-        flex-shrink: 0;
+        margin-right: 0;
+        margin-bottom: 10px;
     }
 
     .step-name {
-        flex-grow: 1;
+        flex-grow: unset; /* Don't grow if column */
     }
+
+    .shop-creation-section h2,
+    .no-shop-section .empty-state h3,
+    .has-shop-section .shop-dashboard h3 {
+        font-size: 1.5rem;
+    }
+
+    .create-shop-btn,
+    .manage-shop-btn,
+    .prev-step-btn,
+    .next-step-btn,
+    .submit-shop-btn {
+        width: 100%;
+        text-align: center;
+        padding: 10px 20px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px; /* Reduced gap */
+    }
+
+    .intro-images {
+        min-width: unset;
+        width: 100%;
+        height: 200px; /* Adjusted height */
+    }
+
+    .intro-text {
+        min-width: unset;
+        width: 100%;
+        text-align: center; /* Center text on smaller screens */
+    }
+
+    .intro-text h3,
+    .intro-text h4 {
+        text-align: center;
+    }
+
+    .intro-text ul {
+        text-align: left; /* Keep list left aligned */
+        margin-left: auto; /* Center the list itself */
+        margin-right: auto;
+        max-width: fit-content; /* Only take space needed */
+    }
+
+    .shop-policy-section {
+        flex-direction: column; /* Stack policy cards */
+        gap: 15px;
+    }
+
+    .shop-policy-card {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .featured-features {
+        flex-direction: column; /* Stack features */
+        gap: 10px;
+    }
+
+    .feature-item {
+        flex-direction: row; /* Keep as row */
+        text-align: left;
+        align-items: center; /* Align items to center */
+    }
+
+    .feature-item img {
+        margin-bottom: 0;
+        margin-right: 15px; /* Add some space to the right of the image */
+    }
+
+    .feature-item h4 {
+        justify-content: flex-start;
+    }
+
+    .shop-form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .shop-form-label-col {
+        flex: none;
+        width: 100%;
+        padding-top: 0;
+    }
+
+    .shop-form-input-col {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* Modal adjustments for tablets */
+    .modal-content {
+        width: 90%;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .policy-item {
+        padding: 15px;
+    }
+
+    .policy-input-group input[type="text"] {
+        padding: 10px 15px;
+        font-size: 0.95rem;
+    }
+
+    .add-custom-policy-btn,
+    .remove-custom-policy-btn,
+    .modal-footer .btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
 }
 
 @media (max-width: 480px) {
-    .step-number {
-        width: 40px; /* Slightly smaller on extra small screens */
-        height: 40px;
-        font-size: 18px;
+    .shop-container {
+        padding: 15px;
+        margin: 10px auto; /* Even smaller margin for phones */
     }
+
+    .stepper {
+        flex-direction: column; /* Stack steps vertically on phones */
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .step {
+        width: 100%; /* Full width for each step */
+        flex-direction: row; /* Keep row for number and name */
+        justify-content: flex-start;
+        padding: 8px 0;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+
     .step-name {
         font-size: 13px;
     }
+
+    .create-shop-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .create-shop-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .recommendation-section,
+    .shop-policy-card,
+    .featured-shop-item {
+        padding: 15px;
+    }
+
+    .intro-images {
+        height: 150px;
+    }
+
+    .intro-text h3 {
+        font-size: 1.4rem;
+    }
+
+    .intro-text h4 {
+        font-size: 1.1rem;
+    }
+
+    .intro-text ul li {
+        font-size: 0.9rem;
+    }
+
+    .feature-item {
+        flex-direction: column; /* Stack on phones */
+        text-align: center;
+    }
+
+    .feature-item img {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+
+    .feature-item h4 {
+        justify-content: center;
+    }
+
+    /* Form fields */
+    .shop-form-label-col {
+        font-size: 0.95rem;
+    }
+
+    .shop-form-input-col input[type="text"],
+    .shop-form-input-col input[type="url"],
+    .shop-form-input-col input[type="tel"],
+    .shop-form-input-col textarea {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .avatar-upload-overlay {
+        width: 80px;
+        height: 80px;
+    }
+
+    .avatar-upload-overlay .upload-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+        padding: 6px;
+    }
+
+    .cover-image-upload {
+        height: 150px;
+    }
+
+    .cover-image-upload .upload-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    /* Modals */
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 15px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .policy-item {
+        padding: 12px;
+    }
+
+    .policy-input-group input[type="text"] {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .add-custom-policy-btn,
+    .remove-custom-policy-btn,
+    .modal-footer .btn {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+
+    /* Summary section (Step 4) */
+    .shop-summary-card,
+    .summary-info-section {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    .shop-summary-card .section-title,
+    .summary-info-section .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+
+    .summary-details-introduction .summary-item,
+    .summary-item {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .summary-policies {
+        padding: 12px;
+    }
+
+    .summary-policies strong {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+
+    #summaryShopPoliciesList li {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+
+    .back-to-home-btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        margin-top: 20px;
+    }
+
 }
 
 /* Step 1: Introduction */
@@ -1115,24 +1419,45 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .shop-container {
-        margin: 40px auto;
+        margin: 20px auto; /* Adjusted margin for tablets */
         padding: 20px;
     }
 
     .stepper {
+        flex-direction: row; /* Keep horizontal for tablets if needed, but allow wrap */
         flex-wrap: wrap;
         justify-content: center;
         gap: 15px;
         padding: 0;
     }
 
-    .stepper::before {
-        display: none; /* Hide line on small screens */
+    .stepper::before,
+    .stepper::after {
+        display: none; /* Hide lines on small screens for vertical layout */
     }
 
     .step {
-        flex: 1 0 45%; /* Allow two steps per row */
+        flex-direction: column; /* Stack name and number */
+        align-items: center;
+        text-align: center;
+        padding: 10px 0;
+        width: 45%; /* Two steps per row */
         margin-bottom: 15px; /* Add vertical space */
+        justify-content: center;
+        transform: none;
+    }
+
+    .step:hover {
+        transform: none;
+    }
+
+    .step-number {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .step-name {
+        flex-grow: unset; /* Don't grow if column */
     }
 
     .shop-creation-section h2,
@@ -1153,27 +1478,296 @@ body {
 
     .form-actions {
         flex-direction: column;
+        gap: 10px; /* Reduced gap */
     }
+
+    .intro-images {
+        min-width: unset;
+        width: 100%;
+        height: 200px; /* Adjusted height */
+    }
+
+    .intro-text {
+        min-width: unset;
+        width: 100%;
+        text-align: center; /* Center text on smaller screens */
+    }
+
+    .intro-text h3,
+    .intro-text h4 {
+        text-align: center;
+    }
+
+    .intro-text ul {
+        text-align: left; /* Keep list left aligned */
+        margin-left: auto; /* Center the list itself */
+        margin-right: auto;
+        max-width: fit-content; /* Only take space needed */
+    }
+
+    .shop-policy-section {
+        flex-direction: column; /* Stack policy cards */
+        gap: 15px;
+    }
+
+    .shop-policy-card {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .featured-features {
+        flex-direction: column; /* Stack features */
+        gap: 10px;
+    }
+
+    .feature-item {
+        flex-direction: row; /* Keep as row */
+        text-align: left;
+        align-items: center; /* Align items to center */
+    }
+
+    .feature-item img {
+        margin-bottom: 0;
+        margin-right: 15px; /* Add some space to the right of the image */
+    }
+
+    .feature-item h4 {
+        justify-content: flex-start;
+    }
+
+    .shop-form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .shop-form-label-col {
+        flex: none;
+        width: 100%;
+        padding-top: 0;
+    }
+
+    .shop-form-input-col {
+        width: 100%;
+        min-width: unset;
+    }
+
+    /* Modal adjustments for tablets */
+    .modal-content {
+        width: 90%;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 20px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .policy-item {
+        padding: 15px;
+    }
+
+    .policy-input-group input[type="text"] {
+        padding: 10px 15px;
+        font-size: 0.95rem;
+    }
+
+    .add-custom-policy-btn,
+    .remove-custom-policy-btn,
+    .modal-footer .btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
 }
 
 @media (max-width: 480px) {
     .shop-container {
         padding: 15px;
-        margin: 20px auto;
-    }
-
-    .step {
-        flex: 1 0 100%; /* Each step on its own row */
-        margin-bottom: 10px;
+        margin: 10px auto; /* Even smaller margin for phones */
     }
 
     .stepper {
-        margin-bottom: 30px;
+        flex-direction: column; /* Stack steps vertically on phones */
+        align-items: flex-start;
+        gap: 10px;
     }
 
-    .form-step h3 {
+    .step {
+        width: 100%; /* Full width for each step */
+        flex-direction: row; /* Keep row for number and name */
+        justify-content: flex-start;
+        padding: 8px 0;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+
+    .step-name {
+        font-size: 13px;
+    }
+
+    .create-shop-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .create-shop-header h2 {
         font-size: 1.3rem;
     }
+
+    .recommendation-section,
+    .shop-policy-card,
+    .featured-shop-item {
+        padding: 15px;
+    }
+
+    .intro-images {
+        height: 150px;
+    }
+
+    .intro-text h3 {
+        font-size: 1.4rem;
+    }
+
+    .intro-text h4 {
+        font-size: 1.1rem;
+    }
+
+    .intro-text ul li {
+        font-size: 0.9rem;
+    }
+
+    .feature-item {
+        flex-direction: column; /* Stack on phones */
+        text-align: center;
+    }
+
+    .feature-item img {
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+
+    .feature-item h4 {
+        justify-content: center;
+    }
+
+    /* Form fields */
+    .shop-form-label-col {
+        font-size: 0.95rem;
+    }
+
+    .shop-form-input-col input[type="text"],
+    .shop-form-input-col input[type="url"],
+    .shop-form-input-col input[type="tel"],
+    .shop-form-input-col textarea {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .avatar-upload-overlay {
+        width: 80px;
+        height: 80px;
+    }
+
+    .avatar-upload-overlay .upload-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+        padding: 6px;
+    }
+
+    .cover-image-upload {
+        height: 150px;
+    }
+
+    .cover-image-upload .upload-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    /* Modals */
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 15px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .policy-item {
+        padding: 12px;
+    }
+
+    .policy-input-group input[type="text"] {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .add-custom-policy-btn,
+    .remove-custom-policy-btn,
+    .modal-footer .btn {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+
+    /* Summary section (Step 4) */
+    .shop-summary-card,
+    .summary-info-section {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    .shop-summary-card .section-title,
+    .summary-info-section .section-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+
+    .summary-details-introduction .summary-item,
+    .summary-item {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .summary-policies {
+        padding: 12px;
+    }
+
+    .summary-policies strong {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+
+    #summaryShopPoliciesList li {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+
+    .back-to-home-btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        margin-top: 20px;
+    }
+
 }
 
 .terms-checkbox a, .introduction-content a {
@@ -1642,7 +2236,7 @@ body {
 /* Responsive for the new dashboard layout */
 @media (max-width: 768px) {
     .shop-container {
-        margin: 40px auto;
+        margin: 20px auto; /* Adjusted margin for tablets */
         padding: 20px;
     }
 
@@ -2163,20 +2757,59 @@ input:checked + .slider:before {
 @media (max-width: 600px) {
     .modal-content {
         width: 95%;
+        max-width: 95%; /* Ensure it doesn't exceed 95% on smaller screens */
     }
 
     .modal-header,
     .modal-body,
     .modal-footer {
-        padding: 15px 15px; /* Smaller padding on small screens */
+        padding: 15px; /* Consistent smaller padding */
     }
 
     .modal-header h2 {
         font-size: 1.1rem;
     }
 
+    .close-button {
+        font-size: 13px; /* Slightly smaller close button */
+        width: 35px;
+        height: 35px;
+    }
+
     .policy-item {
         padding: 12px;
+    }
+
+    .policy-icon-title {
+        gap: 8px; /* Reduce gap */
+    }
+
+    .policy-icon {
+        font-size: 1.3rem; /* Slightly smaller icon */
+    }
+
+    .policy-header label {
+        font-size: 1rem;
+    }
+
+    .switch {
+        width: 50px; /* Smaller switch */
+        height: 28px;
+    }
+
+    .slider:before {
+        height: 20px; /* Smaller slider handle */
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(22px); /* Adjust handle movement */
+    }
+
+    .policy-input-group {
+        padding: 0 5px; /* Reduced horizontal padding */
     }
 
     .policy-input-group input[type="text"] {
@@ -2185,10 +2818,80 @@ input:checked + .slider:before {
     }
 
     .add-custom-policy-btn,
-    .remove-custom-policy-btn,
-    .modal-footer .btn {
+    .remove-custom-policy-btn {
         padding: 8px 15px;
         font-size: 0.85rem;
+    }
+
+    .modal-footer .btn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        border-radius: 12px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 12px;
+    }
+
+    .modal-header h2 {
+        font-size: 1rem;
+    }
+
+    .close-button {
+        font-size: 12px;
+        width: 30px;
+        height: 30px;
+    }
+
+    .policy-item {
+        padding: 10px;
+    }
+
+    .policy-icon {
+        font-size: 1.2rem;
+    }
+
+    .policy-header label {
+        font-size: 0.9rem;
+    }
+
+    .switch {
+        width: 45px;
+        height: 24px;
+    }
+
+    .slider:before {
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+
+    .policy-input-group input[type="text"] {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .add-custom-policy-btn,
+    .remove-custom-policy-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .modal-footer .btn {
+        padding: 8px 15px;
+        font-size: 0.8rem;
     }
 }
 
