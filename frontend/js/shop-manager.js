@@ -515,16 +515,23 @@ function updateShopHeaderRating({ averageRating = 0, totalReviews = 0 }) {
     }
 
     starsContainer.innerHTML = ''; // Clear current stars
-    const roundedRating = Math.round(averageRating);
-
+    
+    // Loop to create 5 stars with accurate fractional rating
     for (let i = 1; i <= 5; i++) {
-        const starIcon = document.createElement('i');
-        starIcon.classList.add('fas', 'fa-star', 'star');
-        // Stars will be colored by default CSS, we only need to dull the non-rated ones
-        if (i > roundedRating) {
-            starIcon.style.color = 'var(--border-color)'; /* Use CSS variable for consistency */
+        const star = document.createElement('i');
+        star.classList.add('fas', 'star'); // Add base classes for styling
+
+        if (i <= averageRating) {
+            // Full star
+            star.classList.add('fa-star', 'filled');
+        } else if (i - 0.5 <= averageRating) {
+            // Half star
+            star.classList.add('fa-star-half-alt', 'filled');
+        } else {
+            // Empty star
+            star.classList.add('fa-star');
         }
-        starsContainer.appendChild(starIcon);
+        starsContainer.appendChild(star);
     }
     
     ratingText.textContent = `${averageRating.toFixed(1)} (${totalReviews} đánh giá)`;
@@ -983,12 +990,25 @@ function renderReviewSummary(averageRating, totalReviews, reviewCriteria) {
     document.getElementById('overallRatingScore').textContent = averageRating.toFixed(1);
     const starsContainer = document.getElementById('overallRatingStars');
     starsContainer.innerHTML = '';
-    const roundedRating = Math.round(averageRating);
+    
+    // Loop to create 5 stars with accurate fractional rating
     for (let i = 1; i <= 5; i++) {
         const star = document.createElement('i');
-        star.className = `fas fa-star ${i <= roundedRating ? 'filled' : ''}`;
+        star.classList.add('fas', 'star'); // Add base classes for styling
+
+        if (i <= averageRating) {
+            // Full star
+            star.classList.add('fa-star', 'filled');
+        } else if (i - 0.5 <= averageRating) {
+            // Half star
+            star.classList.add('fa-star-half-alt', 'filled');
+        } else {
+            // Empty star
+            star.classList.add('fa-star');
+        }
         starsContainer.appendChild(star);
     }
+    
     document.getElementById('overallTotalReviews').textContent = `(${totalReviews} đánh giá)`;
 
     const filtersContainer = document.getElementById('reviewFilters');

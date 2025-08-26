@@ -15,7 +15,8 @@ const {
     addStaff,
     removeStaff,
     updateStaffPermissions,
-    createStaffAccount
+    createStaffAccount,
+    getShopAnalytics
 } = require("../controllers/shopController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 const { Role } = require("../constants/roleEnum");
@@ -30,6 +31,7 @@ router.put("/approve-shop/:id", protect, authorize(Role.ADMIN), approveShop);
 router.put("/reject-shop/:id", protect, authorize(Role.ADMIN), rejectShop);
 router.get("/:shopId/details-with-products", getShopWithProducts);
 router.get("/:shopId/reviews", getShopRating);
+router.get('/my-shop/:shopId/analytics', protect, getShopAnalytics);
 
 // Staff management routes
 router.route("/my-shop/staff")

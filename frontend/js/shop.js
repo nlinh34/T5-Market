@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const shopId = urlParams.get('id');
 
     const pageLoader = document.getElementById('page-loader');
-    const mainContent = document.querySelector('main.main-content');
+    const mainContent = document.querySelector('main.main-content-shop');
 
     // Show loader initially
     if (pageLoader) pageLoader.style.display = 'flex';
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 function hideLoader() {
     const pageLoader = document.getElementById('page-loader');
-    const mainContent = document.querySelector('main.main-content');
+    const mainContent = document.querySelector('main.main-content-shop');
     if (pageLoader) {
         pageLoader.style.opacity = '0';
         setTimeout(() => pageLoader.style.display = 'none', 300);
@@ -58,7 +58,7 @@ function hideLoader() {
 }
 
 function displayShopNotFound(message = 'Cửa hàng không tồn tại.') {
-    const container = document.querySelector('main.main-content .container');
+    const container = document.querySelector('main.main-content-shop .container');
     if (container) {
         container.innerHTML = `
             <div class="shop-not-found" style="text-align: center; padding: 50px;">
@@ -131,13 +131,20 @@ function renderShopDetails(shop, shopRating) {
         starsContainer.innerHTML = ''; // Clear current stars
         const averageRating = shopRating.averageRating || 0;
         const totalReviews = shopRating.totalReviews || 0;
-        const roundedRating = Math.round(averageRating);
-
+        
         for (let i = 1; i <= 5; i++) {
             const starIcon = document.createElement('i');
-            starIcon.classList.add('fas', 'fa-star', 'star');
-            if (i > roundedRating) {
-                starIcon.style.color = '#e0e0e0';
+            starIcon.classList.add('fas', 'star'); // Base classes
+
+            if (i <= averageRating) {
+                // Full star
+                starIcon.classList.add('fa-star', 'filled');
+            } else if (i - 0.5 <= averageRating) {
+                // Half star
+                starIcon.classList.add('fa-star-half-alt', 'filled');
+            } else {
+                // Empty star
+                starIcon.classList.add('fa-star');
             }
             starsContainer.appendChild(starIcon);
         }
@@ -250,10 +257,20 @@ async function loadReviewsContent(shopId) {
             allReviewsCount.textContent = totalReviews;
 
             overallRatingStars.innerHTML = ''; // Clear current stars
-            const roundedRating = Math.round(averageRating);
             for (let i = 1; i <= 5; i++) {
                 const star = document.createElement('i');
-                star.className = `fas fa-star ${i <= roundedRating ? 'filled' : ''}`; // Add filled class for styling
+                star.classList.add('fas', 'star'); // Add base classes for styling
+
+                if (i <= averageRating) {
+                    // Full star
+                    star.classList.add('fa-star', 'filled');
+                } else if (i - 0.5 <= averageRating) {
+                    // Half star
+                    star.classList.add('fa-star-half-alt', 'filled');
+                } else {
+                    // Empty star
+                    star.classList.add('fa-star');
+                }
                 overallRatingStars.appendChild(star);
             }
             renderReviewList(reviews);
@@ -280,7 +297,11 @@ function renderReviewList(reviews) {
         const reviewItem = document.createElement('div');
         reviewItem.className = 'review-item';
 
-        const userAvatar = review.user.avatar || './assests/images/default-user.png';
+        // Handle cases where the user who left the review has been deleted
+        const userExists = review.user;
+        const userAvatar = userExists ? (userExists.avatar || './assests/images/default-user.png') : './assests/images/default-user.png';
+        const userName = userExists ? userExists.fullName : '[Người dùng ẩn danh]';
+
         const productName = review.product ? review.product.name : 'Sản phẩm không tồn tại';
         const productPrice = review.product ? formatCurrency(review.product.price) : 'N/A';
         const productImage = review.product && review.product.images && review.product.images.length > 0 ? review.product.images[0] : './assests/images/default-product.png';
@@ -292,15 +313,16 @@ function renderReviewList(reviews) {
         
         let starsHTML = '';
         for (let i = 1; i <= 5; i++) {
-            starsHTML += `<i class="fas fa-star ${i <= review.rating ? 'filled' : ''}"></i>`;
+            // ensure we include the 'star' class so CSS can style filled vs unfilled correctly
+            starsHTML += `<i class="fas fa-star star ${i <= review.rating ? 'filled' : ''}"></i>`;
         }
 
         reviewItem.innerHTML = `
             <div class="reviewer-avatar">
-                <img  loading="lazy" src="${userAvatar}" alt="${review.user.fullName}">
+                <img  loading="lazy" src="${userAvatar}" alt="${userName}">
             </div>
             <div class="review-content">
-                <div class="reviewer-name">${review.user.fullName}</div>
+                <div class="reviewer-name">${userName}</div>
                 <div class="review-criteria-tags">
                     ${criteriaTagsHTML}
                 </div>

@@ -191,9 +191,8 @@ exports.getAllOrders = async (req, res) => {
 //Đếm số lượt bán của từng sản phẩm
 exports.updateOrderStatus = async (req, res) => {
   try {
-    if (req.user.role !== Role.SELLER) {
-      return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
-    }
+    const userId = req.user.userId;
+    const userRole = req.user.role;
 
     const { orderId } = req.params;
     const { status } = req.body;
@@ -208,10 +207,44 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ success: false, error: "Không tìm thấy đơn hàng" });
     }
 
+    // Prevent changing already finished orders
     if (["completed", "cancelled"].includes(order.status)) {
       return res.status(400).json({ success: false, error: "Không thể thay đổi trạng thái đơn hàng đã hoàn thành hoặc đã bị hủy" });
     }
 
+    // Only allow seller (shop owner) or staff with proper permission
+    if (![Role.SELLER, Role.STAFF].includes(userRole)) {
+      return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
+    }
+
+    // Fetch shop to verify ownership / staff membership and permissions
+    const shop = await Shop.findById(order.shop);
+    if (!shop) {
+      return res.status(404).json({ success: false, error: "Không tìm thấy shop liên quan đến đơn hàng" });
+    }
+
+    // If user is seller, ensure they're the shop owner
+    if (userRole === Role.SELLER) {
+      if (!shop.owner || shop.owner.toString() !== userId.toString()) {
+        return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
+      }
+    }
+
+    // If user is staff, ensure membership and 'manage_orders' permission
+    if (userRole === Role.STAFF) {
+      // shop.staff is an array of objects { user: ObjectId, permissions: [] }
+      const staffMember = shop.staff ? shop.staff.find(s => s.user && s.user.toString() === userId.toString()) : null;
+      if (!staffMember) {
+        return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
+      }
+
+      const hasPerm = Array.isArray(staffMember.permissions) && staffMember.permissions.includes('manage_orders');
+      if (!hasPerm) {
+        return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
+      }
+    }
+
+    // All checks passed -> update status
     order.status = status;
     order.updatedAt = new Date();
 

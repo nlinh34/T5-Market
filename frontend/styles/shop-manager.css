@@ -177,14 +177,17 @@ body {
 }
 
 .star {
-    color: var(--primary-blue);
+    color: #6f6f6f; /* Grey for unfilled stars */
     font-size: 18px;
     transition: var(--transition-fast);
 }
 
+.star.filled {
+    color: #ffc107;
+}
+
 .star:hover {
     transform: scale(1.2);
-    color: var(--primary-blue-dark);
 }
 
 .rating-text {
@@ -885,6 +888,319 @@ body {
     .modal-body,
     .modal-footer {
         padding: 15px;
+    }
+}
+
+@media (max-width: 430px) {
+    .container {
+        padding: 10px;
+    }
+
+    .shop-header {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .shop-header-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .shop-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .shop-avatar {
+        width: 90px;
+        height: 90px;
+        font-size: 2rem;
+        margin: 10px 0;
+    }
+
+    .shop-details h1 {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .shop-rating {
+        margin-bottom: 5px;
+    }
+
+    .rating-text {
+        font-size: 13px;
+    }
+
+    .shop-location {
+        font-size: 13px;
+    }
+
+    .shop-actions {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .btn1 {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+
+    .shop-stats {
+        grid-template-columns: 1fr; /* Stack vertically */
+        padding-left: 0;
+        border-left: none;
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    .stat-item-shop {
+        justify-content: center;
+        padding: 5px 0;
+    }
+
+    .tab-list {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .tab-item {
+        flex-basis: 100%;
+    }
+
+    .tab-link {
+        padding: 15px 10px;
+        font-size: 14px;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr; /* Single column on very small screens */
+        gap: 15px;
+    }
+
+    .product-card {
+        padding: 15px;
+    }
+
+    .product-info {
+        padding: 10px;
+    }
+
+    .product-actions {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .product-actions .btn {
+        width: 100%;
+        max-width: unset;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .card-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .shop-intro, .contact-item, .policy-item {
+        font-size: 0.9em;
+        text-align: center;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .contact-item i {
+        margin-right: 5px;
+    }
+
+    .modal-content {
+        width: 95%;
+        border-radius: 15px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 15px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .policy-item {
+        padding: 10px;
+    }
+
+    .policy-input-group input[type="text"] {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .add-custom-policy-btn,
+    .remove-custom-policy-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .modal-footer .btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .staff-table {
+        min-width: 400px; /* Adjust minimum width for mobile table */
+    }
+
+    .staff-table th, .staff-table td {
+        padding: 10px 15px;
+        font-size: 0.85em;
+    }
+
+    .staff-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .staff-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+    }
+
+    .staff-name {
+        font-size: 0.9em;
+    }
+
+    .staff-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .btn-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+        padding: 5px;
+    }
+
+    .review-summary {
+        padding: 15px;
+    }
+
+    .overall-rating {
+        min-width: unset;
+    }
+
+    .rating-score {
+        font-size: 1.8rem;
+    }
+
+    .rating-stars {
+        font-size: 1rem;
+    }
+
+    .total-reviews {
+        font-size: 0.8em;
+    }
+
+    .review-tabs-container {
+        padding: 10px 15px;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .review-tab {
+        font-size: 0.8em;
+        padding-bottom: 8px;
+    }
+
+    .review-list {
+        padding: 0 15px 15px;
+    }
+
+    .review-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        padding: 15px 0;
+    }
+
+    .reviewer-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .review-content {
+        padding: 0 10px;
+    }
+
+    .reviewer-name {
+        font-size: 0.9em;
+    }
+
+    .criteria-tag {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+    }
+
+    .review-meta {
+        gap: 10px;
+        font-size: 0.75em;
+    }
+
+    .review-product {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .review-product-image {
+        width: 45px;
+        height: 45px;
+    }
+
+    .review-product-name {
+        font-size: 0.8em;
+    }
+
+    .review-product-price {
+        font-size: 0.9em;
+    }
+}
+
+/* Adjustments for custom select wrapper on smaller screens */
+@media (max-width: 480px) {
+    .custom-select-wrapper {
+        width: 100%; /* Take full width */
+    }
+
+    .product-tabs {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .product-search-input {
+        width: 100%;
+    }
+
+    .product-tab-btn {
+        width: 100%;
     }
 }
 
@@ -1887,7 +2203,6 @@ input:checked + .slider:before {
 
 .reviewer-name {
     font-weight: 600;
-    margin-bottom: 8px;
 }
 
 .review-criteria-tags {
@@ -1917,10 +2232,13 @@ input:checked + .slider:before {
 
 .review-meta .stars {
     font-size: 1rem;
-    color: #ffd700;
+    /* don't set color on container to avoid overriding .star/.filled */
+}
+.review-meta .stars .star {
+    color: #6f6f6f; /* grey for unfilled stars */
 }
 .review-meta .stars .filled{
-    color: var(--primary-blue); /* Use primary blue */
+    color: #f3d700; /* yellow for filled stars */
 }
 
 .review-product {
@@ -2036,4 +2354,4 @@ input:checked + .slider:before {
 
 #editPermissionsModal .modal-footer .btn-primary1:hover {
     background-color: var(--dark-blue); /* Darker blue on hover */
-} 
+}

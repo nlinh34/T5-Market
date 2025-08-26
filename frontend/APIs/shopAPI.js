@@ -129,4 +129,13 @@ export class ShopAPI {
       expectedStatusCodes: [200]
     });
   }
+
+  static async getShopAnalytics(shopId, params = {}) {
+    const qs = Object.keys(params).length ? `?${new URLSearchParams(params).toString()}` : '';
+    return await apiCall({
+      endpoint: `/shop/my-shop/${shopId}/analytics${qs}`,
+      method: 'GET',
+      expectedStatusCodes: [200]
+    });
+  }
 }
