@@ -1,4 +1,3 @@
-// frontend/APIs/utils/cartStorage.js
 import { apiCall } from "./api.js";
 
 export const CartStorage = {
@@ -8,7 +7,6 @@ export const CartStorage = {
 
   setCartCount(count) {
     localStorage.setItem("cartCount", count.toString());
-    // Trigger event để update UI
     window.dispatchEvent(new CustomEvent("cartCountUpdated"));
   },
 
@@ -22,10 +20,8 @@ export const CartStorage = {
     this.setCartCount(Math.max(0, currentCount - amount));
   },
 
-  // Sync với server
   async syncCartCount() {
     try {
-      // Sử dụng apiCall thay vì fetch trực tiếp
       const result = await apiCall("/cart", "GET");
 
       if (result.success) {
@@ -40,15 +36,12 @@ export const CartStorage = {
     }
   },
 
-  // Reset cart count (dùng khi logout hoặc checkout)
   resetCartCount() {
     this.setCartCount(0);
   },
 
-  // Lưu thông tin voucher
   saveVoucherInfo(voucherInfo) {
     try {
-      // Kiểm tra dữ liệu trước khi lưu
       if (!voucherInfo || !voucherInfo.voucherInfo) {
         console.error("Invalid voucher data:", voucherInfo);
         return;

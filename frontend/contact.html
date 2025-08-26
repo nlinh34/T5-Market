@@ -1,126 +1,125 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Liên Hệ - T5 Market - Chợ Điện Tử Uy Tín</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/contact.css" />
-    <link rel="stylesheet" href="./styles/footer.css">
-    <script src="./components/header/header.js" type="module"></script>
-  </head>
-  <body>
-    <!-- Header -->
-    <header-component></header-component>
 
-    <!-- Contact Banner -->
-    <section class="contact-banner">
-      <div class="container">
-        <div class="banner-content">
-          <h1 class="banner-title">Liên hệ với chúng tôi</h1>
-          <p class="banner-text">
-            Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn mọi lúc
-          </p>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liên Hệ - T5 Market - Chợ Điện Tử Uy Tín</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/contact.css" />
+  <link rel="stylesheet" href="./styles/footer.css">
+  <script src="./components/header/header.js" type="module"></script>
+  <style>
+    .contact-banner .banner-content {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header-component></header-component>
+
+  <!-- Contact Banner -->
+  <section class="contact-banner">
+    <div class="container">
+      <div class="banner-content" style="text-align: center;">
+        <h1 class="banner-title">Liên hệ với chúng tôi</h1>
+        <p class="banner-text">
+          Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn mọi lúc
+        </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Contact Section -->
-    <section class="contact-section">
-      <div class="container">
-        <div class="contact-container">
-          <div class="contact-info">
-            <h2 class="section-title">Thông tin liên hệ</h2>
-            <div class="info-item">
-              <i class="fas fa-map-marker-alt"></i>
-              <div>
-                <h3>Địa chỉ</h3>
-                <p>123 Đường Xanh, Quận 1, Thành phố Hồ Chí Minh</p>
-              </div>
-            </div>
-            <div class="info-item">
-              <i class="fas fa-phone"></i>
-              <div>
-                <h3>Điện thoại</h3>
-                <p>1900 1234</p>
-                <p>+84 123 456 789 (Hỗ trợ quốc tế)</p>
-              </div>
-            </div>
-            <div class="info-item">
-              <i class="fas fa-envelope"></i>
-              <div>
-                <h3>Email</h3>
-                <p>info@t5market.vn</p>
-                <p>support@t5market.vn</p>
-              </div>
-            </div>
-            <div class="info-item">
-              <i class="fas fa-clock"></i>
-              <div>
-                <h3>Giờ làm việc</h3>
-                <p>Thứ 2 - Thứ 6: 8:00 - 22:00</p>
-                <p>Thứ 7 - Chủ nhật: 9:00 - 21:00</p>
-              </div>
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-container">
+        <div class="contact-info">
+          <h2 class="section-title">Thông tin liên hệ</h2>
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <h3>Địa chỉ</h3>
+              <p>123 Đường Xanh, Quận 1, Thành phố Hồ Chí Minh</p>
             </div>
           </div>
-
-          <div class="contact-form">
-            <h2 class="section-title">Gửi tin nhắn cho chúng tôi</h2>
-            <form action="https://formspree.io/f/mgvykbpp" method="POST" id="contactForm">
-              <div class="form-group">
-                <input type="text" name="name" id="name" placeholder="Họ và tên" required>
-              </div>
-              <div class="form-group">
-                <input type="email" name="email" id="email" placeholder="Email" required>
-              </div>
-              <div class="form-group">
-                <input type="tel" name="phone" id="phone" placeholder="Số điện thoại">
-              </div>
-              <div class="form-group">
-                <select name="subject" id="subject" required>
-                  <option value="" disabled selected>Chọn chủ đề</option>
-                  <option value="support">Hỗ trợ khách hàng</option>
-                  <option value="order">Đơn hàng & Thanh toán</option>
-                  <option value="technical">Hỗ trợ kỹ thuật</option>
-                  <option value="feedback">Góp ý & Khiếu nại</option>
-                  <option value="other">Khác</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <textarea name="message" id="message" rows="5" placeholder="Nội dung tin nhắn" required></textarea>
-              </div>
-              <button type="submit" class="submit-btn">Gửi tin nhắn</button>
-            </form>
+          <div class="info-item">
+            <i class="fas fa-phone"></i>
+            <div>
+              <h3>Điện thoại</h3>
+              <p>1900 1234</p>
+              <p>+84 123 456 789 (Hỗ trợ quốc tế)</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <h3>Email</h3>
+              <p>info@t5market.vn</p>
+              <p>support@t5market.vn</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <h3>Giờ làm việc</h3>
+              <p>Thứ 2 - Thứ 6: 8:00 - 22:00</p>
+              <p>Thứ 7 - Chủ nhật: 9:00 - 21:00</p>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Map Section -->
-    <section class="map-section">
-      <div class="container">
-        <h2 class="section-title">Vị trí của chúng tôi</h2>
-        <div class="map-container">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.440428704835!2d106.6642907152608!3d10.762477892330932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752ee89e8d3e3d%3A0x5a97a1a6e6c7a1e5!2s123%20%C4%90%C6%B0%E1%BB%9Dng%20Xanh%2C%20Qu%E1%BA%ADn%201%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh!5e0!3m2!1sen!2s!4v1620000000000!5m2!1sen!2s" 
-            width="100%" 
-            height="450" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy"
-            title="Bản đồ vị trí T5Market">
-          </iframe>
+        <div class="contact-form">
+          <h2 class="section-title">Gửi tin nhắn cho chúng tôi</h2>
+          <form action="https://formspree.io/f/mgvykbpp" method="POST" id="contactForm">
+            <div class="form-group">
+              <input type="text" name="name" id="name" placeholder="Họ và tên" required>
+            </div>
+            <div class="form-group">
+              <input type="email" name="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+              <input type="tel" name="phone" id="phone" placeholder="Số điện thoại">
+            </div>
+            <div class="form-group">
+              <select name="subject" id="subject" required>
+                <option value="" disabled selected>Chọn chủ đề</option>
+                <option value="support">Hỗ trợ khách hàng</option>
+                <option value="order">Đơn hàng & Thanh toán</option>
+                <option value="technical">Hỗ trợ kỹ thuật</option>
+                <option value="feedback">Góp ý & Khiếu nại</option>
+                <option value="other">Khác</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <textarea name="message" id="message" rows="5" placeholder="Nội dung tin nhắn" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Gửi tin nhắn</button>
+          </form>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- FAQ Section -->
-    <section class="faq-section">
+  <!-- Map Section -->
+  <section class="map-section">
+    <div class="container">
+      <h2 class="section-title">Vị trí của chúng tôi</h2>
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.440428704835!2d106.6642907152608!3d10.762477892330932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752ee89e8d3e3d%3A0x5a97a1a6e6c7a1e5!2s123%20%C4%90%C6%B0%E1%BB%9Dng%20Xanh%2C%20Qu%E1%BA%ADn%201%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh!5e0!3m2!1sen!2s!4v1620000000000!5m2!1sen!2s"
+          width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" title="Bản đồ vị trí T5Market">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <!-- <section class="faq-section">
       <div class="container">
         <h2 class="section-title">Câu hỏi thường gặp</h2>
         <div class="faq-container">
@@ -153,82 +152,79 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
-    <!-- Footer -->
-    <footer class="main-footer">
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-container">
+        <div class="footer-column footer-about">
+          <h3>Về T5Market</h3>
+          <p>
+            T5Market là chợ điện tử uy tính và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
+          </p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h3>Liên kết nhanh</h3>
+          <ul>
+            <li><a href="../home/index.html">Trang chủ</a></li>
+            <li><a href="../Danh mục/menu.html">Danh mục sản phẩm</a></li>
+            <li><a href="../contact/contact.html">Liên hệ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Thông tin</h3>
+          <ul>
+            <li><a href="../about/about.html">Về chúng tôi</a></li>
+            <li><a href="#">Tuyển dụng</a></li>
+            <li><a href="#">Chính sách bảo mật</a></li>
+            <li><a href="#">Điều khoản sử dụng</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Liên hệ</h3>
+          <ul>
+            <li>
+              <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1,
+              TP.HCM
+            </li>
+            <li><i class="fas fa-phone"></i> 1900 1234</li>
+            <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
+            <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
       <div class="container">
-        <div class="footer-container">
-          <div class="footer-column footer-about">
-            <h3>Về T5Market</h3>
-            <p>
-              T5Market là chợ điện tử uy tính và chất lượng để khách hàng chọn lựa đăng tải bán và mua sản phẩm tại đây.
-            </p>
-            <div class="social-links">
-              <a href="#"><i class="fab fa-facebook-f"></i></a>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-              <a href="#"><i class="fab fa-twitter"></i></a>
-              <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-          </div>
-
-          <div class="footer-column">
-            <h3>Liên kết nhanh</h3>
-            <ul>
-              <li><a href="../home/index.html">Trang chủ</a></li>
-              <li><a href="../Danh mục/menu.html">Danh mục sản phẩm</a></li>
-              <li><a href="../contact/contact.html">Liên hệ</a></li>
-            </ul>
-          </div>
-
-          <div class="footer-column">
-            <h3>Thông tin</h3>
-            <ul>
-              <li><a href="../about/about.html">Về chúng tôi</a></li>
-              <li><a href="#">Tuyển dụng</a></li>
-              <li><a href="#">Chính sách bảo mật</a></li>
-              <li><a href="#">Điều khoản sử dụng</a></li>
-            </ul>
-          </div>
-
-          <div class="footer-column">
-            <h3>Liên hệ</h3>
-            <ul>
-              <li>
-                <i class="fas fa-map-marker-alt"></i> 123 Đường Xanh, Q.1,
-                TP.HCM
-              </li>
-              <li><i class="fas fa-phone"></i> 1900 1234</li>
-              <li><i class="fas fa-envelope"></i> info@t5market.vn</li>
-              <li><i class="fas fa-clock"></i> Mở cửa: 8:00 - 22:00</li>
-            </ul>
-          </div>
+        <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
+        <div class="payment-methods">
+          <img loading="lazy"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
+            alt="Mastercard" />
+          <img loading="lazy"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
+            alt="Visa" />
+          <img loading="lazy"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
+            alt="Amex" />
+          <img loading="lazy"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
+            alt="Momo" />
         </div>
       </div>
+    </div>
+  </footer>
+</body>
 
-      <div class="footer-bottom">
-        <div class="container">
-          <p>&copy; 2025 T5Market. Tất cả quyền được bảo lưu.</p>
-          <div class="payment-methods">
-            <img loading="lazy"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/800px-Mastercard_2019_logo.svg.png"
-              alt="Mastercard"
-            />
-            <img loading="lazy"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png"
-              alt="Visa"
-            />
-            <img loading="lazy"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/800px-American_Express_logo_%282018%29.svg.png"
-              alt="Amex"
-            />
-            <img loading="lazy"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Momo_Logo.png/800px-Momo_Logo.png"
-              alt="Momo"
-            />
-          </div>
-        </div>
-      </div>
-    </footer>
-  </body>
 </html>

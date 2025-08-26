@@ -751,7 +751,7 @@ body {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 25px;
     margin-top: 40px;
 }
@@ -954,7 +954,6 @@ body {
 .card-top {
     position: relative;
     background: #ffffff;
-    padding: 10px;
     text-align: center;
 }
 
@@ -1355,13 +1354,18 @@ body {
 }
 
 .breadcrumb {
+    width: 100%;                 /* full ngang */
     background-color: #fff;
-    border-top: 1px solid #e8e8e8;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 12px 16px;
     border: none;
 }
+
+.breadcrumb .container {
+    width: 90%;                  /* giống content */
+    max-width: 1200px;           /* giống content */
+    margin: 0 auto;
+    padding: 12px 60px;          /* giống content */
+}
+
 
 .breadcrumb a {
     text-decoration: none;

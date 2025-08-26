@@ -1,6 +1,5 @@
 export const formatCurrency = (amount) => {
   try {
-    // Format the number part without currency symbol
     const formattedAmount = new Intl.NumberFormat("vi-VN", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
@@ -8,7 +7,7 @@ export const formatCurrency = (amount) => {
     return `${formattedAmount} VND`;
   } catch (error) {
     console.error("Format currency error:", error);
-    return `${amount.toLocaleString("vi-VN")} VND`; // Fallback format with VND
+    return `${amount.toLocaleString("vi-VN")} VND`; 
   }
 };
 

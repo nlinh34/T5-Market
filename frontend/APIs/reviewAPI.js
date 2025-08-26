@@ -1,7 +1,7 @@
 import { apiCall } from "./utils/api.js";
 
 export const ReviewAPI = {
-  // 📌 Gửi đánh giá mới
+  // Gửi đánh giá mới
   createReview: async (reviewData) => {
     return await apiCall({
       endpoint: `/reviews`,
@@ -10,7 +10,7 @@ export const ReviewAPI = {
     });
   },
 
-  // 📌 Lấy tất cả đánh giá theo productId
+  // Lấy tất cả đánh giá theo productId
   getReviewsByProduct: async (productId) => {
     return await apiCall({
       endpoint: `/reviews/${productId}`,
@@ -18,7 +18,7 @@ export const ReviewAPI = {
     });
   },
 
-  // 📌 (Tuỳ chọn) Lấy đánh giá theo rating cụ thể nếu bạn muốn filter
+  // Lấy đánh giá theo rating cụ thể nếu bạn muốn filter
   getReviewsByProductAndRating: async (productId, rating) => {
     return await apiCall({
       endpoint: `/reviews/${productId}?rating=${rating}`,

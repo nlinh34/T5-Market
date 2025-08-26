@@ -94,7 +94,6 @@ const { items, total } = res.cart || { items: [], total: 0 };
 
     window.cartIsEmpty = checkboxes.length === 0;
 
-    // ✅ Cập nhật danh sách id đã chọn
     updateSelectedProductIds();
   }
 

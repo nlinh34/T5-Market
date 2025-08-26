@@ -1,4 +1,3 @@
-// backend/controllers/orderController.js
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
@@ -25,14 +24,10 @@ async function generateUniqueOrderCode() {
   return code;
 }
 
-//Tạo đơn hàng
-// backend/controllers/orderController.js
-
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Lấy shop mà user này sở hữu (nếu có)
     const ownShop = await Shop.findOne({ owner: userId }).select("_id");
 
     const { products, shippingInfo, paymentMethod } = req.body;
@@ -56,7 +51,6 @@ exports.createOrder = async (req, res) => {
       if (!prod) throw new Error(`Không tìm thấy sản phẩm với ID: ${item.productId}`);
       if (!prod.shop) throw new Error(`Sản phẩm ${prod._id} không có thông tin shop.`);
 
-      // 🚫 Chặn mua sản phẩm từ shop của chính mình
       if (ownShop && prod.shop.equals(ownShop._id)) {
         return res.status(400).json({
           success: false,
@@ -207,32 +201,25 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ success: false, error: "Không tìm thấy đơn hàng" });
     }
 
-    // Prevent changing already finished orders
     if (["completed", "cancelled"].includes(order.status)) {
       return res.status(400).json({ success: false, error: "Không thể thay đổi trạng thái đơn hàng đã hoàn thành hoặc đã bị hủy" });
     }
 
-    // Only allow seller (shop owner) or staff with proper permission
     if (![Role.SELLER, Role.STAFF].includes(userRole)) {
       return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
     }
-
-    // Fetch shop to verify ownership / staff membership and permissions
     const shop = await Shop.findById(order.shop);
     if (!shop) {
       return res.status(404).json({ success: false, error: "Không tìm thấy shop liên quan đến đơn hàng" });
     }
 
-    // If user is seller, ensure they're the shop owner
     if (userRole === Role.SELLER) {
       if (!shop.owner || shop.owner.toString() !== userId.toString()) {
         return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
       }
     }
 
-    // If user is staff, ensure membership and 'manage_orders' permission
     if (userRole === Role.STAFF) {
-      // shop.staff is an array of objects { user: ObjectId, permissions: [] }
       const staffMember = shop.staff ? shop.staff.find(s => s.user && s.user.toString() === userId.toString()) : null;
       if (!staffMember) {
         return res.status(403).json({ success: false, error: "Bạn không có quyền thực hiện hành động này" });
@@ -244,7 +231,6 @@ exports.updateOrderStatus = async (req, res) => {
       }
     }
 
-    // All checks passed -> update status
     order.status = status;
     order.updatedAt = new Date();
 
@@ -317,15 +303,12 @@ exports.getOrdersByShop = async (req, res) => {
   try {
     const userId = req.user.userId;
     const userRole = req.user.role;
-    // Lấy shopId từ params
     const { shopId } = req.params;
 
-    // Chỉ seller hoặc staff mới được truy cập
     if (![Role.SELLER, Role.STAFF].includes(userRole)) {
       return res.status(403).json({ success: false, error: "Bạn không có quyền truy cập." });
     }
 
-    // Kiểm tra xem user có thuộc shop này không (chủ shop hoặc nhân viên)
     const shop = await Shop.findOne({
       _id: shopId,
       $or: [
@@ -338,7 +321,6 @@ exports.getOrdersByShop = async (req, res) => {
       return res.status(403).json({ success: false, error: "Bạn không có quyền truy cập đơn hàng của shop này." });
     }
 
-    // Áp dụng lọc theo trạng thái nếu có query param
     const filterStatus = req.query.status;
     const filter = { shop: shopId };
     if (filterStatus) {
@@ -347,7 +329,7 @@ exports.getOrdersByShop = async (req, res) => {
 
     const orders = await Order.find(filter)
       .sort({ createdAt: -1 })
-      .populate("user", "fullName email") // thông tin người mua
+      .populate("user", "fullName email") 
       .lean();
 
     res.status(200).json({ success: true, data: orders });

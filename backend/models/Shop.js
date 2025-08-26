@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Create a separate schema for the policy items for clarity and robustness.
 const PolicySchema = new mongoose.Schema({
   type: {
     type: String,
@@ -10,7 +9,7 @@ const PolicySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-}, { _id: false }); // No need for a separate _id for each policy item.
+}, { _id: false }); 
 
 const ShopSchema = new mongoose.Schema(
   {
@@ -18,7 +17,7 @@ const ShopSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true, // mỗi user chỉ sở hữu 1 shop
+      unique: true,
     },
     name: {
       type: String,
@@ -41,11 +40,11 @@ const ShopSchema = new mongoose.Schema(
     logoUrl: {
       type: String,
     },
-    policies: [PolicySchema], // Use the defined sub-schema here
+    policies: [PolicySchema], 
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
-      default: "pending", // Chờ admin duyệt
+      default: "pending",
     },
     shopStatus: {
       type: String,

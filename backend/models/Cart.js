@@ -1,4 +1,3 @@
-// models/Cart.js
 const mongoose = require("mongoose");
 
 const cartItemSchema = new mongoose.Schema({
@@ -19,7 +18,7 @@ const cartSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-    unique: true // mỗi user có 1 cart
+    unique: true 
   },
   items: [cartItemSchema],
   createdAt: {

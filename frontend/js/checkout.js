@@ -1,7 +1,6 @@
 import OrderAPI from "../APIs/orderAPI.js";
 import CartAPI from "../APIs/cartAPI.js";
 
-// Hiển thị phần tóm tắt đơn hàng (từ localStorage)
 function renderOrderSummaryFromLocal() {
   const container = document.getElementById("order-items");
   const selectedItems = JSON.parse(localStorage.getItem("selectedCartItems") || "[]");
@@ -35,7 +34,6 @@ function renderOrderSummaryFromLocal() {
   updateSummaryUI(subtotal, discountAmount);
 }
 
-// Cập nhật hiển thị giá trị tổng phụ, giảm giá, tổng đơn
 function updateSummaryUI(subtotal, discount) {
   const total = subtotal - discount;
   document.getElementById("subtotal").textContent = `${subtotal.toLocaleString()}₫`;
@@ -43,13 +41,11 @@ function updateSummaryUI(subtotal, discount) {
   document.getElementById("order-total").textContent = `${total.toLocaleString()}₫`;
 }
 
-// Tính giảm giá (hiện tại chỉ check mã "t5market")
 function getDiscountAmount(subtotal) {
   const code = localStorage.getItem("appliedCoupon");
   return code === "t5market" ? subtotal * 0.2 : 0;
 }
 
-// Gửi đơn hàng
 
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
@@ -60,8 +56,7 @@ async function handleCheckoutSubmit(e) {
     return window.location.href = "../auth/login.html";
   }
 
-  // ✅ Chỉ khai báo `selectedIds` duy nhất 1 lần
-  let selectedIds = JSON.parse(localStorage.getItem("selectedProductIds") || "[]");
+   let selectedIds = JSON.parse(localStorage.getItem("selectedProductIds") || "[]");
   selectedIds = selectedIds.map(id => id?.toString().trim());
 
   if (!selectedIds.length) {

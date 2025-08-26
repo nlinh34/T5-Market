@@ -60,8 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadToCloudinary = async (base64) => {
     const data = new FormData();
     data.append("file", base64);
-    data.append("upload_preset", "t5market_avatar"); // 👉 thay bằng preset thực tế
-    data.append("cloud_name", "dipcjvi8x"); // 👉 thay bằng cloud name thực tế
+    data.append("upload_preset", "t5market_avatar"); 
+    data.append("cloud_name", "dipcjvi8x"); 
 
     const res = await fetch("https://api.cloudinary.com/v1_1/dipcjvi8x/image/upload", {
       method: "POST",

@@ -125,9 +125,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="price-wrapper">
           <span class="current-price">${product.price.toLocaleString("vi-VN")} đ</span>
         </div>
-        <div class="rating">
-          ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
-          <span>${(product.rating || 4.33).toFixed(2)}</span>
+        <div class="categories">
+            <Span>${product.category.name}</Span>
         </div>
         <div class="store"><i class="fa-solid fa-store"></i> ${product.shop?.name || "Unknown"}</div>
       </div>
