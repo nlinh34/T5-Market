@@ -1,6 +1,7 @@
 import { ShopAPI } from "../APIs/shopAPI.js";
 import { ProductAPI } from "../APIs/productAPI.js";
 import { formatCurrency, formatTimeAgo } from "../APIs/utils/formatter.js";
+import FavoriteAPI from "../APIs/favoriteAPI.js";
 
 document.addEventListener('DOMContentLoaded', async function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -12,6 +13,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Show loader initially
     if (pageLoader) pageLoader.style.display = 'flex';
     if (mainContent) mainContent.style.visibility = 'hidden';
+
+    await loadFavorites(); // Load favorite products before rendering
 
     if (!shopId) {
         displayShopNotFound();
@@ -232,9 +235,8 @@ async function loadReviewsContent(shopId) {
     const overallRatingStars = document.getElementById('overallRatingStars');
     const overallTotalReviews = document.getElementById('overallTotalReviews');
     const allReviewsCount = document.getElementById('allReviewsCount');
-    const buyerReviewsCount = document.getElementById('buyerReviewsCount');
 
-    if (!reviewList || !overallRatingScore || !overallRatingStars || !overallTotalReviews || !allReviewsCount || !buyerReviewsCount) return;
+    if (!reviewList || !overallRatingScore || !overallRatingStars || !overallTotalReviews || !allReviewsCount) return;
 
     reviewList.innerHTML = '<p>Đang tải đánh giá...</p>';
     
@@ -246,7 +248,6 @@ async function loadReviewsContent(shopId) {
             overallRatingScore.textContent = averageRating.toFixed(1);
             overallTotalReviews.textContent = `(${totalReviews} đánh giá)`;
             allReviewsCount.textContent = totalReviews;
-            buyerReviewsCount.textContent = totalReviews; // Assuming all reviews are from buyers for now
 
             overallRatingStars.innerHTML = ''; // Clear current stars
             const roundedRating = Math.round(averageRating);
@@ -331,12 +332,17 @@ function renderShopProducts(products) {
     if (!shopProductsGrid || !noProductsMessage) return;
 
     if (products && products.length > 0) {
-        shopProductsGrid.innerHTML = products.map(product => `
+        shopProductsGrid.innerHTML = products.map(product => {
+            const isLiked = favoriteProductIds.includes(product._id);
+            const heartIconClass = isLiked ? "fa-solid" : "fa-regular";
+            const likedButtonClass = isLiked ? "liked" : "";
+
+            return `
             <a href="product.html?id=${product._id}" class="new-product-card">
                 <div class="card-top">
                     <img loading="lazy" src="${product.images?.[0] || './assests/images/default-product.jpg'}" alt="${product.name}" />
-                    <button class="like-btn" data-id="${product._id}" title="Thêm yêu thích">
-                        <i class="fa-regular fa-heart"></i>
+                    <button class="like-btn ${likedButtonClass}" data-id="${product._id}" title="${isLiked ? 'Bỏ yêu thích' : 'Thêm yêu thích'}">
+                        <i class="${heartIconClass} fa-heart"></i>
                     </button>
                     
                 </div>
@@ -350,10 +356,65 @@ function renderShopProducts(products) {
                     </div>
                 </div>
             </a>
-        `).join('');
+        `;
+        }).join('');
         noProductsMessage.classList.add('hidden');
+        attachFavoriteToggleEvents(); // Attach event listeners after rendering
     } else {
         shopProductsGrid.innerHTML = ''; // Clear any loading messages
         noProductsMessage.classList.remove('hidden');
     }
+} 
+
+let favoriteProductIds = []; // To store the IDs of favorite products for the current user
+
+// Function to fetch and update favorite product IDs
+async function loadFavorites() {
+    try {
+        const favorites = await FavoriteAPI.getFavorites();
+        favoriteProductIds = favorites.map(p => p._id);
+    } catch (err) {
+        console.warn("Không thể tải danh sách yêu thích:", err);
+        favoriteProductIds = []; // Reset if there's an error
+    }
+}
+
+function attachFavoriteToggleEvents() {
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault(); // Prevent default link behavior if inside an <a> tag
+            e.stopPropagation(); // Stop propagation to prevent parent card click
+
+            const productId = button.dataset.id;
+            const heartIcon = button.querySelector('i');
+
+            if (!productId) {
+                console.error("Product ID not found for like button.");
+                return;
+            }
+
+            try {
+                if (heartIcon.classList.contains('fa-solid')) {
+                    // Product is currently liked, so unlike it
+                    await FavoriteAPI.removeFavorite(productId);
+                    heartIcon.classList.remove('fa-solid');
+                    heartIcon.classList.add('fa-regular');
+                    button.classList.remove('liked');
+                    // Remove from local favoriteProductIds
+                    favoriteProductIds = favoriteProductIds.filter(id => id !== productId);
+                } else {
+                    // Product is not liked, so like it
+                    await FavoriteAPI.addFavorite(productId);
+                    heartIcon.classList.remove('fa-regular');
+                    heartIcon.classList.add('fa-solid');
+                    button.classList.add('liked');
+                    // Add to local favoriteProductIds
+                    favoriteProductIds.push(productId);
+                }
+            } catch (error) {
+                console.error("Error toggling favorite:", error);
+                // Handle error (e.g., show a notification to the user)
+            }
+        });
+    });
 } 

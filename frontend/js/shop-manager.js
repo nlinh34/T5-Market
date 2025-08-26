@@ -442,11 +442,6 @@ async function initializeShopData() {
                     }
                     // If staff account is approved, continue to load shop data
                 } else if (currentUser.role === Role.CUSTOMER) {
-                    // This scenario might happen if a CUSTOMER tries to access shop-manager.html
-                    // and then their role in the DB becomes SELLER/STAFF because shop was approved.
-                    // This is handled by the initial freshUserResponse and setting localStorage.
-                    // If after all checks, they are still CUSTOMER but shop is approved,
-                    // it means they are not the owner/staff, redirect them.
                     document.body.innerHTML = `
                         <div style="text-align: center; padding: 50px;">
                             <h1>Truy cập bị từ chối</h1>
@@ -527,7 +522,7 @@ function updateShopHeaderRating({ averageRating = 0, totalReviews = 0 }) {
         starIcon.classList.add('fas', 'fa-star', 'star');
         // Stars will be colored by default CSS, we only need to dull the non-rated ones
         if (i > roundedRating) {
-            starIcon.style.color = '#e0e0e0';
+            starIcon.style.color = 'var(--border-color)'; /* Use CSS variable for consistency */
         }
         starsContainer.appendChild(starIcon);
     }
@@ -837,13 +832,25 @@ async function renderSellerProducts(status, searchTerm = '', sortBy = 'createdAt
         button.addEventListener('click', (e) => {
             const productId = e.target.closest('.product-card').dataset.productId;
             handleEditProduct(productId);
+            e.stopPropagation(); // Prevent card click from triggering
         });
     });
 
     sellerProductsGrid.querySelectorAll('.btn-delete-product').forEach(button => {
         button.addEventListener('click', (e) => {
             const productId = e.target.closest('.product-card').dataset.productId;
-            handleDeleteProduct(productId);
+            showDeleteConfirmModal(productId, 'product'); // Open the confirmation modal
+            e.stopPropagation(); // Prevent card click from triggering
+        });
+    });
+
+    // Add click listener for the product card itself
+    sellerProductsGrid.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            const productId = e.currentTarget.dataset.productId;
+            if (productId) {
+                window.location.href = `product.html?id=${productId}`;
+            }
         });
     });
 }
@@ -854,22 +861,98 @@ async function handleEditProduct(productId) {
     window.location.href = `/frontend/post-products.html?id=${productId}`;
 }
 
-async function handleDeleteProduct(productId) {
-    if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) {
-        try {
-            const response = await ProductAPI.deleteProduct(productId);
-            if (response.success) {
-                showNotification("Sản phẩm đã được xóa thành công!", "success");
-                const activeTab = document.querySelector('.product-tab-btn.active').dataset.status;
-                renderSellerProducts(activeTab); // Reload products for the current tab
-            } else {
-                showNotification("Lỗi khi xóa sản phẩm: " + response.error, "error");
-            }
-        } catch (error) {
-            console.error("Error deleting product:", error);
-            showNotification("Đã xảy ra lỗi khi xóa sản phẩm.", "error");
-        }
+// Delete Confirmation Modal elements
+const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+let itemToDelete = { id: null, type: null }; // Generic object to store ID and type (product/staff)
+
+// Function to show the delete confirmation modal
+function showDeleteConfirmModal(id, type) {
+    itemToDelete = { id, type };
+    
+    const modalTitle = deleteConfirmModal.querySelector('.modal-header h2');
+    const modalBody = deleteConfirmModal.querySelector('.modal-body p');
+    const confirmButton = deleteConfirmModal.querySelector('#confirmDeleteBtn');
+    
+    if (type === 'product') {
+        if (modalTitle) modalTitle.textContent = 'Xác nhận xóa sản phẩm';
+        if (modalBody) modalBody.textContent = 'Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.';
+        if (confirmButton) confirmButton.textContent = 'Xóa';
+    } else if (type === 'staff') {
+        if (modalTitle) modalTitle.textContent = 'Xác nhận xóa nhân viên';
+        if (modalBody) modalBody.textContent = 'Bạn có chắc chắn muốn xóa nhân viên này khỏi cửa hàng? Hành động này không thể hoàn tác.';
+        if (confirmButton) confirmButton.textContent = 'Xóa nhân viên';
     }
+
+    if (deleteConfirmModal) {
+        deleteConfirmModal.style.display = 'flex';
+    }
+}
+
+// Function to hide the delete confirmation modal
+function hideDeleteConfirmModal() {
+    itemToDelete = { id: null, type: null };
+    if (deleteConfirmModal) {
+        deleteConfirmModal.style.display = 'none';
+        // Reset modal content to default product deletion state (optional, but good practice)
+        const modalTitle = deleteConfirmModal.querySelector('.modal-header h2');
+        const modalBody = deleteConfirmModal.querySelector('.modal-body p');
+        const confirmButton = deleteConfirmModal.querySelector('#confirmDeleteBtn');
+        if (modalTitle) modalTitle.textContent = 'Xác nhận xóa sản phẩm';
+        if (modalBody) modalBody.textContent = 'Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.';
+        if (confirmButton) confirmButton.textContent = 'Xóa';
+    }
+}
+
+// Event listeners for the delete confirmation modal
+if (deleteConfirmModal) {
+    deleteConfirmModal.querySelectorAll('.close-button').forEach(button => {
+        button.addEventListener('click', hideDeleteConfirmModal);
+    });
+
+    // Close modal if clicking outside the modal content
+    deleteConfirmModal.addEventListener('click', (e) => {
+        if (e.target === deleteConfirmModal) {
+            hideDeleteConfirmModal();
+        }
+    });
+}
+
+if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', async () => {
+        if (itemToDelete.id) {
+            try {
+                showLoadingIndicator();
+                let response;
+                if (itemToDelete.type === 'product') {
+                    response = await ProductAPI.deleteProduct(itemToDelete.id);
+                } else if (itemToDelete.type === 'staff') {
+                    response = await ShopAPI.removeStaff(itemToDelete.id);
+                }
+
+                if (response.success) {
+                    showNotification(`${itemToDelete.type} đã được xóa thành công.`, "success");
+                    // Re-render the current tab content based on the deleted item's type
+                    if (itemToDelete.type === 'product') {
+                        const activeTab = document.querySelector('.product-tab-btn.active').dataset.status;
+                        const searchTerm = document.getElementById('productSearchInput') ? document.getElementById('productSearchInput').value : '';
+                        const sortBy = document.getElementById('selectSelectedSort') ? document.getElementById('selectSelectedSort').dataset.value : 'createdAt-desc';
+                        renderSellerProducts(activeTab, searchTerm, sortBy);
+                    } else if (itemToDelete.type === 'staff') {
+                        loadStaffContent();
+                    }
+                } else {
+                    showNotification(response.error || `Lỗi khi xóa ${itemToDelete.type}.`, "error");
+                }
+            } catch (error) {
+                console.error("Error deleting item:", error);
+                showNotification("Đã xảy ra lỗi hệ thống khi xóa.", "error");
+            } finally {
+                hideLoadingIndicator();
+                hideDeleteConfirmModal();
+            }
+        }
+    });
 }
 
 async function loadReviewsContent() {
@@ -886,10 +969,6 @@ async function loadReviewsContent() {
             
             renderReviewSummary(averageRating, totalReviews, reviewCriteria);
             renderReviewList(reviews);
-
-            document.getElementById('allReviewsCount').textContent = totalReviews;
-            document.getElementById('buyerReviewsCount').textContent = totalReviews; // Assuming all are from buyers for now
-            document.getElementById('sellerReviewsCount').textContent = 0;
 
         } else {
             reviewList.innerHTML = `<p>Lỗi khi tải đánh giá: ${response.error}</p>`;
@@ -1085,7 +1164,7 @@ function attachStaffActionListeners(staff) {
     document.querySelectorAll('.btn-remove-staff').forEach(button => {
         button.addEventListener('click', (e) => {
             const staffId = e.currentTarget.dataset.staffId;
-            handleRemoveStaff(staffId);
+            showDeleteConfirmModal(staffId, 'staff'); // Open the generic confirmation modal for staff
         });
     });
 
@@ -1191,23 +1270,6 @@ async function handleAddStaff(e) {
         console.error('Error creating staff account:', error);
         const errorMessage = error.responseJSON?.message || 'Đã xảy ra lỗi máy chủ khi tạo tài khoản.';
         showNotification(errorMessage, 'error');
-    }
-}
-
-async function handleRemoveStaff(staffId) {
-    if (confirm('Bạn có chắc chắn muốn xóa nhân viên này không?')) {
-        try {
-            const response = await ShopAPI.removeStaff(staffId);
-            if (response.success) {
-                showNotification('Xóa nhân viên thành công!', 'success');
-                loadStaffContent();
-            } else {
-                showNotification(`Lỗi: ${response.message || 'Không thể xóa nhân viên.'}`, 'error');
-            }
-        } catch (error) {
-            console.error('Error removing staff:', error);
-            showNotification('Đã xảy ra lỗi máy chủ.', 'error');
-        }
     }
 }
 

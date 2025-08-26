@@ -650,3 +650,67 @@ background-color: #f59e0b;
   gap: 6px;
   justify-content: center;
 }
+
+.review-item {
+  border: 1px solid #ddd;
+  /* Khung xung quanh mỗi sản phẩm */
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.review-stars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin: 15px 0 5px; /* Giảm khoảng cách dưới của ngôi sao */
+}
+
+.review-stars i {
+  font-size: 25px;
+  /* Kích thước sao to hơn */
+  color: #ccc;
+  cursor: pointer;
+}
+
+.review-stars i.selected {
+  color: #ffc107;
+}
+
+.review-item textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 0;
+  /* Đảm bảo không có margin nào ở đây */
+}
+
+.submit-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  /* Đẩy nút về bên phải */
+  margin-top: 15px;
+}
+
+.submit-product-review-btn {
+  background-color: #2e8b57;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  /* Nút to hơn */
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Thêm đổ bóng */
+}
+
+.submit-product-review-btn:hover {
+  background-color: #246d45;
+}

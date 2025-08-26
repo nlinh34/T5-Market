@@ -8,7 +8,7 @@ let currentProductsPage = 1;
 const productsPerPage = 8; // Or 9, based on your local file's current state
 let allApprovedProducts = []; // Biến để lưu trữ tất cả sản phẩm đã duyệt
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // Hàm cắt chuỗi theo số từ - DI CHUYỂN VÀO ĐÂY
     function truncateWords(text, numWords) {
         if (!text) return "N/A";
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const category of categories) {
             const validImg = getValidImageURL(category.imageURL);
             if (!seenImages.has(validImg)) {
-                uniqueCategories.push({...category, imageURL: validImg });
+                uniqueCategories.push({ ...category, imageURL: validImg });
                 seenImages.add(validImg);
             }
         }
@@ -149,21 +149,29 @@ document.addEventListener("DOMContentLoaded", function() {
         categoryGrid.innerHTML = categoriesHTML;
     }
 
-    async function loadApprovedProducts(page = 1, limit = productsPerPage) {
+    async function loadApprovedProducts(page = 1, limit = productsPerPage, query = '') {
         try {
             const grid = document.querySelector(".products-grid");
             grid.innerHTML = '<div class="loading">Đang tải sản phẩm...</div>';
 
-            const result = await ProductAPI.getApprovedProducts(); // Use ProductAPI
-            if (!result.success) throw new Error(result.error || "Lỗi khi tải sản phẩm");
+            // Fetch all products only if the cache is empty
+            if (allApprovedProducts.length === 0) {
+                const result = await ProductAPI.getApprovedProducts();
+                if (!result.success) throw new Error(result.error || "Lỗi khi tải sản phẩm");
+                allApprovedProducts = result.data;
+            }
 
-            const allProducts = result.data;
+            // Filter products based on the search query
+            const filteredProducts = allApprovedProducts.filter(product =>
+                product.name.toLowerCase().includes(query.toLowerCase())
+            );
+
             const startIndex = (page - 1) * limit;
             const endIndex = startIndex + limit;
-            const productsToRender = allProducts.slice(startIndex, endIndex);
+            const productsToRender = filteredProducts.slice(startIndex, endIndex);
 
             renderProducts(productsToRender);
-            renderProductsPagination(page, allProducts.length);
+            renderProductsPagination(page, filteredProducts.length);
 
         } catch (error) {
             console.error("Lỗi tải sản phẩm:", error);
@@ -243,17 +251,19 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById('next-products-page').addEventListener('click', () => {
-        // Need to fetch total products first to know total pages
-        ProductAPI.getApprovedProducts().then(result => {
-            if (result.success) {
-                const totalProducts = result.data.length;
-                const totalPages = Math.ceil(totalProducts / productsPerPage);
-                if (currentProductsPage < totalPages) {
-                    currentProductsPage++;
-                    loadApprovedProducts(currentProductsPage);
-                }
-            }
-        });
+        const totalProducts = allApprovedProducts.length; // Use cached products length
+        const totalPages = Math.ceil(totalProducts / productsPerPage);
+        if (currentProductsPage < totalPages) {
+            currentProductsPage++;
+            loadApprovedProducts(currentProductsPage);
+        }
+    });
+
+    // Event listener for search
+    document.addEventListener('search', (e) => {
+        const query = e.detail.query;
+        currentProductsPage = 1; // Reset to the first page for a new search
+        loadApprovedProducts(currentProductsPage, productsPerPage, query);
     });
 
     async function loadFeaturedProducts() {
@@ -297,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function() {
         for (const product of products) {
             const img = getValidImageURL(product.images[0]); // Changed to product.images[0]
             if (!seenImages.has(img)) {
-                uniqueProducts.push({...product, image_url: img });
+                uniqueProducts.push({ ...product, image_url: img });
                 seenImages.add(img);
             }
         }
@@ -334,7 +344,7 @@ document.addEventListener("DOMContentLoaded", function() {
             card.addEventListener("click", (e) => {
                 const id = card.dataset.id;
                 if (id) {
-                    window.location.href = `/pages/detail-product/product.html?id=${id}`;
+                    window.location.href = `/frontend/product.html?id=${id}`;
                 }
             });
         });
@@ -351,6 +361,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 renderApprovedShops(result.data);
             } else {
                 throw new Error(result.error || "Không thể tải danh sách cửa hàng nổi bật");
+
             }
         } catch (error) {
             console.error("Lỗi tải cửa hàng nổi bật:", error);

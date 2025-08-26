@@ -1,24 +1,25 @@
 import { ShopAPI } from '../../APIs/shopAPI.js';
 import { Role } from '../../APIs/utils/roleEnum.js';
 import { UserAPI } from '../../APIs/userAPI.js';
+import { CategoryAPI } from '../../APIs/categoryAPI.js';
 import CartAPI from '../../APIs/cartAPI.js';
 
 class Header extends HTMLElement {
-  constructor() {
-    super();
-  }
+    constructor() {
+        super();
+    }
 
-  connectedCallback() {
-    this.innerHTML = `
+    connectedCallback() {
+        this.innerHTML = `
       <header>
-        <div class="logo">
-          <img  loading="lazy" class="logo-img" src="./assests/images/logo.png" alt="">
+        <a href="./index.html" class="logo">
+          <img  loading="lazy" class="logo-img" src="./assests/images/logo.png" alt="T5Market Logo">
           <div class="logo-content">T5MARKET</div>
-        </div>
+        </a>
 
         <form class="search">
           <input type="text" placeholder="Tìm kiếm sản phẩm...">
-          <button type="submit">Tìm</button>
+          <button type="submit" aria-label="Tìm kiếm"><i class="fas fa-search"></i></button>
         </form>
 
         <div class="menu">
@@ -27,118 +28,130 @@ class Header extends HTMLElement {
           <a href="./contact.html">Liên Hệ</a>
         </div>
 
-        <a href="./cart.html" class="cart">
-          <div class="cart-icon">
-            <i class="fa fa-shopping-cart"></i>
-            <span class="cart-count">0</span>
+        <div class="header-right">
+          <a href="./cart.html" class="cart">
+            <div class="cart-icon">
+              <i class="fa fa-shopping-cart"></i>
+              <span class="cart-count">0</span>
+            </div>
+          </a>
+  
+          <!-- Account Dropdown -->
+          <div class="account-dropdown">
+            <button class="account-toggle">
+              <div class="user-info" id="loggedInUserDisplay" style="display: none;">
+                <img loading="lazy" src="" alt="Avatar" class="user-avatar" id="userAvatar">
+                <span class="username" id="usernameDisplay"></span>
+              </div>
+              <div class="logged-out-info" id="loggedOutUserDisplay">
+                <i class="fas fa-user"></i> <span class="account-text">Tài khoản</span>
+              </div>
+              <span class="arrow">▼</span>
+            </button>
+            <div class="account-menu hidden" id="accountMenu"></div>
           </div>
-        </a>
 
-        <!-- Account Dropdown -->
-        <div class="account-dropdown">
-          <button class="account-toggle">
-            <div class="user-info" id="loggedInUserDisplay" style="display: none;">
-              <img loading="lazy" src="" alt="Avatar" class="user-avatar" id="userAvatar">
-              <span class="username" id="usernameDisplay"></span>
-            </div>
-            <div class="logged-out-info" id="loggedOutUserDisplay">
-              <i class="fas fa-user"></i> Tài khoản
-            </div>
-            <span class="arrow">▼</span>
-          </button>
-          <div class="account-menu hidden" id="accountMenu"></div>
+          <button class="hamburger" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
         </div>
       </header>
+      <div class="mobile-menu">
+        <button class="close-btn">&times;</button>
+        <a href="./index.html">Trang Chủ</a>
+        <a href="./menu.html">Sản Phẩm</a>
+        <a href="./contact.html">Liên Hệ</a>
+      </div>
+      <div class="mobile-menu-overlay"></div>
     `;
 
-    this.updateUserInterface();
-    this.initializeCartCount();
-    this.setupDropdownToggle();
-  }
+        this.updateUserInterface();
+        this.initializeCartCount();
+        this.setupDropdownToggle();
+        this.setupHamburgerMenu();
+        this.setupSearch();
+        this.setupScrollListener();
+    }
 
-  initializeCartCount() {
-    const updateCartCountUI = async () => {
-      try {
-        const res = await CartAPI.getCart();
-        const items = (res.cart && res.cart.items) || [];
+    initializeCartCount() {
+        const updateCartCountUI = async() => {
+            try {
+                const res = await CartAPI.getCart();
+                const items = (res.cart && res.cart.items) || [];
 
-        // Tính tổng số lượng sản phẩm
-        const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+                // Tính tổng số lượng sản phẩm
+                const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
-        this.querySelector(".cart-count").textContent = totalCount;
-      } catch (err) {
-        console.error("❌ Lỗi khi lấy số lượng giỏ hàng:", err);
-        this.querySelector(".cart-count").textContent = "0";
-      }
-    };
+                this.querySelector(".cart-count").textContent = totalCount;
+            } catch (err) {
+                console.error("❌ Lỗi khi lấy số lượng giỏ hàng:", err);
+                this.querySelector(".cart-count").textContent = "0";
+            }
+        };
 
-    updateCartCountUI(); // Lần đầu khi load
+        updateCartCountUI(); // Lần đầu khi load
 
-    // Cập nhật lại khi có sự kiện cartUpdated
-    window.addEventListener("cartUpdated", updateCartCountUI);
-  }
+        // Cập nhật lại khi có sự kiện cartUpdated
+        window.addEventListener("cartUpdated", updateCartCountUI);
+    }
 
+    async updateUserInterface() {
+        const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user"));
+        const menu = this.querySelector("#accountMenu");
+        const userAvatar = this.querySelector("#userAvatar");
+        const usernameDisplay = this.querySelector("#usernameDisplay");
+        const loggedInUserDisplay = this.querySelector("#loggedInUserDisplay");
+        const loggedOutUserDisplay = this.querySelector("#loggedOutUserDisplay");
 
-  async updateUserInterface() {
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
-    const menu = this.querySelector("#accountMenu");
-    const userAvatar = this.querySelector("#userAvatar");
-    const usernameDisplay = this.querySelector("#usernameDisplay");
-    const loggedInUserDisplay = this.querySelector("#loggedInUserDisplay");
-    const loggedOutUserDisplay = this.querySelector("#loggedOutUserDisplay");
+        if (token && user) {
+            // If user object from localStorage is missing avatarUrl or fullName, fetch full user data
+            if (!user.avatarUrl || !user.fullName) {
+                try {
+                    const response = await UserAPI.getCurrentUser();
+                    if (response.success && response.data) {
+                        localStorage.setItem("user", JSON.stringify(response.data)); // Update localStorage with full user data
+                        user.avatarUrl = response.data.avatarUrl; // Update current user object
+                        user.fullName = response.data.fullName; // Update current user object
+                    }
+                } catch (error) {
+                    console.error("Error fetching current user data:", error);
+                    // Handle error, e.g., clear localStorage and force re-login
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    window.location.href = "./login.html";
+                    return; // Stop execution if an error occurs
+                }
+            }
 
-    if (token && user) {
-      // If user object from localStorage is missing avatarUrl or fullName, fetch full user data
-      if (!user.avatarUrl || !user.fullName) {
-        try {
-          const response = await UserAPI.getCurrentUser();
-          if (response.success && response.data) {
-            localStorage.setItem("user", JSON.stringify(response.data)); // Update localStorage with full user data
-            user.avatarUrl = response.data.avatarUrl; // Update current user object
-            user.fullName = response.data.fullName; // Update current user object
-          }
-        } catch (error) {
-          console.error("Error fetching current user data:", error);
-          // Handle error, e.g., clear localStorage and force re-login
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          window.location.href = "./login.html";
-          return; // Stop execution if an error occurs
-        }
-      }
+            if (userAvatar && usernameDisplay) {
+                userAvatar.src = user.avatarUrl || "./assests/images/default-product.png"; // Use user.avatarUrl
+                usernameDisplay.textContent = user.fullName || "Tài khoản"; // Use user.fullName
+            }
+            if (loggedInUserDisplay && loggedOutUserDisplay) {
+                loggedInUserDisplay.style.display = 'flex';
+                loggedOutUserDisplay.style.display = 'none';
+            }
 
-      if (userAvatar && usernameDisplay) {
-        userAvatar.src = user.avatarUrl || "./assests/images/default-product.png"; // Use user.avatarUrl
-        usernameDisplay.textContent = user.fullName || "Tài khoản"; // Use user.fullName
-      }
-      if (loggedInUserDisplay && loggedOutUserDisplay) {
-        loggedInUserDisplay.style.display = 'flex';
-        loggedOutUserDisplay.style.display = 'none';
-      }
+            let shopLinkHtml = '';
+            try {
+                const shopResponse = await ShopAPI.getMyShop();
+                if (shopResponse.success && shopResponse.data) {
+                    const shop = shopResponse.data;
+                    if (shop.status === 'approved') {
+                        shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
+                    } else {
+                        // Shop exists but is not approved (e.g., pending, rejected)
+                        shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
+                    }
+                } else {
+                    // API call succeeded, but no shop data returned (e.g., success: false from backend, or data is null/undefined)
+                    shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
+                }
+            } catch (error) {
+                // API call failed (e.g., 404 Not Found from backend, or network error)
+                shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
+            }
 
-      let shopLinkHtml = '';
-      try {
-        const shopResponse = await ShopAPI.getMyShop();
-        if (shopResponse.success && shopResponse.data) {
-          const shop = shopResponse.data;
-          if (shop.status === 'approved') {
-            shopLinkHtml = `<a href="./shop-manager.html"><i class="fa fa-store"></i>Cửa hàng của bạn</a>`;
-          } else {
-            // Shop exists but is not approved (e.g., pending, rejected)
-            shopLinkHtml = `<a href="./shop-register.html"><i class="fa fa-hourglass-half"></i>Trạng thái cửa hàng</a>`;
-          }
-        } else {
-          // API call succeeded, but no shop data returned (e.g., success: false from backend, or data is null/undefined)
-          shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
-        }
-      } catch (error) {
-        // API call failed (e.g., 404 Not Found from backend, or network error)
-        shopLinkHtml = `<a href="./shop-register.html"><i class="fas fa-plus"></i> Tạo cửa hàng</a>`;
-      }
-
-
-      let html = `
+            let html = `
         <div class="account-menu-header">
           <div class="account-menu-avatar">
             <img loading="lazy" src="${user.avatarUrl || './assests/images/default-product.png'}" alt="User Avatar">
@@ -150,58 +163,144 @@ class Header extends HTMLElement {
         ${shopLinkHtml}
       `;
 
-      if ([Role.ADMIN, Role.MANAGER, Role.MOD].includes(user.role)) {
-        html += `<a href="./dashboard.html" target="_blank" class="dashboard-btn"><i class="fa fa-tachometer"></i>Trang quản trị</a>`;
-      }
+            if ([Role.ADMIN, Role.MANAGER, Role.MOD].includes(user.role)) {
+                html += `<a href="./dashboard.html" target="_blank" class="dashboard-btn"><i class="fa fa-tachometer"></i>Trang quản trị</a>`;
+            }
 
-      if ([Role.SELLER, Role.STAFF].includes(user.role)) {
-        html += `
+            if ([Role.SELLER, Role.STAFF].includes(user.role)) {
+                html += `
         <a href="./post-products.html"><i class="fa fa-pencil"></i>Đăng sản phẩm</a>
         <a href="./seller-orders.html"><i class="fa fa-history"></i>Quản Lý Đơn hàng</a>
         `
-      }
+            }
 
-      html += `
+            html += `
         <a href="./account-settings.html"><i class="fa fa-cog"></i>Cài đặt tài khoản</a>
         <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i>Đăng xuất</a>
       `;
 
-      menu.innerHTML = html;
+            menu.innerHTML = html;
 
-      const logoutBtn = this.querySelector("#logoutBtn");
-      logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "./index.html";
-      });
-    } else {
-      menu.innerHTML = `
+            const logoutBtn = this.querySelector("#logoutBtn");
+            logoutBtn.addEventListener("click", () => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "./index.html";
+            });
+        } else {
+            menu.innerHTML = `
         <a href="./login.html">Đăng nhập</a>
         <a href="./register.html">Đăng ký</a>
       `;
-      if (loggedInUserDisplay && loggedOutUserDisplay) {
-        loggedInUserDisplay.style.display = 'none';
-        loggedOutUserDisplay.style.display = 'flex';
-      }
+            if (loggedInUserDisplay && loggedOutUserDisplay) {
+                loggedInUserDisplay.style.display = 'none';
+                loggedOutUserDisplay.style.display = 'flex';
+            }
+        }
     }
-  }
 
-  setupDropdownToggle() {
-    const accountToggle = this.querySelector(".account-toggle");
-    const accountMenu = this.querySelector("#accountMenu");
+    setupDropdownToggle() {
+        const accountToggle = this.querySelector(".account-toggle");
+        const accountMenu = this.querySelector("#accountMenu");
 
-    accountToggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      accountMenu.classList.toggle("hidden");
-    });
+        accountToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            accountMenu.classList.toggle("hidden");
+        });
 
-    // Ẩn dropdown khi click bên ngoài
-    document.addEventListener("click", (event) => {
-      if (!accountToggle.contains(event.target)) {
-        accountMenu.classList.add("hidden");
-      }
-    });
-  }
+        // Ẩn dropdown khi click bên ngoài
+        document.addEventListener("click", (event) => {
+            if (!accountToggle.contains(event.target)) {
+                accountMenu.classList.add("hidden");
+            }
+        });
+    }
+
+    setupHamburgerMenu() {
+        const hamburger = this.querySelector(".hamburger");
+        const mobileMenu = this.querySelector(".mobile-menu");
+        const closeBtn = this.querySelector(".close-btn");
+        const overlay = this.querySelector(".mobile-menu-overlay");
+
+        if (hamburger && mobileMenu && closeBtn && overlay) {
+            const openMenu = () => {
+                mobileMenu.classList.add("active");
+                overlay.classList.add("active");
+                document.body.style.overflow = 'hidden'; // Ngăn cuộn trang
+            };
+
+            const closeMenu = () => {
+                mobileMenu.classList.remove("active");
+                overlay.classList.remove("active");
+                document.body.style.overflow = ''; // Cho phép cuộn lại
+            };
+
+            hamburger.addEventListener("click", openMenu);
+            closeBtn.addEventListener("click", closeMenu);
+            overlay.addEventListener("click", closeMenu);
+
+            // Đóng menu khi người dùng thay đổi kích thước màn hình về desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    closeMenu();
+                }
+            });
+
+            // Đóng menu khi người dùng điều hướng (ví dụ: nhấn nút back/forward)
+            window.addEventListener('popstate', closeMenu);
+        }
+    }
+
+    setupSearch() {
+        const searchForm = this.querySelector(".search");
+        if (searchForm) {
+            searchForm.addEventListener("submit", async(event) => {
+                event.preventDefault();
+                const searchInput = this.querySelector('.search input[type="text"]');
+                const query = (searchInput.value || "").trim();
+                if (!query) return;
+
+                try {
+                    // Lấy danh sách danh mục, tìm xem input có khớp tên danh mục không
+                    const res = await CategoryAPI.getAllCategories();
+                    const categories = (res && res.data) || [];
+                    const qLower = query.toLowerCase();
+
+                    // Ưu tiên khớp chính xác, sau đó khớp chứa
+                    const exact = categories.find(c => c.name && c.name.toLowerCase() === qLower);
+                    if (exact) {
+                        window.location.href = `./menu.html?category=${exact._id}`;
+                        return;
+                    }
+
+                    const partials = categories.filter(c => c.name && c.name.toLowerCase().includes(qLower));
+                    if (partials.length === 1) {
+                        window.location.href = `./menu.html?category=${partials[0]._id}`;
+                        return;
+                    }
+
+                    // Mặc định: tìm theo tên sản phẩm
+                    window.location.href = `./menu.html?search=${encodeURIComponent(query)}`;
+                } catch (err) {
+                    console.error('Error while searching categories:', err);
+                    window.location.href = `./menu.html?search=${encodeURIComponent(query)}`;
+                }
+            });
+        }
+    }
+
+    setupScrollListener() {
+        const header = this.querySelector('header');
+        if (header) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+    }
 }
 
 customElements.define("header-component", Header);

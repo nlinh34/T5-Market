@@ -328,7 +328,8 @@ const getAllProductsByShopId = async (req, res) => {
         }
 
         if (keyword) {
-            query.name = { $regex: keyword, $options: 'i' };
+            const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            query.name = { $regex: escapedKeyword, $options: 'i' };
         }
 
         let sortOptions = {};
@@ -430,40 +431,44 @@ const getRejectedProductsByShopId = async (req, res) => {
 };
 
 const getPriceRange = async (req, res) => {
-  try {
-    const products = await Product.find({ status: "approved" }).select("price");
+    try {
+        const products = await Product.find({ status: "approved" }).select("price");
 
-    if (!products.length) {
-      return res.json({ min: 0, max: 0 });
+        if (!products.length) {
+            return res.json({ min: 0, max: 0 });
+        }
+
+        const prices = products.map(p => p.price);
+        const min = 0;
+        const maxRaw = Math.max(...prices);
+
+        const roundedMax = Math.ceil(maxRaw / 1_000_000) * 1_000_000;
+
+        res.json({ min, max: roundedMax });
+    } catch (err) {
+        console.error("Lỗi khi lấy khoảng giá:", err);
+        res.status(500).json({ error: "Lỗi khi lấy khoảng giá sản phẩm" });
     }
-
-    const prices = products.map(p => p.price);
-    const min = 0;
-    const maxRaw = Math.max(...prices);
-
-    const roundedMax = Math.ceil(maxRaw / 1_000_000) * 1_000_000;
-
-    res.json({ min, max: roundedMax });
-  } catch (err) {
-    console.error("Lỗi khi lấy khoảng giá:", err);
-    res.status(500).json({ error: "Lỗi khi lấy khoảng giá sản phẩm" });
-  }
 };
 
 const getFilteredProducts = async (req, res) => {
     try {
-        const { category, minPrice, maxPrice, page = 1, limit = 15 } = req.query;
+        const { name, category, minPrice, maxPrice, page = 1, limit = 15 } = req.query;
         const query = { status: "approved" };
+
+        if (name) {
+            const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            query.name = { $regex: escapedName, $options: "i" };
+        }
 
         if (category) {
             const categoryIds = category
                 .split(",")
                 .filter(id => mongoose.Types.ObjectId.isValid(id));
-            if (!categoryIds.length) {
-                console.warn("⚠️ Không có categoryId nào hợp lệ");
-                return res.status(400).json({ error: "ID danh mục không hợp lệ" });
+
+            if (categoryIds.length > 0) {
+                query.category = { $in: categoryIds };
             }
-            query.category = { $in: categoryIds };
         }
 
         if (minPrice != null || maxPrice != null) {

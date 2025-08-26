@@ -6,9 +6,9 @@
     <title>Đăng ký cửa hàng - T5Market</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="./styles/shop-register.css">
-    <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/header.css">
     <link rel="stylesheet" href="./styles/footer.css">
+    <link rel="stylesheet" href="./styles/notification.css"> <!-- New: Link to notification styles -->
     <script src="https://cdn.jsdelivr.net/npm/compressorjs"></script>
 
 </head>
@@ -90,34 +90,52 @@
                                     <img loading="lazy" src="./assests/images/banner.png" alt="Feature 2">
                                     <p>Tên cửa hàng nổi bật trong trang tìm kiếm</p>
                                 </div>
+                                <div class="feature-item">
+                                    <img loading="lazy" src="./assests/images/ipad-pro-11-inch-m4-2024-den (2).webp" alt="Feature 3">
+                                    <p>Quản lý sản phẩm dễ dàng với các công cụ tiện lợi</p>
+                                </div>
+                                <div class="feature-item">
+                                    <img loading="lazy" src="./assests/images/iphone-13-mini-hong-1.webp" alt="Feature 4">
+                                    <p>Hệ thống thanh toán đa dạng, an toàn và nhanh chóng</p>
+                                </div>
+                                <div class="feature-item">
+                                    <img loading="lazy" src="./assests/images/phone.jpg" alt="Feature 5">
+                                    <p>Hỗ trợ khách hàng 24/7, luôn sẵn sàng giải đáp mọi thắc mắc</p>
+                                </div>
+                                <div class="feature-item">
+                                    <img loading="lazy" src="./assests/images/apwSE2024.webp" alt="Feature 6">
+                                    <p>Phân tích doanh thu và hiệu suất cửa hàng chi tiết</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="price-plan-section">
-                        <h3>Bảng giá</h3>
-                        <div class="price-cards">
-                            <div class="price-card">
-                                <h4>1 tháng</h4>
-                                <p>250.000 đ</p>
-                            </div>
-                            <div class="price-card">
-                                <h4>3 tháng</h4>
-                                <p>670.000 đ</p>
-                            </div>
-                            <div class="price-card">
-                                <h4>6 tháng</h4>
-                                <p>1.100.000 đ</p>
-                            </div>
+                    <!-- New: Advantages section -->
+                    <div class="advantages-section card">
+                        <div class="card-title">
+                            <i class="fas fa-store"></i>
+                            Ưu điểm khi tạo cửa hàng
                         </div>
-                    </div>
-
-                    <div class="featured-shops-section">
-                        <h3>Cửa hàng tiêu biểu</h3>
-                        <div class="featured-shops-grid">
-                            <div class="featured-shop-item">
-                                <img loading="lazy" src="./assests/images/laptop.jpg" alt="Cửa hàng A">
-                                <p>Tạo cửa hàng Điện tử</p>
+                        <div class="advantages-grid">
+                            <div class="advantage-item">
+                                <i class="fas fa-store-alt"></i>
+                                <h4>Tăng trưởng doanh số</h4>
+                                <p>Tiếp cận hàng triệu khách hàng tiềm năng trên T5 Market.</p>
+                            </div>
+                            <div class="advantage-item">
+                                <i class="fas fa-handshake"></i>
+                                <h4>Xây dựng thương hiệu</h4>
+                                <p>Tạo dựng uy tín và phát triển thương hiệu của riêng bạn.</p>
+                            </div>
+                            <div class="advantage-item">
+                                <i class="fas fa-tools"></i>
+                                <h4>Công cụ quản lý mạnh mẽ</h4>
+                                <p>Dễ dàng quản lý sản phẩm, đơn hàng và khách hàng với các công cụ tiện lợi.</p>
+                            </div>
+                            <div class="advantage-item">
+                                <i class="fas fa-chart-line"></i>
+                                <h4>Phân tích hiệu suất</h4>
+                                <p>Theo dõi doanh thu, lượt xem và các chỉ số quan trọng khác.</p>
                             </div>
                         </div>
                     </div>
@@ -455,6 +473,8 @@
         </div>
     </div>
 
+    <!-- New: Notification container -->
+    <div id="notification-container"></div>
 
     <script src="./components/header/header.js" type="module"></script>
     <script type="module" src="./js/shop-register.js"></script>
