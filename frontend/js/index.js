@@ -140,10 +140,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const categoriesHTML = uniqueCategories.map(category => `
-            <div class="category-card">
-                <img loading="lazy" src="${category.imageURL}" alt="${category.name}" class="category-img"/>
-                <h3 class="category-name">${category.name}</h3>
-            </div>
+            <a href="./menu.html?category=${category._id}" class="category-card-link">
+                <div class="category-card">
+                    <img loading="lazy" src="${category.imageURL}" alt="${category.name}" class="category-img"/>
+                    <h3 class="category-name">${category.name}</h3>
+                </div>
+            </a>
         `).join("");
 
         categoryGrid.innerHTML = categoriesHTML;
@@ -383,16 +385,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const html = shops.slice(0, 3).map(shop => `
-            <div class="seller-card">
-                <img loading="lazy" src="${shop.logoUrl || './assests/images/default-product.png'}" alt="${shop.name}" class="seller-avatar" />
-                <div class="seller-details-group">
-                    <div class="seller-name-row">
-                        <h3 class="seller-name">${shop.name}</h3>
-                        <span class="seller-status-circle ${shop.status === 'approved' ? 'active' : 'inactive'}"></span>
+            <a href="./shop.html?id=${shop._id}" class="seller-card-link">
+                <div class="seller-card">
+                    <img loading="lazy" src="${shop.logoUrl || './assests/images/default-product.png'}" alt="${shop.name}" class="seller-avatar" />
+                    <div class="seller-details-group">
+                        <div class="seller-name-row">
+                            <h3 class="seller-name">${shop.name}</h3>
+                            <span class="seller-status-circle ${shop.status === 'approved' ? 'active' : 'inactive'}"></span>
+                        </div>
+                        <p class="seller-rating"><i class="fas fa-star"></i> <span>${shop.rating ? shop.rating.toFixed(1) : 'Chưa có'} sao (${shop.reviewCount || 0} đánh giá)</span></p>
                     </div>
-                    <p class="seller-rating"><i class="fas fa-star"></i> <span>${shop.rating ? shop.rating.toFixed(1) : 'Chưa có'} sao (${shop.reviewCount || 0} đánh giá)</span></p>
                 </div>
-            </div>
+            </a>
         `).join("");
 
         sellersGrid.innerHTML = html;

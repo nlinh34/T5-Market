@@ -4,7 +4,7 @@ import FavoriteAPI from "../APIs/favoriteAPI.js";
 import CartAPI from "../APIs/cartAPI.js";
 import { showNotification } from "../APIs/utils/notification.js";
 
-document.addEventListener("DOMContentLoaded", async() => {
+document.addEventListener("DOMContentLoaded", async () => {
     const container = document.querySelector(".product-grid");
     const paginationContainer = document.querySelector(".pagination-container");
     const minPriceInput = document.getElementById("minPrice");
@@ -21,11 +21,12 @@ document.addEventListener("DOMContentLoaded", async() => {
         const params = new URLSearchParams(window.location.search);
         return {
             searchQuery: params.get("search"),
-            categoryId: params.get("category"),
+            // Treat 'category' parameter as the categoryId for filtering
+            categoryId: params.get("category") || params.get("categoryId"),
         };
     };
 
-    const loadFavorites = async() => {
+    const loadFavorites = async () => {
         try {
             const favorites = await FavoriteAPI.getFavorites();
             favoriteProductIds = favorites.map(p => p._id);
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async() => {
 
     const attachFavoriteEvents = () => {
         document.querySelectorAll(".like-btn").forEach(btn => {
-            btn.onclick = async() => {
+            btn.onclick = async () => {
                 const productId = btn.dataset.id;
                 const isLiked = btn.classList.contains("liked");
                 try {
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async() => {
 
     const formatPriceVND = (price) => price.toLocaleString("vi-VN") + " đ";
 
-    const loadPriceRange = async() => {
+    const loadPriceRange = async () => {
         try {
             const result = await ProductAPI.getPriceRange();
             const { min, max } = result;
@@ -135,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async() => {
     };
 
 
-    const renderProducts = async(products) => {
+    const renderProducts = async (products) => {
         container.innerHTML = "";
         if (!products || !products.length) {
             container.innerHTML = "<p>Không có sản phẩm nào.</p>";
@@ -159,7 +160,7 @@ document.addEventListener("DOMContentLoaded", async() => {
 
     const attachAddToCartEvents = () => {
         document.querySelectorAll(".add-to-cart-btn").forEach(button => {
-            button.onclick = async() => {
+            button.onclick = async () => {
                 const productId = button.dataset.id;
                 const token = localStorage.getItem("token");
                 if (!token) return alert("⚠️ Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
@@ -205,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async() => {
         };
     };
 
-    const handleFilter = async(page = 1) => {
+    const handleFilter = async (page = 1) => {
         const selectedIds = [...document.querySelectorAll(".category-filter:checked")]
             .map(cb => cb.value)
             .filter(id => /^[a-f\d]{24}$/i.test(id)); // chỉ giữ ObjectId hợp lệ
@@ -246,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async() => {
     };
 
 
-    const loadCategorySidebar = async() => {
+    const loadCategorySidebar = async () => {
         try {
             const result = await CategoryAPI.getAllCategories();
             const categories = result.data;
@@ -261,16 +262,14 @@ document.addEventListener("DOMContentLoaded", async() => {
 
             document.querySelectorAll(".category-filter").forEach(cb => cb.addEventListener("change", () => handleFilter(1)));
 
-            // Nếu URL có category param, pre-check tương ứng
-            const params = new URLSearchParams(window.location.search);
-            const categoryParam = params.get("category");
-            if (categoryParam) {
-                // hỗ trợ danh sách id phân tách bởi comma
-                const ids = categoryParam.split(',').map(s => s.trim()).filter(Boolean);
-                ids.forEach(id => {
-                    const checkbox = document.querySelector(`.category-filter[value="${id}"]`);
-                    if (checkbox) checkbox.checked = true;
-                });
+            // If URL has a categoryId, pre-check the corresponding checkbox
+            const { categoryId } = getSearchParams();
+            if (categoryId) {
+                const checkbox = document.querySelector(`.category-filter[value="${categoryId}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    // No need to trigger filter here, it will be handled by the initial load logic
+                }
             }
         } catch (err) {
             console.error("Lỗi khi tải danh mục:", err);
