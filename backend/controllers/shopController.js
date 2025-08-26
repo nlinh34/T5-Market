@@ -655,6 +655,58 @@ const getShopAnalytics = async (req, res) => {
     }
 };
 
+const getFeaturedShops = async (req, res) => {
+  try {
+    const featuredShops = await Shop.aggregate([
+      {
+        $match: { status: "approved" },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "shop",
+          as: "products",
+        },
+      },
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "products._id",
+          foreignField: "product",
+          as: "all_reviews",
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          logoUrl: 1,
+          status: 1,
+          totalReviews: { $size: "$all_reviews" },
+          avgRating: { $avg: "$all_reviews.rating" },
+        },
+      },
+      {
+        $sort: { totalReviews: -1, avgRating: -1 },
+      },
+      {
+        $limit: 5,
+      },
+    ]);
+
+    res.status(httpStatusCodes.OK).json({
+      success: true,
+      data: featuredShops,
+    });
+  } catch (error) {
+    console.error("❌ Error in getFeaturedShops:", error);
+    res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      error: "Lỗi khi lấy danh sách cửa hàng nổi bật",
+    });
+  }
+};
+
 module.exports = {
     approveShop,
     requestUpgradeToSeller,
@@ -671,5 +723,6 @@ module.exports = {
     updateStaffPermissions,
     createStaffAccount,
     getShopRating,
-    getShopAnalytics
+    getShopAnalytics,
+    getFeaturedShops
 }

@@ -97,6 +97,14 @@ export class ShopAPI {
     });
   }
 
+  static async getFeaturedShops() {
+    return await apiCall({
+      endpoint: '/shop/featured',
+      method: 'GET',
+      expectedStatusCodes: [200]
+    });
+  }
+
   static async getApprovedShops() {
     return await apiCall({
       endpoint: '/shop/get-approved-shops',
