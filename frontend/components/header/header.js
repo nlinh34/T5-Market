@@ -258,33 +258,10 @@ class Header extends HTMLElement {
                 event.preventDefault();
                 const searchInput = this.querySelector('.search input[type="text"]');
                 const query = (searchInput.value || "").trim();
-                if (!query) return;
 
-                try {
-                    // Lấy danh sách danh mục, tìm xem input có khớp tên danh mục không
-                    const res = await CategoryAPI.getAllCategories();
-                    const categories = (res && res.data) || [];
-                    const qLower = query.toLowerCase();
-
-                    // Ưu tiên khớp chính xác, sau đó khớp chứa
-                    const exact = categories.find(c => c.name && c.name.toLowerCase() === qLower);
-                    if (exact) {
-                        window.location.href = `./menu.html?category=${exact._id}`;
-                        return;
-                    }
-
-                    const partials = categories.filter(c => c.name && c.name.toLowerCase().includes(qLower));
-                    if (partials.length === 1) {
-                        window.location.href = `./menu.html?category=${partials[0]._id}`;
-                        return;
-                    }
-
-                    // Mặc định: tìm theo tên sản phẩm
-                    window.location.href = `./menu.html?search=${encodeURIComponent(query)}`;
-                } catch (err) {
-                    console.error('Error while searching categories:', err);
-                    window.location.href = `./menu.html?search=${encodeURIComponent(query)}`;
-                }
+                // Chuyển hướng đến trang menu với query
+                // Trang menu.html sẽ tự xử lý logic tìm kiếm
+                window.location.href = `./menu.html?search=${encodeURIComponent(query)}`;
             });
         }
     }

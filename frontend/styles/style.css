@@ -207,6 +207,10 @@ body {
     max-width: 900px;
 }
 
+.category-link {
+    text-decoration: none;
+}
+
 .category-card {
     margin: 0;
     background-color: white;
@@ -255,6 +259,10 @@ body {
     font-weight: 500;
 }
 
+.category-card-link {
+    text-decoration: none;
+    color: inherit;
+}
 
 /* Popular Foods */
 
@@ -1423,7 +1431,7 @@ select.form-control {
     border-radius: 4px;
     text-decoration: none;
     font-weight: bold;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .cta-button {
@@ -1869,10 +1877,6 @@ select.form-control {
     font-size: 13px;
 }
 
-.view-btn:hover,
-.add-cart-btn:hover {
-    /* No transform here before these edits, ensure it's removed if it was added */
-}
 
 .view-btn {
     background-color: #03a9f4;
@@ -1979,6 +1983,7 @@ select.form-control {
     margin-bottom: 1.5rem;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -2985,4 +2990,8 @@ select.form-control {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.seller-card-link {
+    text-decoration: none;
 }
