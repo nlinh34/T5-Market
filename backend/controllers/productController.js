@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const Review = require("../models/Review");
 const Shop = require("../models/Shop");
 const { httpStatusCodes } = require("../utils/constants");
 const { Role } = require("../constants/roleEnum");
@@ -517,6 +518,62 @@ const getFilteredProducts = async (req, res) => {
 };
 
 
+const getFeaturedProducts = async (req, res) => {
+    try {
+        // Sử dụng aggregation để lấy các sản phẩm có đánh giá gần đây nhất
+        const products = await Review.aggregate([
+            { $sort: { createdAt: -1 } }, // Sắp xếp các đánh giá theo ngày mới nhất
+            {
+                $group: {
+                    _id: "$product",
+                    latestReview: { $first: "$$ROOT" }, // Lấy toàn bộ document đánh giá mới nhất
+                },
+            },
+            { $sort: { "latestReview.createdAt": -1 } }, // Sắp xếp các sản phẩm dựa trên ngày đánh giá mới nhất
+            { $limit: 15 }, // Giới hạn 15 sản phẩm
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productInfo",
+                },
+            },
+            { $unwind: "$productInfo" },
+            { $replaceRoot: { newRoot: "$productInfo" } },
+            { $match: { status: "approved" } }, // Chỉ lấy sản phẩm đã được duyệt
+            {
+                $lookup: {
+                    from: "shops",
+                    localField: "shop",
+                    foreignField: "_id",
+                    as: "shopInfo",
+                },
+            },
+            { $unwind: "$shopInfo" },
+            {
+                $project: {
+                    name: 1,
+                    price: 1,
+                    images: 1,
+                    averageRating: 1,
+                    createdAt: 1,
+                    shop: {
+                        _id: "$shopInfo._id",
+                        name: "$shopInfo.name",
+                        address: "$shopInfo.address",
+                    },
+                },
+            },
+        ]);
+
+        res.status(200).json({ success: true, data: products });
+    } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm nổi bật:", error);
+        res.status(500).json({ error: "Lỗi máy chủ" });
+    }
+};
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -533,5 +590,6 @@ module.exports = {
     getRejectedProductsByShopId,
     getPendingProductsByShopId,
     getFilteredProducts,
-    getPriceRange
+    getPriceRange,
+    getFeaturedProducts
 };

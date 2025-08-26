@@ -90,6 +90,10 @@ export const ProductAPI = {
         return await apiCall({ endpoint: `/products/by-shop/${shopId}/rejected` });
     },
 
+    getFeaturedProducts: async () => {
+        return await apiCall({ endpoint: "/products/featured" });
+    },
+
     getProductsByShop: async(shopId, status = 'all', searchTerm = '', sortBy = 'createdAt-desc') => {
         let endpoint = `/products/by-shop/${shopId}`;
         const queryParams = new URLSearchParams();

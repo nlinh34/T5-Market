@@ -268,28 +268,50 @@ document.addEventListener("DOMContentLoaded", function () {
         loadApprovedProducts(currentProductsPage, productsPerPage, query);
     });
 
-    async function loadFeaturedProducts() {
-        try {
-            const featuredGrid = document.querySelector(".featured-grid");
-            featuredGrid.innerHTML = '<div class="loading">Đang tải sản phẩm nổi bật...</div>';
-
-            // Always use fallback to ProductAPI.getApprovedProducts, removed direct fetch to /products/featured
-            const fallbackResult = await ProductAPI.getApprovedProducts(); // Use ProductAPI
-            if (fallbackResult.success) {
-                const featuredProducts = fallbackResult.data.slice(0, 6); // Take first 6 products as featured
-                renderFeaturedProducts(featuredProducts);
-            } else {
-                throw new Error(fallbackResult.error || "Không thể tải sản phẩm nổi bật");
+        document.getElementById('prev-products-page').addEventListener('click', () => {
+            if (currentProductsPage > 1) {
+                currentProductsPage--;
+                loadApprovedProducts(currentProductsPage);
             }
-        } catch (error) {
-            console.error("Lỗi tải sản phẩm nổi bật:", error);
-            document.querySelector(".featured-grid").innerHTML = `
-                <div class="error-message">
-                    Không thể tải sản phẩm nổi bật. Vui lòng thử lại sau!
-                </div>
-            `;
+        });
+
+        document.getElementById('next-products-page').addEventListener('click', () => {
+            const totalProducts = allApprovedProducts.length; // Use cached products length
+            const totalPages = Math.ceil(totalProducts / productsPerPage);
+            if (currentProductsPage < totalPages) {
+                currentProductsPage++;
+                loadApprovedProducts(currentProductsPage);
+            }
+        });
+
+        // Event listener for search
+        document.addEventListener('search', (e) => {
+            const query = e.detail.query;
+            currentProductsPage = 1; // Reset to the first page for a new search
+            loadApprovedProducts(currentProductsPage, productsPerPage, query);
+        });
+
+        async function loadFeaturedProducts() {
+            try {
+                const featuredGrid = document.querySelector(".featured-grid");
+                featuredGrid.innerHTML = '<div class="loading">Đang tải sản phẩm nổi bật...</div>';
+
+                const result = await ProductAPI.getFeaturedProducts();
+                if (result.success) {
+                    renderFeaturedProducts(result.data); // Backend now returns up to 15 featured products
+                } else {
+                    throw new Error(result.error || "Không thể tải sản phẩm nổi bật");
+                }
+            } catch (error) {
+                console.error("Lỗi tải sản phẩm nổi bật:", error);
+                document.querySelector(".featured-grid").innerHTML = `
+                    <div class="error-message">
+                        Không thể tải sản phẩm nổi bật. Vui lòng thử lại sau!
+                    </div>
+                `;
+            }
         }
-    }
+
 
     function renderFeaturedProducts(products) {
         const featuredGrid = document.querySelector(".featured-grid");
@@ -352,15 +374,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    async function loadApprovedShops() {
+    async function loadFeaturedShops() {
         try {
             const sellersGrid = document.querySelector(".sellers-grid");
             sellersGrid.innerHTML = '<div class="loading">Đang tải cửa hàng nổi bật...</div>';
 
-            const result = await ShopAPI.getApprovedShops();
+            const result = await ShopAPI.getFeaturedShops();
 
             if (result.success) {
-                renderApprovedShops(result.data);
+                renderFeaturedShops(result.data);
             } else {
                 throw new Error(result.error || "Không thể tải danh sách cửa hàng nổi bật");
 
@@ -375,7 +397,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function renderApprovedShops(shops) {
+    function renderFeaturedShops(shops) {
         const sellersGrid = document.querySelector(".sellers-grid");
         sellersGrid.innerHTML = "";
 
@@ -393,7 +415,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <h3 class="seller-name">${shop.name}</h3>
                             <span class="seller-status-circle ${shop.status === 'approved' ? 'active' : 'inactive'}"></span>
                         </div>
-                        <p class="seller-rating"><i class="fas fa-star"></i> <span>${shop.rating ? shop.rating.toFixed(1) : 'Chưa có'} sao (${shop.reviewCount || 0} đánh giá)</span></p>
+                        <p class="seller-rating"><i class="fas fa-star"></i> <span>${shop.avgRating ? shop.avgRating.toFixed(1) : 'Chưa có'} sao (${shop.totalReviews || 0} đánh giá)</span></p>
                     </div>
                 </div>
             </a>
@@ -405,5 +427,5 @@ document.addEventListener("DOMContentLoaded", function () {
     loadCategories();
     loadApprovedProducts(currentProductsPage); // Initial call with currentProductsPage
     loadFeaturedProducts();
-    loadApprovedShops(); // Call the new function to load approved shops
+    loadFeaturedShops(); // Call the new function to load featured shops
 });

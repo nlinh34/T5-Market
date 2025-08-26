@@ -16,7 +16,8 @@ const {
     updateProduct,
     deleteProduct,
     getFilteredProducts,
-    getPriceRange
+    getPriceRange,
+    getFeaturedProducts
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
@@ -30,6 +31,8 @@ router.get("/get-all-products", getAllProducts);
 router.get("/get-pending-products", getPendingProducts);
 router.get("/get-approved-products", getApprovedProducts);
 router.get("/get-rejected-products", getRejectedProducts);
+router.get("/featured", getFeaturedProducts);
+
 
 //Lọc sản phẩm theo danh mục
 router.get("/price-range", getPriceRange);
