@@ -199,10 +199,8 @@ body {
 /* Food Categories */
 .content-section {
     background-color: #fff;
-    border-radius: 16px;
-    margin-bottom: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    border-radius: 8px;
+    padding: 3rem 4rem;
 }
 
 .categories {
@@ -1772,7 +1770,7 @@ select.form-control {
 
 .title-banner {
     max-width: 1100px;
-    margin: 80px auto 5px;
+    margin: 40px auto 5px;
     padding: 10px;
     text-align: center;
 }
@@ -1948,7 +1946,7 @@ select.form-control {
 
 .products.featured {
     background-color: #fff;
-    padding: 3rem 0;
+    margin-bottom: 20px;
 }
 
 .featured-grid {

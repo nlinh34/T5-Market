@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 signal: controller.signal
             });
             clearTimeout(timeoutId);
-            
+
             if (!response.ok) throw new Error('Failed to fetch product data');
             const result = await response.json();
             if (!result.success) throw new Error('API returned unsuccessful response');
@@ -103,10 +103,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
     }
-
     function formatDate(dateString) {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('vi-VN', options);
+        const date = new Date(dateString);
+        return date.toLocaleString("vi-VN", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        });
     }
 
     // Function to display "Product Not Found" card
@@ -122,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    function updateProductUI(data) {
+    function updateProductUI(data, approvedCount = 0) {
         if (!data) {
             displayNotFoundCard();
             return;
@@ -203,7 +210,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const heartIcon = isLiked ? "fa-solid" : "fa-regular";
         const likedClass = isLiked ? "liked" : "";
         const productMeta = document.querySelectorAll('.product-meta');
-        
+
         productMeta[0].innerHTML = `
             <span class="current-price">${formatPrice(data.price)}</span>
             <span class="stock ${data.isAvailable ? 'in-stock' : 'out-of-stock'}">
@@ -211,11 +218,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 ${data.isAvailable ? 'Còn hàng' : 'Hết hàng'}
             </span>
         `;
-        
+
         productMeta[1].innerHTML = `
             <span class="location"><i class="fas fa-map-marker-alt"></i> ${data.shop.address}</span>
         `;
-        
+
         productMeta[2].innerHTML = `
             <div>
                 <span class="time"><i class="fas fa-clock"></i> Đăng ${daysAgo(data.createdAt)} ngày trước</span>
@@ -240,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             statusEl.textContent = "";
         }
         sellerInfo.querySelector('.seller-meta').innerHTML = `
-            <span><i class="fas fa-box-open"></i> 12 sản phẩm</span>
+            <span><i class="fas fa-box-open"></i>${approvedCount} sản phẩm</span>
             <span><i class="fas fa-star"></i> ${data.averageRating ? data.averageRating.toFixed(1) : '0'} (${data.totalReviews} đánh giá)</span>
             <span><i class="fas fa-clock"></i> Tham gia ${daysJoined} ngày trước</span>
         `;
@@ -253,7 +260,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Update product description
         const descriptionTab = document.querySelector('#product-description');
         descriptionTab.innerHTML = `
-            <h3>${data.name}</h3>
             <p>${data.description}</p>
         `;
     }
@@ -276,7 +282,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             // Fetch product data with timeout
             const productData = await fetchProductData(productId);
-            
+
             // Wait for favorites to load
             await favoritesPromise;
 
@@ -285,7 +291,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 hideLoading();
                 return;
             }
+            const productCountRes = await ProductAPI.getApprovedProductCountByShopId(productData.shop._id);
+            const approvedCount = productCountRes.success ? productCountRes.totalApproved : 0;
 
+            updateProductUI(productData, approvedCount);
             // Preload product images for better performance
             if (productData.images && productData.images.length > 0) {
                 productData.images.forEach(imgSrc => {
@@ -294,15 +303,16 @@ document.addEventListener('DOMContentLoaded', async function () {
                 });
             }
 
-            // Update UI with product data
-            updateProductUI(productData);
+
 
             // Load additional data in parallel
             const loadPromises = [
                 loadReviews(productId),
                 loadOtherProductsFromShop(productData.shop._id, productData._id),
-                loadSimilarProducts(productData.category._id, productData._id)
+                loadRelatedProducts(productData._id)
             ];
+
+
 
             // Update seller title
             const sellerTitle = document.querySelector(".seller-products .section-title");
@@ -328,7 +338,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Setup lazy loading for images
     function setupLazyLoading() {
         const images = document.querySelectorAll('img[loading="lazy"]');
-        
+
         const imageObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -389,7 +399,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             reviewListDiv.innerHTML = res.data.map(review => `
                 <div class="review-item">
                     <div class="reviewer-avatar">
-                        <img loading="lazy" src="./assets/images/avatar/default-avatar.jpg" alt="${review.user?.fullName || 'Người dùng'}">
+                        <img loading="lazy" 
+                            src="${review.user?.avatarUrl || './assests/images/default-avatar.jpg'}" 
+                            alt="${review.user?.fullName || 'Người dùng'}">
                     </div>
                     <div class="review-content-container">
                         <div class="reviewer-name">${review.user?.fullName || 'Người dùng ẩn danh'}</div>
@@ -454,10 +466,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             <div class="price-wrapper">
                                 <span class="current-price-card">${product.price.toLocaleString("vi-VN")} đ</span>
                             </div>
-                            <div class="rating">
-                                ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
-                                <span>${(product.rating || 4.33).toFixed(2)}</span>
-                            </div>
+                            <div class="category" style="font-size: 12px;">${product.category.name}</div>
                             <div class="store">Cửa hàng: <strong>${product.shop?.name || 'Unknown'}</strong></div>
                         </div>
                     </div>
@@ -470,70 +479,67 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    // Load similar products by category
-    async function loadSimilarProducts(categoryId, currentProductId) {
+    // Load related products (API related)
+    async function loadRelatedProducts(currentProductId) {
         const container = document.querySelector(".related-products .products-grid");
         if (!container) return;
 
         try {
-            // Use filtered products API with category filter
-            const res = await ProductAPI.getAllProductsByFilter({ 
-                category: [categoryId], 
-                page: 1, 
-                limit: 8 
-            });
-            
+            // ✅ Gọi API getRelatedProducts
+            const res = await ProductAPI.getRelatedProducts(currentProductId, 8);
+
             if (!res.success || !Array.isArray(res.data)) {
-                container.innerHTML = "<p>Không có sản phẩm tương tự để hiển thị.</p>";
+                container.innerHTML = "<p>Không có sản phẩm liên quan để hiển thị.</p>";
                 return;
             }
 
-            const similarProducts = res.data.filter(p => p._id !== currentProductId);
-            if (similarProducts.length === 0) {
-                container.innerHTML = "<p>Không tìm thấy sản phẩm tương tự.</p>";
+            // Filter out sản phẩm hiện tại (phòng trường hợp backend chưa loại bỏ)
+            const relatedProducts = res.data.filter(p => p._id !== currentProductId);
+            if (relatedProducts.length === 0) {
+                container.innerHTML = "<p>Không tìm thấy sản phẩm liên quan.</p>";
                 return;
             }
 
-            container.innerHTML = similarProducts.map(product => {
+            // Render sản phẩm liên quan
+            container.innerHTML = relatedProducts.map(product => {
                 const isLiked = favoriteProductIds.includes(product._id);
                 const likedClass = isLiked ? "liked" : "";
                 const heartIcon = isLiked ? "fa-solid" : "fa-regular";
 
                 return `
-                    <div class="new-product-card">
-                        <div class="card-top">
-                            <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
-                            <button class="like-btn ${likedClass}" data-id="${product._id}" title="Thêm yêu thích">
-                                <i class="${heartIcon} fa-heart"></i>
+                <div class="new-product-card">
+                    <div class="card-top">
+                        <img loading="lazy" src="${product.images?.[0] || './assets/images/default-product.jpg'}" alt="${product.name}" />
+                        <button class="like-btn ${likedClass}" data-id="${product._id}" title="Thêm yêu thích">
+                            <i class="${heartIcon} fa-heart"></i>
+                        </button>
+                        <div class="action-icons">
+                            <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
+                                <i class="fa-regular fa-eye"></i>
                             </button>
-                            <div class="action-icons">
-                                <button class="action-btn" title="Xem chi tiết" onclick="window.location.href='product.html?id=${product._id}'">
-                                    <i class="fa-regular fa-eye"></i>
-                                </button>
-                                <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
-                                    <i class="fa-solid fa-cart-shopping"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="product-info">
-                            <h4 class="product-name">${product.name}</h4>
-                            <div class="price-wrapper">
-                                <span class="current-price">${formatPrice(product.price)}</span>
-                            </div>
-                            <div class="rating">
-                                ${"★".repeat(product.rating || 4)}${"☆".repeat(5 - (product.rating || 4))}
-                                <span>${(product.rating || 4.3).toFixed(2)}</span>
-                            </div>
+                            <button class="action-btn add-to-cart-btn" data-id="${product._id}" title="Thêm vào giỏ hàng">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </button>
                         </div>
                     </div>
-                `;
+                    <div class="product-info">
+                        <h4 class="product-name">${product.name}</h4>
+                        <div class="price-wrapper">
+                            <span class="current-price-card">${formatPrice(product.price)}</span>
+                        </div>
+                        <div class="category" style="font-size: 12px;">${product.category.name}</div>
+                        <div class="store">Cửa hàng: <strong>${product.shop?.name || 'Unknown'}</strong></div>
+                    </div>
+                </div>
+            `;
             }).join("");
 
         } catch (error) {
-            console.error("Lỗi khi tải sản phẩm tương tự:", error);
-            container.innerHTML = "<p>Không thể tải sản phẩm tương tự.</p>";
+            console.error("Lỗi khi tải sản phẩm liên quan:", error);
+            container.innerHTML = "<p>Không thể tải sản phẩm liên quan.</p>";
         }
     }
+
 
     // Toggle favorite functionality
     async function toggleFavorite(button) {

@@ -41,6 +41,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             btn.onclick = async () => {
                 const productId = btn.dataset.id;
                 const isLiked = btn.classList.contains("liked");
+                const user = JSON.parse(localStorage.getItem("user") || "{}");
+                if (user.status === "pending") {
+                    showNotification("Tài khoản chưa được xác thực, không thể sử dụng chức năng này.", "error");
+                    return;
+                }
+
                 try {
                     if (isLiked) {
                         await FavoriteAPI.removeFavorite(productId);
@@ -125,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="price-wrapper">
           <span class="current-price">${product.price.toLocaleString("vi-VN")} đ</span>
         </div>
-        <div class="categories">
+        <div class="categories" style="font-size: 14px;">
             <Span>${product.category.name}</Span>
         </div>
         <div class="store"><i class="fa-solid fa-store"></i> ${product.shop?.name || "Unknown"}</div>
@@ -162,7 +168,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             button.onclick = async () => {
                 const productId = button.dataset.id;
                 const token = localStorage.getItem("token");
-                if (!token) return alert("⚠️ Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+                if (!token) return alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+                const user = JSON.parse(localStorage.getItem("user") || "{}");
+                if (user.status === "pending") {
+                    showNotification("Tài khoản chưa được xác thực, không thể sử dụng chức năng này.", "error");
+                    return;
+                }
                 try {
                     const res = await CartAPI.addToCart(productId, 1);
                     showNotification(res.success ? "Đã thêm sản phẩm vào giỏ hàng!" : "Bạn không thể thêm sản phẩm của cửa hàng này.", res.success ? "success" : "error");

@@ -7,7 +7,9 @@ exports.addToFavorites = async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "Không tìm thấy người dùng" });
-
+    if (user.status === "pending") {
+      return res.status(403).json({ message: "Tài khoản chưa được duyệt, không thể thêm sản phẩm vào yêu thích" });
+    }
     if (user.favorites.includes(productId)) {
       return res.status(400).json({ message: "Sản phẩm đã nằm trong danh sách yêu thích" });
     }
@@ -30,6 +32,9 @@ exports.removeFromFavorites = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "Không tìm thấy người dùng" });
 
+    if (user.status === "pending") {
+      return res.status(403).json({ message: "Tài khoản chưa được duyệt, không thể xoá sản phẩm khỏi yêu thích" });
+    }
     const index = user.favorites.indexOf(productId);
     if (index === -1) {
       return res.status(400).json({ message: "Sản phẩm không nằm trong danh sách yêu thích" });

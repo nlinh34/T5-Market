@@ -48,7 +48,7 @@ const createProduct = async (req, res) => {
         await product.save();
 
         return res.status(httpStatusCodes.CREATED).json({
-            success: true, 
+            success: true,
             message: "Sản phẩm đã được tạo, đang chờ duyệt",
             data: product,
         });
@@ -266,7 +266,7 @@ const getRejectedProducts = async (req, res) => {
     try {
         const rejectedProducts = await Product.find({ status: "rejected" })
             .populate("shop", "name logoUrl address status owner shopStatus createdAt")
-            .populate("seller", "name email") 
+            .populate("seller", "name email")
             .populate("category", "name");
 
         res.status(httpStatusCodes.OK).json({
@@ -303,7 +303,7 @@ const getProductById = async (req, res) => {
         });
     } catch (error) {
         console.error("❌ Lỗi khi lấy chi tiết sản phẩm:", error);
-        console.log("DEBUG: Full error in getProductById:", error); 
+        console.log("DEBUG: Full error in getProductById:", error);
         res.status(500).json({ error: `Lỗi server khi lấy chi tiết sản phẩm: ${error.message}` });
     }
 };
@@ -335,7 +335,7 @@ const getAllProductsByShopId = async (req, res) => {
             .populate("category", "name")
             .populate("createdBy", "name")
             .populate("shop", "name logoUrl address status owner shopStatus createdAt")
-            .sort(sortOptions); 
+            .sort(sortOptions);
 
         res.status(200).json({ success: true, data: products });
     } catch (error) {
@@ -513,7 +513,7 @@ const getFeaturedProducts = async (req, res) => {
             {
                 $group: {
                     _id: "$product",
-                    latestReview: { $first: "$$ROOT" }, 
+                    latestReview: { $first: "$$ROOT" },
                 },
             },
             { $sort: { "latestReview.createdAt": -1 } },
@@ -528,7 +528,7 @@ const getFeaturedProducts = async (req, res) => {
             },
             { $unwind: "$productInfo" },
             { $replaceRoot: { newRoot: "$productInfo" } },
-            { $match: { status: "approved" } }, 
+            { $match: { status: "approved" } },
             {
                 $lookup: {
                     from: "shops",
@@ -561,6 +561,72 @@ const getFeaturedProducts = async (req, res) => {
     }
 };
 
+const getRelatedProducts = async (req, res) => {
+    try {
+        const { id } = req.params; // id sản phẩm hiện tại
+        const { limit = 10 } = req.query;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "ID sản phẩm không hợp lệ" });
+        }
+
+        // Lấy thông tin sản phẩm để biết category
+        const product = await Product.findById(id).populate("category", "name");
+        if (!product) {
+            return res.status(200).json({
+                success: true,
+                data: [], // ✅ trả về mảng rỗng thay vì 404
+                message: "Sản phẩm không tồn tại hoặc đã bị xoá"
+            });
+        }
+
+        // Tìm các sản phẩm khác cùng category, trừ sản phẩm hiện tại
+        const similarProducts = await Product.find({
+            _id: { $ne: id },
+            category: product.category._id,
+            status: "approved",
+        })
+            .select("name price images averageRating shop category createdAt")
+            .populate("shop", "name logoUrl address")
+            .populate("category", "name")
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit));
+
+        res.status(200).json({
+            success: true,
+            data: similarProducts,
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi lấy sản phẩm tương tự:", error);
+        res.status(500).json({ error: "Lỗi hệ thống khi lấy sản phẩm tương tự" });
+    }
+};
+
+const countApprovedProductsByShopId = async (req, res) => {
+    try {
+        const { shopId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(shopId)) {
+            return res.status(400).json({ error: "ID shop không hợp lệ" });
+        }
+
+        // Đếm sản phẩm đã duyệt của shop
+        const totalApproved = await Product.countDocuments({
+            shop: shopId,
+            status: "approved",
+        });
+
+        res.status(200).json({
+            success: true,
+            totalApproved
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi đếm sản phẩm đã duyệt của shop:", error);
+        res.status(500).json({ error: "Lỗi hệ thống khi đếm sản phẩm đã duyệt của shop" });
+    }
+};
+
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -578,5 +644,7 @@ module.exports = {
     getPendingProductsByShopId,
     getFilteredProducts,
     getPriceRange,
-    getFeaturedProducts
+    getFeaturedProducts,
+    getRelatedProducts,
+    countApprovedProductsByShopId
 };

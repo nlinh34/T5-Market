@@ -140,7 +140,7 @@ export class ApproveUserList {
       btn.addEventListener("click", async (e) => {
         const userId = e.currentTarget.dataset.id;
         try {
-          await UserAPI.updateUserStatus(userId, "rejecte");
+          await UserAPI.updateUserStatus(userId, "reject");
           showNotification("Đã từ chối người dùng.", "warning", "fas fa-ban");
           this.initApproveUsersList();
         } catch (err) {

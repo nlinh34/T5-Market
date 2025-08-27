@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </span>
             </span>
           </div>
-          <div class="review-stars" style="margin: 30px 0;">
+          <div class="review-stars" style="">
             ${[1, 2, 3, 4, 5].map(v => `
               <i class="fas fa-star star" data-value="${v}"></i>
             `).join("")}
@@ -315,7 +315,7 @@ ReviewAPI.getReviewedProductsByOrder(order._id).then(res => {
       const itemTotal = item.price * item.quantity;
       subTotal += itemTotal;
       return `
-      <div style="display: flex; align-items: center; margin-bottom: 12px; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
         <img loading="lazy" src="${image}" alt="${item.name}" class="product-img" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
         <div>
           <strong>${item.name}</strong><br />
@@ -329,7 +329,7 @@ ReviewAPI.getReviewedProductsByOrder(order._id).then(res => {
 
     document.getElementById("order-detail-content").innerHTML = `
       <h3><i class="fas fa-file-invoice"></i> Chi tiết đơn hàng</h3>
-      <div style="background: rgba(51, 194, 255, 0.02); border: 2px solid rgba(51, 194, 255, 0.1); border-radius: 12px; padding: 20px; margin: 20px 0;">
+      <div style="background: rgba(51, 194, 255, 0.02); border: 2px solid rgba(51, 194, 255, 0.1); border-radius: 12px; padding: 10px 20px; margin: 10px 0;">
         <p><strong><i class="fas fa-user"></i> Tên KH:</strong> ${order.shippingInfo?.fullName || ""}</p>
         <p><strong><i class="fas fa-phone"></i> SĐT:</strong> ${order.shippingInfo?.phone || ""}</p>
         <p><strong><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong> ${order.shippingInfo?.address || ""}</p>
