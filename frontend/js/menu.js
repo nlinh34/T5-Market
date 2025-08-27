@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const params = new URLSearchParams(window.location.search);
         return {
             searchQuery: params.get("search"),
-            // Treat 'category' parameter as the categoryId for filtering
+            // The 'category' param from index.html is the ID.
             categoryId: params.get("category") || params.get("categoryId"),
         };
     };
@@ -261,13 +261,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             document.querySelectorAll(".category-filter").forEach(cb => cb.addEventListener("change", () => handleFilter(1)));
 
-            // If URL has a categoryId, pre-check the corresponding checkbox
+            // If a categoryId is present in the URL, pre-check the corresponding checkbox
             const { categoryId } = getSearchParams();
             if (categoryId) {
                 const checkbox = document.querySelector(`.category-filter[value="${categoryId}"]`);
                 if (checkbox) {
                     checkbox.checked = true;
-                    // No need to trigger filter here, it will be handled by the initial load logic
+                    // No need to call handleFilter here, it's called at the end of the script
                 }
             }
         } catch (err) {
