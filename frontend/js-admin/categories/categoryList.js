@@ -45,8 +45,8 @@ export class CategoryList {
                     </thead>
                     <tbody>
                         ${categories
-                          .map((category) => this.renderCategoryRow(category))
-                          .join("")}
+        .map((category) => this.renderCategoryRow(category))
+        .join("")}
                     </tbody>
                 </table>
             </div>
@@ -56,17 +56,29 @@ export class CategoryList {
     // Thêm event listeners cho các nút
     this.container.querySelectorAll(".edit-btn").forEach((button) => {
       button.onclick = (e) => {
-        const categoryData = JSON.parse(e.target.dataset.category);
+        const btn = e.target.closest("button"); // Lấy đúng button
+        if (!btn) return;
+
+        const categoryDataStr = btn.dataset.category;
+        if (!categoryDataStr) return;
+
+        const categoryData = JSON.parse(categoryDataStr);
         this.categoryForm.openModal(categoryData, () => this.loadCategories());
       };
     });
 
     this.container.querySelectorAll(".delete-btn").forEach((button) => {
       button.onclick = (e) => {
-        const categoryId = e.target.dataset.id;
+        const btn = e.target.closest("button");
+        if (!btn) return;
+
+        const categoryId = btn.dataset.id;
+        if (!categoryId) return;
+
         this.showDeleteConfirmation(categoryId);
       };
     });
+
   }
 
   renderCategoryRow(category) {
@@ -81,8 +93,8 @@ export class CategoryList {
                 <td>
                     <div class="action-buttons">
                         <button class="edit-btn" data-category='${JSON.stringify(
-                          category
-                        )}'>
+      category
+    )}'>
                             <i class="fas fa-edit"></i> Sửa
                         </button>
                         <button class="delete-btn" data-id="${category._id}">
@@ -96,7 +108,7 @@ export class CategoryList {
 
   async handleDelete(categoryId) {
     try {
-      const result = await CategoryAPI.deleteCombo(categoryId);
+      const result = await CategoryAPI.deleteCategory(categoryId);
       if (result.success) {
         alert("Xóa danh mục thành công!");
         this.loadCategories();
@@ -112,12 +124,12 @@ export class CategoryList {
   showDeleteConfirmation(categoryId) {
     const deleteModal = document.getElementById('deleteCategoryModal');
     const confirmDeleteBtn = document.getElementById('confirmDeleteCategoryBtn');
-    
+
     deleteModal.classList.add('active');
 
     // Remove any previous event listeners to prevent multiple calls
     confirmDeleteBtn.onclick = null;
-    
+
     confirmDeleteBtn.onclick = async () => {
       deleteModal.classList.remove('active');
       await this.handleDelete(categoryId);
