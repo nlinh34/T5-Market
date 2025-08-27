@@ -319,7 +319,7 @@ const getShopRating = async (req, res) => {
     }
 
     const reviews = await Review.find({ product: { $in: productIds } })
-      .populate("user", "fullName email avatar")
+      .populate("user", "fullName email avatarUrl")
       .populate("product", "name images price")
       .sort({ createdAt: -1 })
       .lean();

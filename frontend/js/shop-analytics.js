@@ -9,17 +9,51 @@ async function init() {
     await loadAndRender();
 }
 
+function setHeaderShopInfo(shop) {
+    const nameEl = document.getElementById('headerShopName');
+    const avatarEl = document.getElementById('headerShopAvatar');
+    if (nameEl) nameEl.textContent = shop.name || 'Tên cửa hàng';
+    if (avatarEl) {
+        if (shop.logoUrl) {
+            avatarEl.innerHTML = `<img loading="lazy" src="${shop.logoUrl}" alt="${shop.name || 'Shop'}">`;
+        } else {
+            const initials = (shop.name || 'NA').trim().slice(0,2).toUpperCase();
+            avatarEl.textContent = initials;
+        }
+    }
+}
+
 function setupControls() {
     const periodSelect = document.getElementById('periodSelect');
     const customRange = document.getElementById('customRange');
     const startDate = document.getElementById('startDate');
     const endDate = document.getElementById('endDate');
     const applyBtn = document.getElementById('applyRangeBtn');
+    
+    // Mobile-optimized touch interactions
+    if ('ontouchstart' in window) {
+        // Add touch feedback for mobile devices
+        const touchElements = document.querySelectorAll('.btn, .select-custom, .date-input');
+        touchElements.forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            element.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+    }
     const exportBtn = document.getElementById('exportCsvBtn');
 
     periodSelect.addEventListener('change', () => {
-        if (periodSelect.value === 'custom') customRange.style.display = 'inline-flex';
-        else customRange.style.display = 'none';
+        // Mobile-responsive display for custom range
+        if (periodSelect.value === 'custom') {
+            customRange.style.display = window.innerWidth <= 414 ? 'flex' : 'inline-flex';
+        } else {
+            customRange.style.display = 'none';
+        }
         loadAndRender();
     });
 
@@ -43,6 +77,9 @@ async function loadAndRender() {
     }
 
     const shop = myShopResp.data;
+
+    // Update header with shop info
+    setHeaderShopInfo(shop);
 
     const params = {};
     if (periodSelect.value === 'custom' && startDate.value && endDate.value) {
@@ -173,5 +210,47 @@ function exportCsv() {
     a.click();
     URL.revokeObjectURL(url);
 }
+
+// Add mobile-specific optimizations
+function initMobileOptimizations() {
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            if (dailyChart) {
+                dailyChart.resize();
+            }
+        }, 100);
+    });
+
+    // Handle window resize for responsive adjustments
+    window.addEventListener('resize', () => {
+        const customRange = document.getElementById('customRange');
+        const periodSelect = document.getElementById('periodSelect');
+        
+        if (customRange && periodSelect && periodSelect.value === 'custom') {
+            customRange.style.display = window.innerWidth <= 414 ? 'flex' : 'inline-flex';
+        }
+        
+        if (dailyChart) {
+            setTimeout(() => {
+                dailyChart.resize();
+            }, 100);
+        }
+    });
+
+    // Improve table scrolling on mobile
+    const tables = document.querySelectorAll('.table');
+    tables.forEach(table => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-container';
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+    });
+}
+
+// Initialize mobile optimizations when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initMobileOptimizations();
+});
 
 init();

@@ -505,6 +505,28 @@ function hideLoading() {
     // ... existing code ...
 }
 
+// Loading helpers used by destructive actions (delete product/staff)
+function showLoadingIndicator() {
+    const pageLoader = document.getElementById('page-loader');
+    if (pageLoader) {
+        pageLoader.style.display = 'flex';
+        // force reflow to ensure transition applies when changing opacity
+        // eslint-disable-next-line no-unused-expressions
+        pageLoader.offsetHeight;
+        pageLoader.style.opacity = '1';
+    }
+}
+
+function hideLoadingIndicator() {
+    const pageLoader = document.getElementById('page-loader');
+    if (pageLoader) {
+        pageLoader.style.opacity = '0';
+        setTimeout(() => {
+            pageLoader.style.display = 'none';
+        }, 300);
+    }
+}
+
 function updateShopHeaderRating({ averageRating = 0, totalReviews = 0 }) {
     const starsContainer = document.getElementById('headerShopStars');
     const ratingText = document.getElementById('headerShopRatingText');
@@ -595,7 +617,7 @@ function populateShopData(shop) {
             case 'red': statusText = 'Đã khóa'; statusClass = 'status-red'; break;
             default: statusText = 'Không xác định'; statusClass = '';
         }
-        shopStatusElement.innerHTML = `<i class="fas fa-circle ${statusClass}"></i> ${statusText} ${formatTimeAgo(shop.updatedAt)}`;
+        shopStatusElement.innerHTML = `<i class="fas fa-circle ${statusClass}"></i> ${statusText}`;
     }
 
     // Update Policies
@@ -1022,6 +1044,8 @@ function renderReviewSummary(averageRating, totalReviews, reviewCriteria) {
 }
 
 function renderReviewList(reviews) {
+    // Note: It's crucial to check for `review.user` before accessing its properties
+    // because a user associated with a review might have been deleted, leading to null data.
     const reviewList = document.getElementById('reviewList');
     reviewList.innerHTML = '';
 
@@ -1034,7 +1058,8 @@ function renderReviewList(reviews) {
         const reviewItem = document.createElement('div');
         reviewItem.className = 'review-item';
 
-        const userAvatar = review.user.avatar || './assests/images/default-user.png';
+        const userAvatar = (review.user && review.user.avatarUrl) ? review.user.avatarUrl : './assests/images/default-user.png';
+        const userName = (review.user && review.user.fullName) ? review.user.fullName : 'Người dùng ẩn danh';
         const productName = review.product ? review.product.name : 'Sản phẩm không tồn tại';
         const productPrice = review.product ? formatCurrency(review.product.price) : 'N/A';
         const productImage = review.product && review.product.images && review.product.images.length > 0 ? review.product.images[0] : './assests/images/default-product.png';
@@ -1051,10 +1076,10 @@ function renderReviewList(reviews) {
 
         reviewItem.innerHTML = `
             <div class="reviewer-avatar">
-                <img  loading="lazy" src="${userAvatar}" alt="${review.user.fullName}">
+                <img  loading="lazy" src="${userAvatar}" alt="${userName}">
             </div>
             <div class="review-content">
-                <div class="reviewer-name">${review.user.fullName}</div>
+                <div class="reviewer-name">${userName}</div>
                 <div class="review-criteria-tags">
                     ${criteriaTagsHTML}
                 </div>
