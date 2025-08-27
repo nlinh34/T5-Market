@@ -183,7 +183,7 @@
     /* Adjusted top position */
     right: 8px;
     /* Adjusted right position */
-    background: linear-gradient(45deg, #4caf50, #8bc34a);
+    background: linear-gradient(45deg, #1a73e8, #afd2ff);
     color: #fff;
     padding: 5px 9px;
     /* Slightly smaller padding */
@@ -339,24 +339,29 @@
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 15px;
     }
+
     .featured-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         /* Adjusted to match regular products grid */
         gap: 20px;
     }
+
     .product-img,
     .featured-product-img {
         height: 80px;
         /* Adjusted height on medium screens */
     }
+
     .product-name,
     .featured-product-name {
         font-size: 14px;
     }
+
     .product-price,
     .featured-product-price {
         font-size: 13px;
     }
+
     .product-posted-date,
     .product-seller-info,
     .featured-product-posted-date,
@@ -371,24 +376,29 @@
         grid-template-columns: 1fr;
         gap: 15px;
     }
+
     .featured-grid {
         grid-template-columns: 1fr;
         /* 1 product per row on small screens */
         gap: 20px;
     }
+
     .product-img,
     .featured-product-img {
         height: 60px;
         /* Adjusted height on small screens */
     }
+
     .product-name,
     .featured-product-name {
         font-size: 12px;
     }
+
     .product-price,
     .featured-product-price {
         font-size: 11px;
     }
+
     .product-posted-date,
     .product-seller-info,
     .featured-product-posted-date,

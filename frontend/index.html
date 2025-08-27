@@ -15,6 +15,7 @@
 
     <script src="./components/header/header.js" type="module"></script>
     <script src="./js/index.js" type="module"></script>
+    <script src="./js/slider.js"></script>
 
 </head>
 
@@ -23,28 +24,28 @@
     <header-component></header-component>
 
     <section class="main-banner">
-        <div class="container">
-            <div class="banner-content">
-                <h1 class="banner-title">Mua - Bán Thiết Bị<br>Điện Tử Cũ Uy Tín,<br>Nhanh Chóng</h1>
-                <p class="banner-text">
-                    Laptop, điện thoại, tai nghe... từ người<br>bán thật - giá siêu tốt!
-                </p>
-                <a href="./menu.html" class="banner-btn">Khám phá ngay</a>
-            </div>
-            <div class="banner-image-discount">
-                <img loading="lazy" src="./assests/images/banner_img.png" alt="Laptop" class="banner-img" />
-                <div class="discount-overlay">
-                    <span class="discount-text">GIẢM GIÁ</span>
-                    <span class="discount-percentage">50%</span>
+        <div class="slider-container">
+            <div class="slides">
+                <div class="slide">
+                    <a href="./menu.html"><img src="./assests/images/www.reallygreatsite.com.png" alt="Banner 1"></a>
+                </div>
+                <div class="slide">
+                    <a href="./menu.html"><img src="./assests/images/1.png" alt="Banner 2"></a>
+                </div>
+                <div class="slide">
+                    <a href="./menu.html"><img src="./assests/images/3.png" alt="Banner 3"></a>
                 </div>
             </div>
+            <button class="slider-btn prev"><i class="fas fa-chevron-left"></i></button>
+            <button class="slider-btn next"><i class="fas fa-chevron-right"></i></button>
+            <div class="dots-container"></div>
         </div>
     </section>
 
     <!-- How It Works Section -->
-    <section class="how-it-works">
-        <div class="container">
-            <div class="steps-grid">
+    <section class="how-it-works content-section container">
+        <h2 class="section-title">Cách Thức Hoạt Động</h2>
+        <div class="steps-grid">
                 <div class="step-item">
                     <i class="fas fa-box-open"></i>
                     <h3>Tìm sản phẩm bạn cần</h3>
@@ -65,17 +66,15 @@
     </section>
 
     <!-- Food Categories -->
-    <section class="categories">
-        <div class="container">
-            <h2 class="section-title">Danh Mục Sản Phẩm</h2>
-            <div class="category-grid">
-                <!-- Danh mục sẽ được thêm vào đây  -->
-            </div>
+    <section class="categories content-section container">
+        <h2 class="section-title">Danh Mục Sản Phẩm</h2>
+        <div class="category-grid">
+            <!-- Danh mục sẽ được thêm vào đây  -->
         </div>
     </section>
 
     <!-- Main Content Grid -->
-    <section class="main-content-grid container">
+    <section class="main-content-grid content-section container">
         <!-- Popular Products Section -->
         <section class="products">
             <div class="container">
@@ -103,12 +102,10 @@
     </section>
 
     <!-- Featured Products -->
-    <section class="products featured">
-        <div class="container">
-            <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
-            <div class="featured-grid">
-                <!-- Sản phẩm nổi bật sẽ được thêm vào đây bằng JavaScript -->
-            </div>
+    <section class="products featured content-section container">
+        <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+        <div class="featured-grid">
+            <!-- Sản phẩm nổi bật sẽ được thêm vào đây bằng JavaScript -->
         </div>
     </section>
 
