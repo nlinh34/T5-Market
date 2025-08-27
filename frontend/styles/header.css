@@ -362,8 +362,6 @@ header.scrolled {
     border-radius: 50%;
     overflow: hidden;
     margin-bottom: 10px;
-    /* Space between avatar and username */
-    border: 3px solid var(--primary-yellow);
     /* Border color using a variable */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     /* Soft shadow */
@@ -408,13 +406,6 @@ header.scrolled {
     transition: background 0.2s ease, color 0.2s ease;
     /* Smooth transition for color */
     font-size: 15px;
-}
-
-.account-menu a:hover {
-    background-color: var(--primary-yellow);
-    /* Yellow background on hover */
-    color: #212529;
-    /* Dark text on yellow hover */
 }
 
 .account-menu a i {

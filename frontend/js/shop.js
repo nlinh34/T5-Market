@@ -299,7 +299,7 @@ function renderReviewList(reviews) {
 
         // Handle cases where the user who left the review has been deleted
         const userExists = review.user;
-        const userAvatar = userExists ? (userExists.avatar || './assests/images/default-user.png') : './assests/images/default-user.png';
+        const userAvatar = userExists ? (userExists.avatarUrl || './assests/images/default-user.png') : './assests/images/default-user.png';
         const userName = userExists ? userExists.fullName : '[Người dùng ẩn danh]';
 
         const productName = review.product ? review.product.name : 'Sản phẩm không tồn tại';

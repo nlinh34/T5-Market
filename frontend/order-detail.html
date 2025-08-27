@@ -18,7 +18,7 @@
     <header-component></header-component>
 
   <div class="page-wrapper">
-    <h1 class="order-title">📦 Đơn hàng của tôi</h1>
+    <h1 class="order-title"><i class="fas fa-shopping-bag"></i> Đơn hàng của tôi</h1>
     <div class="management-container">
       <!-- Sidebar -->
       <div class="sidebar">
@@ -47,11 +47,11 @@
   <!-- Modal hủy đơn -->
   <div id="cancel-modal" class="modal-overlay" style="display:none;">
     <div class="modal-content">
-      <h3>Lý do hủy đơn hàng</h3>
-      <textarea id="cancel-reason" rows="3" placeholder="Nhập lý do hủy..."></textarea>
+      <h3><i class="fas fa-exclamation-triangle"></i> Lý do hủy đơn hàng</h3>
+      <textarea id="cancel-reason" rows="3" placeholder="Nhập lý do hủy đơn hàng..."></textarea>
       <div class="modal-actions">
-        <button id="cancel-confirm">Xác nhận hủy</button>
-        <button id="cancel-close">Đóng</button>
+        <button id="cancel-confirm"><i class="fas fa-times"></i> Xác nhận hủy</button>
+        <button id="cancel-close"><i class="fas fa-arrow-left"></i> Đóng</button>
       </div>
     </div>
   </div>
@@ -68,7 +68,7 @@
  <div id="review-modal" class="modal">
   <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
     <span class="modal-close" id="review-close">&times;</span>
-    <h3>Đánh giá sản phẩm</h3>
+    <h3><i class="fas fa-star"></i> Đánh giá sản phẩm</h3>
     <div id="review-product-list">
       <!-- Các sản phẩm sẽ được render tại đây -->
     </div>

@@ -114,13 +114,13 @@ input {
 }
 
 input:focus {
-  border-color: var(--primary-yellow);
+  border-color: #00b1ff;
   outline: none;
 }
 
 .login-btn {
   width: 100%;
-  background-color: var(--primary-yellow);
+  background-color: #00b1ff;
   color: var(--primary-black);
   font-weight: bold;
   border: none;
@@ -132,7 +132,7 @@ input:focus {
 }
 
 .login-btn:hover {
-  background-color: var(--dark-yellow);
+  background-color: #0099e6;
 }
 
 .social-login {
@@ -187,7 +187,7 @@ input:focus {
 
 .social-btn:hover {
   background-color: var(--background-light);
-  border-color: var(--primary-yellow);
+  border-color: #00b1ff;
 }
 
 .social-btn img {
@@ -226,7 +226,7 @@ input:focus {
 }
 
 .register-text a {
-  color: var(--primary-yellow);
+  color: #00b1ff;
   text-decoration: none;
   font-weight: bold;
 }

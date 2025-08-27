@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res = await ShopAPI.getMyShop();
     if (!res.success || !res.data?._id) {
       localStorage.removeItem("shopId");
-      alert("❌ Không tìm thấy thông tin shop. Vui lòng đăng nhập lại.");
+      alert("Không tìm thấy thông tin shop. Vui lòng đăng nhập lại.");
       window.location.href = "/login.html";
       return;
     }
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert(orderRes.error || "Không thể tải danh sách đơn hàng");
     }
   } catch (err) {
-    console.error("❌ Lỗi khi loadOrders:", err);
+    console.error("Lỗi khi loadOrders:", err);
     alert("Lỗi kết nối. Vui lòng thử lại.");
   }
 }
@@ -103,9 +103,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (type === "all") {
       html += `
-      <div style="display:flex; gap:10px; margin-bottom:10px;">
-        <input type="text" id="search-code" placeholder="Tìm mã đơn...">
-        <input type="text" id="search-name" placeholder="Tìm tên khách hàng...">
+      <div style="display:flex; gap:15px; margin-bottom:15px;">
+        <div style="position: relative;">
+          <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #1ea7e8; z-index: 1;"></i>
+          <input type="text" id="search-code" placeholder="Tìm mã đơn..." style="padding-left: 40px;">
+        </div>
+        <div style="position: relative; flex: 1;">
+          <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #1ea7e8; z-index: 1;"></i>
+          <input type="text" id="search-name" placeholder="Tìm tên khách hàng..." style="padding-left: 40px;">
+        </div>
       </div>`;
     }
 
@@ -140,7 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       paginated.forEach((order) => {
         const statusLabel = `<span class="status-label status-${order.status}">${getStatusLabel(order.status)}</span>`;
         const updateBtn = renderStatusUpdateButton(order, type);
-        const actionBtn = `<button class="action-btn action-detail" data-index="${order._index}"><i class="fa fa-eye" aria-hidden="true"></i></button>`;
+        const actionBtn = `<button class="action-btn action-detail" data-index="${order._index}"><i class="fas fa-eye"></i> Chi tiết</button>`;
 
         html += `<tr>
           <td>${order.orderCode}</td>
@@ -187,11 +193,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function getStatusLabel(status) {
     const map = {
-      pending: "Chờ xác nhận",
-      confirmed: "Đang chuẩn bị",
-      shipped: "Đang giao hàng",
-      delivered: "Đã giao hàng",
-      cancelled: "Đã hủy đơn",
+      pending: '<i class="fas fa-clock"></i> Chờ xác nhận',
+      confirmed: '<i class="fas fa-box-open"></i> Đang chuẩn bị',
+      shipped: '<i class="fas fa-shipping-fast"></i> Đang giao hàng',
+      delivered: '<i class="fas fa-check-circle"></i> Đã giao hàng',
+      cancelled: '<i class="fas fa-times-circle"></i> Đã hủy đơn',
     };
     return map[status] || status;
   }
@@ -226,36 +232,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     const total = order.totalAmount || subtotal;
     const discount = subtotal - total;
 
-    // In thử từng item để kiểm tra ảnh
+    // Log product information for debugging
     items.forEach((item, index) => {
-      console.log(`🖼 Sản phẩm ${index + 1}:`, item.name, item.image);
+      console.log(`Sản phẩm ${index + 1}:`, item.name, item.image);
     });
 
     const content = `
     <h3><i class="fas fa-clipboard-list"></i> Chi tiết đơn hàng</h3>
-    <p><strong>Tên KH:</strong> ${order.shippingInfo?.fullName || "—"}</p>
-    <p><strong>SĐT:</strong> ${order.shippingInfo?.phone || "—"}</p>
-    <p><strong>Địa chỉ:</strong> ${order.shippingInfo?.address || "—"}</p>
-    <p><strong>Ghi chú:</strong> <em>${order.shippingInfo?.note || "Không có ghi chú cho đơn hàng này."}</em> </p>
-    <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod || "cod"}</p>
-    <p><i class="fas fa-box"></i> <strong>Sản phẩm đã đặt</strong></p>
-    <hr/>
+    <div style="background: #ffffff; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 2px solid rgba(0, 112, 243, 0.1);">
+      <p><strong style="color: #1ea7e8;"><i class="fas fa-user"></i> Tên KH:</strong> ${order.shippingInfo?.fullName || "—"}</p>
+      <p><strong style="color: #1ea7e8;"><i class="fas fa-phone"></i> SĐT:</strong> ${order.shippingInfo?.phone || "—"}</p>
+      <p><strong style="color: #1ea7e8;"><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong> ${order.shippingInfo?.address || "—"}</p>
+      <p><strong style="color: #1ea7e8;"><i class="fas fa-sticky-note"></i> Ghi chú:</strong> <em>${order.shippingInfo?.note || "Không có ghi chú cho đơn hàng này."}</em></p>
+      <p><strong style="color: #1ea7e8;"><i class="fas fa-credit-card"></i> Phương thức thanh toán:</strong> ${order.paymentMethod || "cod"}</p>
+    </div>
+    <h4 style="color: #1ea7e8; margin-bottom: 15px;"><i class="fas fa-shopping-cart"></i> Sản phẩm đã đặt</h4>
    ${items.map(item => `
-  <div style="display: flex; align-items: center; margin-bottom: 12px; gap: 10px;">
+  <div style="display: flex; align-items: center; margin-bottom: 15px; gap: 15px; padding: 15px; background: #ffffff; border-radius: 10px; border: 1px solid rgba(0, 112, 243, 0.1);">
     <img loading="lazy" src="${item.image}" alt="${item.name}" 
-      style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" />
-    <div>
-      <strong>${item.name}</strong><br />
-      x${item.quantity} – ${item.price.toLocaleString()}đ
+      style="width: 70px; height: 70px; object-fit: cover; border-radius: 10px;" />
+    <div style="flex: 1;">
+      <strong style="color: #333; font-size: 16px;">${item.name}</strong><br />
+      <span style="color: #666; font-size: 14px;"><i class="fas fa-cubes"></i> Số lượng: <strong>${item.quantity}</strong></span><br />
+      <span style="color: #1ea7e8; font-weight: 600; font-size: 15px;"><i class="fas fa-tag"></i> ${item.price.toLocaleString()}đ</span>
     </div>
   </div>
 `).join("")}
 
-    <hr/>
-    <div style="border-top: 1px dashed #ccc; padding-top: 10px;">
-      <p><strong>Tạm tính:</strong> ${subtotal.toLocaleString()}đ</p>
-  <p><strong>Đã giảm:</strong> ${discount > 0 ? discount.toLocaleString() + "đ" : "0đ"}</p>
-      <p><strong style="color:red;">Tổng tiền:</strong> <strong style="color:red;">${order.totalAmount?.toLocaleString() || "0"}đ</strong></p>
+    <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px solid rgba(0, 112, 243, 0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span><i class="fas fa-calculator"></i> <strong>Tạm tính:</strong></span>
+        <span style="font-weight: 600; color: #1ea7e8">${subtotal.toLocaleString()}đ</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <span ><i class="fas fa-percent"></i> <strong>Đã giảm:</strong></span>
+        <span style="color: #1ea7e8; font-weight: 600;">${discount > 0 ? discount.toLocaleString() + "đ" : "0đ"}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgb(0 255 10 / 11%); border-radius: 8px; ">
+        <span style="color: #159300; font-size: 18px;"><i class="fas fa-money-bill-wave"></i> <strong>Tổng tiền:</strong></span>
+        <span style="color: #159300; font-weight: bold; font-size: 20px;">${order.totalAmount?.toLocaleString() || "0"}đ</span>
+      </div>
     </div>
   `;
 

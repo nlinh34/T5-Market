@@ -88,16 +88,18 @@ document.addEventListener("DOMContentLoaded", () => {
           html += `<td>`;
           if (order.status === "delivered") {
             html += `<button class="review-btn" data-index="${idx}">
-              <i class="fa fa-star" aria-hidden="true"></i> Đánh giá
+              <i class="fas fa-star"></i> Đánh giá
             </button>`;
           } else if (["confirmed", "shipped", "cancelled"].includes(order.status)) {
             html += `<button class="view-detail-btn" data-index="${idx}">
-              <i class="fa fa-eye" aria-hidden="true"></i> Xem
+              <i class="fas fa-eye"></i> Xem
             </button>`;
           }
 
           if (order.status === "pending") {
-            html += `<button class="cancel-btn" data-index="${idx}">Hủy đơn</button>`;
+            html += `<button class="cancel-btn" data-index="${idx}">
+              <i class="fas fa-times"></i> Hủy đơn
+            </button>`;
           }
           html += `</div></td>`;
         }
@@ -193,13 +195,15 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="review-stars" style="margin: 30px 0;">
             ${[1, 2, 3, 4, 5].map(v => `
-              <i class="fa fa-star star" data-value="${v}"></i>
+              <i class="fas fa-star star" data-value="${v}"></i>
             `).join("")}
             <input type="hidden" class="review-rating" value="5" />
           </div>
       <textarea class="review-content" placeholder="Nhập nội dung đánh giá..."></textarea>
       <div class="submit-btn-container">
-        <button class="submit-product-review-btn">Gửi đánh giá</button>
+        <button class="submit-product-review-btn">
+          <i class="fas fa-paper-plane"></i> Gửi đánh giá
+        </button>
       </div>
     `
       );
@@ -255,7 +259,13 @@ ReviewAPI.getReviewedProductsByOrder(order._id).then(res => {
           const value = parseInt(star.dataset.value);
           ratingInput.value = value;
           stars.forEach(s => {
-            s.style.color = parseInt(s.dataset.value) <= value ? "#f5b301" : "#ccc";
+            if (parseInt(s.dataset.value) <= value) {
+              s.style.color = "#ffc107";
+              s.classList.add('selected');
+            } else {
+              s.style.color = "#ddd";
+              s.classList.remove('selected');
+            }
           });
         });
       });
@@ -318,18 +328,20 @@ ReviewAPI.getReviewedProductsByOrder(order._id).then(res => {
     const total = subTotal - discount;
 
     document.getElementById("order-detail-content").innerHTML = `
-      <h3><i class="fas fa-receipt"></i> Chi tiết đơn hàng</h3>
-      <p><strong>Tên KH:</strong> ${order.shippingInfo?.fullName || ""}</p>
-      <p><strong>SĐT:</strong> ${order.shippingInfo?.phone || ""}</p>
-      <p><strong>Địa chỉ:</strong> ${order.shippingInfo?.address || ""}</p>
-      <p><strong>Ghi chú:</strong> ${order.shippingInfo?.note || "Không có ghi chú cho đơn hàng này."}</p>
-      <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod || ""}</p>
-      <h4><i class="fas fa-box-open"></i> Sản phẩm đã đặt</h4>
+      <h3><i class="fas fa-file-invoice"></i> Chi tiết đơn hàng</h3>
+      <div style="background: rgba(51, 194, 255, 0.02); border: 2px solid rgba(51, 194, 255, 0.1); border-radius: 12px; padding: 20px; margin: 20px 0;">
+        <p><strong><i class="fas fa-user"></i> Tên KH:</strong> ${order.shippingInfo?.fullName || ""}</p>
+        <p><strong><i class="fas fa-phone"></i> SĐT:</strong> ${order.shippingInfo?.phone || ""}</p>
+        <p><strong><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong> ${order.shippingInfo?.address || ""}</p>
+        <p><strong><i class="fas fa-sticky-note"></i> Ghi chú:</strong> ${order.shippingInfo?.note || "Không có ghi chú cho đơn hàng này."}</p>
+        <p><strong><i class="fas fa-credit-card"></i> Phương thức thanh toán:</strong> ${order.paymentMethod || ""}</p>
+      </div>
+      <h4><i class="fas fa-shopping-cart"></i> Sản phẩm đã đặt</h4>
       <div class="product-list">${itemsHtml}</div>
       <hr/>
-      <div class="summary-row"><span>Tạm tính:</span><strong>${subTotal.toLocaleString()}đ</strong></div>
-      <div class="summary-row"><span>Đã giảm:</span><strong>${discount.toLocaleString()}đ</strong></div>
-      <div class="summary-row total"><span>Tổng tiền:</span><strong>${total.toLocaleString()}đ</strong></div>
+      <div class="summary-row"><span><i class="fas fa-calculator"></i> Tạm tính:</span><strong>${subTotal.toLocaleString()}đ</strong></div>
+      <div class="summary-row"><span><i class="fas fa-percent"></i> Đã giảm:</span><strong>${discount.toLocaleString()}đ</strong></div>
+      <div class="summary-row total"><span><i class="fas fa-money-bill-wave"></i> Tổng tiền:</span><strong>${total.toLocaleString()}đ</strong></div>
     `;
     orderDetailModal.style.display = "flex";
   }

@@ -40,16 +40,8 @@ body {
     padding: 40px;
     background: var(--primary-white);
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 177, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: var(--transition-medium);
 }
 
-.account-settings-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 25px 50px rgba(0, 177, 255, 0.15);
-}
 
 .breadcrumb {
     font-size: 14px;
@@ -104,17 +96,6 @@ body {
     position: relative;
 }
 
-.account-settings-container h1::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: var(--gradient-primary);
-    border-radius: 2px;
-}
 
 .settings-content {
     display: flex;
@@ -128,10 +109,6 @@ body {
     border-radius: 16px;
     padding: 25px;
     box-shadow: 0 10px 30px rgba(0, 177, 255, 0.1);
-    border: 1px solid var(--border-light);
-    transition: var(--transition-medium);
-    position: sticky;
-    top: 20px;
 }
 
 .settings-sidebar:hover {
@@ -197,13 +174,6 @@ body {
     background: var(--primary-white);
     padding: 40px;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 177, 255, 0.1);
-    border: 1px solid var(--border-light);
-    transition: var(--transition-medium);
-}
-
-.settings-main-content:hover {
-    box-shadow: 0 15px 35px rgba(0, 177, 255, 0.15);
 }
 
 .settings-section {
