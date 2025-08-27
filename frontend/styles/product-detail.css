@@ -108,11 +108,9 @@ body {
 }
 
 .related-products {
-    padding: 3rem;
     align-items: start;
     background-color: white;
     margin-bottom: 15px;
-    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -753,7 +751,6 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 25px;
-    margin-top: 40px;
 }
 
 
@@ -1174,6 +1171,21 @@ body {
     border-color: #4361ee;
 }
 
+
+/* Phần mô tả sản phẩm */
+#product-description {
+  max-height: 300px;  /* bạn có thể đổi số px tùy ý */
+  overflow-y: auto;
+  padding-right: 8px; /* tránh bị che bởi thanh cuộn */
+}
+
+/* Phần danh sách đánh giá */
+.review-list {
+  max-height: 400px;  /* cố định chiều cao */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
 .review-header {
     display: flex;
 }
@@ -1204,11 +1216,12 @@ body {
 
 .review-date {
     color: #666;
-    font-size: 0.9rem;
+    font-size: 12px;
 }
 
 .review-rating {
     color: #ffc107;
+    font-size: 12px;
 }
 
 .review-title {

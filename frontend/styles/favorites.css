@@ -7,14 +7,12 @@
 
 /* Banner Section */
 .favorites-banner {
-  background: linear-gradient(rgba(46, 139, 87, 0.9), rgba(46, 139, 87, 0.9)),
-    url('./assests/images/favorites-banner.jpg');
+ background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+              url('https://lh7-rt.googleusercontent.com/docsz/AD_4nXdZAzJtQAAEiHwSRyQY7CdSbeDjf3tgzI16z8cK_6cV8LYnMBgGa_NArf1Gqog5lc7mMxHW0eC_b3AtMmP053oDpw3upkT4-I4d-qHKQErNMZWnsOoVjc9NXG0sy1Q6ZX7zI10c?key=retw1iz3lBqdRbvi37ltONDu') no-repeat center center;
   background-size: cover;
-  background-position: center;
   color: white;
-  padding: 60px 0;
+  padding: 100px 0;
   text-align: center;
-  top: 0;
 }
 
 .favorites-banner h1 {
@@ -100,7 +98,7 @@
 
 .favorites-count span {
   font-weight: bold;
-  color: #2e8b57;
+  color: #33c2ff;
 }
 
 /* Favorites Grid */

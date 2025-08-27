@@ -1302,19 +1302,23 @@ body {
 
 .product-name {
     color: var(--text-dark); /* Changed to dark text variable */
-    font-size: 1.1em; /* Slightly larger font */
+    font-size: 17px; /* Slightly larger font */
     line-height: 1.3em;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     margin-bottom: 8px; /* Added margin */
 }
 
 .product-price {
-    font-weight: bold;
+    font-weight: 700;
     color: var(--danger); /* Use danger color for price */
-    font-size: 1.15em; /* Slightly larger price font */
+    font-size: 15px; /* Slightly larger price font */
     margin-bottom: 8px; /* Adjusted margin */
 }
 

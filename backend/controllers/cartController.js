@@ -1,6 +1,7 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const Shop = require("../models/Shop");
+const User = require("../models/User");
 
 const mongoose = require("mongoose")
 
@@ -12,6 +13,13 @@ exports.addToCart = async (req, res) => {
       return res.status(401).json({ success: false, message: "Chưa đăng nhập hoặc ID không hợp lệ" });
     }
 
+    const user = await User.findById(userId).select("status");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Người dùng không tồn tại" });
+    }
+    if (user.status === "pending") {
+      return res.status(403).json({ success: false, message: "Tài khoản của bạn chưa được duyệt, không thể mua hàng" });
+    }
     const { product, quantity = 1 } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(product)) {

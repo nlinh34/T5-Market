@@ -80,7 +80,6 @@ const rejectShop = async (req, res) => {
   }
 };
 
-
 const requestUpgradeToSeller = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -139,7 +138,6 @@ const requestUpgradeToSeller = async (req, res) => {
   }
 };
 
-
 const getPendingShops = async (req, res) => {
   try {
     const shops = await Shop.find({ status: "pending" }).populate("owner", "fullName email");
@@ -171,8 +169,6 @@ const getApprovedShops = async (req, res) => {
     });
   }
 };
-
-
 
 const getShopWithProducts = async (req, res) => {
   try {

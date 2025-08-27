@@ -120,7 +120,7 @@ class Header extends HTMLElement {
             }
 
             if (userAvatar && usernameDisplay) {
-                userAvatar.src = user.avatarUrl || "./assests/images/default-product.png"; 
+                userAvatar.src = user.avatarUrl || "./assests/images/default-avatar.jpg"; 
                 usernameDisplay.textContent = user.fullName || "Tài khoản"; 
             }
             if (loggedInUserDisplay && loggedOutUserDisplay) {
@@ -150,7 +150,7 @@ class Header extends HTMLElement {
             let html = `
         <div class="account-menu-header">
           <div class="account-menu-avatar">
-            <img loading="lazy" src="${user.avatarUrl || './assests/images/default-product.png'}" alt="User Avatar">
+            <img loading="lazy" src="${user.avatarUrl || './assests/images/default-avatar.jpg'}" alt="User Avatar">
           </div>
           <div class="account-menu-username">${user.fullName || 'Tài khoản của bạn'}</div>
         </div>

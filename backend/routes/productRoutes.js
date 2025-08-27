@@ -17,7 +17,9 @@ const {
     deleteProduct,
     getFilteredProducts,
     getPriceRange,
-    getFeaturedProducts
+    getFeaturedProducts,
+    getRelatedProducts,
+    countApprovedProductsByShopId
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
@@ -52,7 +54,10 @@ router.get("/by-shop/:shopId", getAllProductsByShopId);
 router.get("/by-shop/:shopId/approved", getApprovedProductsByShopId);
 router.get("/by-shop/:shopId/pending", getPendingProductsByShopId);
 router.get("/by-shop/:shopId/rejected", getRejectedProductsByShopId);
+router.get("/by-shop/:shopId/approved/count", countApprovedProductsByShopId);
 
+
+router.get("/:id/related", getRelatedProducts);
 
 
 module.exports = router;

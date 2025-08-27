@@ -145,5 +145,20 @@ export const ProductAPI = {
 
         const endpoint = `/products/filter?${queryParams.join("&")}`;
         return await apiCall({ endpoint });
-    }
+    },
+
+    // Lấy sản phẩm liên quan theo danh mục (trừ chính nó)
+    getRelatedProducts: async (productId, limit = 10) => {
+        return await apiCall({
+            endpoint: `/products/${productId}/related?limit=${limit}`,
+            method: "GET",
+        });
+    },
+
+    getApprovedProductCountByShopId: async (shopId) => {
+    return await apiCall({
+        endpoint: `/products/by-shop/${shopId}/approved/count`,
+        method: "GET",
+    });
+},
 };
