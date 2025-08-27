@@ -13,7 +13,7 @@ router.get("/get-all", getAllCategories);
 router.get("/get/:id", getCategoryById);
 
 router.use(protect);
-router.use(authorize("admin"));
+router.use(authorize(0));
 
 router.post("/create", createCategory);
 router.put("/update/:id", updateCategory);
