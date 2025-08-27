@@ -1,7 +1,6 @@
 import { ShopAPI } from '../../APIs/shopAPI.js';
 import { Role } from '../../APIs/utils/roleEnum.js';
 import { UserAPI } from '../../APIs/userAPI.js';
-import { CategoryAPI } from '../../APIs/categoryAPI.js';
 import CartAPI from '../../APIs/cartAPI.js';
 
 class Header extends HTMLElement {
