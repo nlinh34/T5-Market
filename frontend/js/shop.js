@@ -1,9 +1,10 @@
 import { ShopAPI } from "../APIs/shopAPI.js";
 import { ProductAPI } from "../APIs/productAPI.js";
 import { formatCurrency, formatTimeAgo } from "../APIs/utils/formatter.js";
+import OrderAPI from "../APIs/orderAPI.js";
 import FavoriteAPI from "../APIs/favoriteAPI.js";
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const shopId = urlParams.get('id');
 
@@ -33,6 +34,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             renderShopDetails(shop, shop);
             renderShopProducts(products);
             attachEventListeners(shop);
+            await updateShopSoldCount(shopId);
+
 
         } else {
             displayShopNotFound(shopDataResponse.message || 'Không tìm thấy thông tin cửa hàng.');
@@ -106,7 +109,7 @@ function renderShopDetails(shop, shopRating) {
                 const policyItem = document.createElement('li');
                 policyItem.className = 'policy-item';
                 let iconClass = '';
-                switch(policy.type) {
+                switch (policy.type) {
                     case 'shipping': iconClass = 'fas fa-truck'; break;
                     case 'warranty': iconClass = 'fas fa-shield-alt'; break;
                     case 'return': iconClass = 'fas fa-exchange-alt'; break;
@@ -131,7 +134,7 @@ function renderShopDetails(shop, shopRating) {
         starsContainer.innerHTML = ''; // Clear current stars
         const averageRating = shopRating.averageRating || 0;
         const totalReviews = shopRating.totalReviews || 0;
-        
+
         for (let i = 1; i <= 5; i++) {
             const starIcon = document.createElement('i');
             starIcon.classList.add('fas', 'star'); // Base classes
@@ -183,17 +186,17 @@ function renderShopDetails(shop, shopRating) {
 
 function attachEventListeners(shop) {
     const tabLinks = document.querySelectorAll(".tab-link");
-    
+
     tabLinks.forEach(tab => {
         tab.addEventListener("click", (e) => {
             e.preventDefault();
-            
+
             // Remove active class from all tabs
             tabLinks.forEach(t => t.classList.remove("active"));
-            
+
             // Add active class to clicked tab
             e.target.classList.add("active");
-            
+
             // Handle tab content switching
             const tabName = e.target.dataset.tab;
             handleTabSwitch(tabName, shop._id); // Pass shopId
@@ -208,15 +211,15 @@ function handleTabSwitch(tabName, shopId) {
     const shopIntroCard = document.getElementById('shopIntroCard');
     const productsForSaleCard = document.getElementById('productsForSaleCard');
     const reviewContentCard = document.getElementById('reviewContentCard');
-    
+
     // Get the new section containers
     const topSection = document.querySelector('.top-section');
     const bottomSection = document.querySelector('.bottom-section');
 
     // Hide all main content cards first
-    if(shopIntroCard) shopIntroCard.classList.add('hidden');
-    if(productsForSaleCard) productsForSaleCard.classList.add('hidden');
-    if(reviewContentCard) reviewContentCard.classList.add('hidden');
+    if (shopIntroCard) shopIntroCard.classList.add('hidden');
+    if (productsForSaleCard) productsForSaleCard.classList.add('hidden');
+    if (reviewContentCard) reviewContentCard.classList.add('hidden');
 
     // Hide sections by default
     if (topSection) topSection.classList.add('hidden');
@@ -225,12 +228,12 @@ function handleTabSwitch(tabName, shopId) {
     if (tabName === 'cuaHang') {
         if (topSection) topSection.classList.remove('hidden');
         if (bottomSection) bottomSection.classList.remove('hidden');
-        if(shopIntroCard) shopIntroCard.classList.remove('hidden');
-        if(productsForSaleCard) productsForSaleCard.classList.remove('hidden');
+        if (shopIntroCard) shopIntroCard.classList.remove('hidden');
+        if (productsForSaleCard) productsForSaleCard.classList.remove('hidden');
         // No need to call loadProductsForSaleContent here, it's part of initial render
     } else if (tabName === 'danhGia') {
         if (bottomSection) bottomSection.classList.remove('hidden');
-        if(reviewContentCard) reviewContentCard.classList.remove('hidden');
+        if (reviewContentCard) reviewContentCard.classList.remove('hidden');
         loadReviewsContent(shopId);
     }
 }
@@ -246,12 +249,12 @@ async function loadReviewsContent(shopId) {
     if (!reviewList || !overallRatingScore || !overallRatingStars || !overallTotalReviews || !allReviewsCount) return;
 
     reviewList.innerHTML = '<p>Đang tải đánh giá...</p>';
-    
+
     try {
         const response = await ShopAPI.getShopRating(shopId);
         if (response.success) {
             const { averageRating, totalReviews, reviews, reviewCriteria } = response.data;
-            
+
             overallRatingScore.textContent = averageRating.toFixed(1);
             overallTotalReviews.textContent = `(${totalReviews} đánh giá)`;
             allReviewsCount.textContent = totalReviews;
@@ -307,10 +310,10 @@ function renderReviewList(reviews) {
         const productImage = review.product && review.product.images && review.product.images.length > 0 ? review.product.images[0] : './assests/images/default-product.png';
 
         let criteriaTagsHTML = '';
-        if(review.criteria && review.criteria.length > 0) {
+        if (review.criteria && review.criteria.length > 0) {
             criteriaTagsHTML = review.criteria.map(crit => `<span class="criteria-tag">${crit}</span>`).join('');
         }
-        
+
         let starsHTML = '';
         for (let i = 1; i <= 5; i++) {
             // ensure we include the 'star' class so CSS can style filled vs unfilled correctly
@@ -381,31 +384,30 @@ function renderShopProducts(products) {
         `;
         }).join('');
         noProductsMessage.classList.add('hidden');
-        attachFavoriteToggleEvents(); // Attach event listeners after rendering
+        attachFavoriteToggleEvents();
     } else {
-        shopProductsGrid.innerHTML = ''; // Clear any loading messages
+        shopProductsGrid.innerHTML = '';
         noProductsMessage.classList.remove('hidden');
     }
-} 
+}
 
-let favoriteProductIds = []; // To store the IDs of favorite products for the current user
+let favoriteProductIds = [];
 
-// Function to fetch and update favorite product IDs
 async function loadFavorites() {
     try {
         const favorites = await FavoriteAPI.getFavorites();
         favoriteProductIds = favorites.map(p => p._id);
     } catch (err) {
         console.warn("Không thể tải danh sách yêu thích:", err);
-        favoriteProductIds = []; // Reset if there's an error
+        favoriteProductIds = [];
     }
 }
 
 function attachFavoriteToggleEvents() {
     document.querySelectorAll('.like-btn').forEach(button => {
         button.addEventListener('click', async (e) => {
-            e.preventDefault(); // Prevent default link behavior if inside an <a> tag
-            e.stopPropagation(); // Stop propagation to prevent parent card click
+            e.preventDefault();
+            e.stopPropagation();
 
             const productId = button.dataset.id;
             const heartIcon = button.querySelector('i');
@@ -417,26 +419,41 @@ function attachFavoriteToggleEvents() {
 
             try {
                 if (heartIcon.classList.contains('fa-solid')) {
-                    // Product is currently liked, so unlike it
                     await FavoriteAPI.removeFavorite(productId);
                     heartIcon.classList.remove('fa-solid');
                     heartIcon.classList.add('fa-regular');
                     button.classList.remove('liked');
-                    // Remove from local favoriteProductIds
                     favoriteProductIds = favoriteProductIds.filter(id => id !== productId);
                 } else {
-                    // Product is not liked, so like it
                     await FavoriteAPI.addFavorite(productId);
                     heartIcon.classList.remove('fa-regular');
                     heartIcon.classList.add('fa-solid');
                     button.classList.add('liked');
-                    // Add to local favoriteProductIds
                     favoriteProductIds.push(productId);
                 }
             } catch (error) {
                 console.error("Error toggling favorite:", error);
-                // Handle error (e.g., show a notification to the user)
             }
         });
     });
-} 
+}
+async function updateShopSoldCount(shopId) {
+  try {
+    const response = await OrderAPI.getDeliveredOrderCountByShop(shopId);
+
+    if (response.success) {
+      // Lấy dữ liệu từ API
+      const soldCount = response.sold_count ?? response.data?.sold_count ?? 0;
+
+      // Cập nhật vào UI đúng chỗ
+      const soldElement = document.getElementById("shopSoldCount");
+      if (soldElement) {
+        soldElement.textContent = soldCount;
+      }
+    } else {
+      console.error("Không thể lấy số lượng đã bán:", response.error);
+    }
+  } catch (error) {
+    console.error("Lỗi khi cập nhật số lượng đã bán:", error);
+  }
+}

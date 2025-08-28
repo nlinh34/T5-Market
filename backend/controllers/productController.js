@@ -238,29 +238,43 @@ const getPendingProducts = async (req, res) => {
 };
 
 const getApprovedProducts = async (req, res) => {
-    const { cursor, limit = 15 } = req.query;
-    const query = { status: "approved" };
-    if (cursor) query._id = { $lt: cursor };
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 15;
+        const skip = (page - 1) * limit;
 
-    const products = await Product.find(query)
-        .select("name price images averageRating shop category createdAt")
-        .populate("shop", "name logoUrl address status shopStatus createdAt")
-        .populate("category", "name")
-        .sort({ _id: -1 })
-        .limit(parseInt(limit))
-        .lean();
+        const query = { status: "approved" };
 
-    const total = await Product.estimatedDocumentCount({ status: "approved" }).catch(() => null);
+        const [products, total] = await Promise.all([
+            Product.find(query)
+                .select("name price images averageRating shop category createdAt")
+                .populate("shop", "name logoUrl address status shopStatus createdAt")
+                .populate("category", "name")
+                .sort({ _id: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(),
 
-    return res.json({
-        success: true,
-        data: products,
-        pagination: {
-            nextCursor: products.length ? products[products.length - 1]._id : null,
-            total, limit: parseInt(limit)
-        }
-    });
+            Product.countDocuments(query)
+        ]);
+
+        return res.json({
+            success: true,
+            data: products,
+            pagination: {
+                totalPages: Math.ceil(total / limit),
+                currentPage: page,
+                limit,
+                total
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Lỗi server" });
+    }
 };
+
+
 
 const getRejectedProducts = async (req, res) => {
     try {
@@ -627,6 +641,21 @@ const countApprovedProductsByShopId = async (req, res) => {
 };
 
 
+const countApprovedProductsByCategory = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const count = await Product.countDocuments({
+      category: new mongoose.Types.ObjectId(categoryId),
+      status: "approved",
+    });
+    res.status(200).json({ success: true, count });
+  } catch (error) {
+    console.error("Lỗi đếm sản phẩm:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
 module.exports = {
     createProduct,
     updateProduct,
@@ -646,5 +675,6 @@ module.exports = {
     getPriceRange,
     getFeaturedProducts,
     getRelatedProducts,
-    countApprovedProductsByShopId
+    countApprovedProductsByShopId,
+    countApprovedProductsByCategory
 };

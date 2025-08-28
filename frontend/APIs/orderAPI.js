@@ -109,7 +109,7 @@ const OrderAPI = {
       };
     }
   },
-  
+
   getOrdersByShop: async (shopId, status = null) => {
     try {
       if (!shopId) throw new Error("Thiếu shopId khi gọi getOrdersByShop");
@@ -134,6 +134,30 @@ const OrderAPI = {
       };
     }
   },
+
+ getDeliveredOrderCountByShop: async (shopId) => {
+  try {
+    if (!shopId) throw new Error("Thiếu shopId khi gọi getDeliveredOrderCountByShop");
+
+    const response = await apiCall({
+      endpoint: `/order/shops/${shopId}/delivered-orders`,
+      method: "GET",
+    });
+
+    return {
+      success: true,
+      sold_count: response.sold_count || 0,
+    };
+  } catch (error) {
+    console.error("Error in getDeliveredOrderCountByShop:", error);
+    return {
+      success: false,
+      sold_count: 0,
+      error: error.message || "Không thể đếm số sản phẩm đã bán",
+    };
+  }
+},
+
 };
 
 

@@ -91,7 +91,11 @@ export class ProductList {
     return `
       <tr>
         <td class="product-image">
-          <img loading="lazy" src="${product.image_url}" alt="${product.name}">
+          <img loading="lazy" 
+              src="${product.images && product.images.length > 0 
+                  ? product.images[0] 
+                  : '/assets/images/no-image.png'}" 
+              alt="${product.name}">       
         </td>
         <td class="ellipsis">${product.name}</td>
         <td>${new Intl.NumberFormat("vi-VN", {

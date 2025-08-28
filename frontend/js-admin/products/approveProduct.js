@@ -118,23 +118,27 @@ export class ApproveProduct {
         return `
       <tr>
         <td class="product-image">
-          <img loading="lazy" src="${product.image_url}" alt="${product.name}">
+          <img loading="lazy" 
+              src="${product.images && product.images.length > 0
+                ? product.images[0]
+                : '/assets/images/no-image.png'}" 
+              alt="${product.name}">       
         </td>
         <td class="ellipsis">${product.name}</td>
         <td>${new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-        }).format(product.price)}</td>
+                    style: "currency",
+                    currency: "VND",
+                }).format(product.price)}</td>
         <td>${categoryName}</td>
         <td>${product.description}</td>
         <td>${shopName}</td>
         <td>
           <div class="action-buttons">
             <button class="approve-btn" data-id="${product._id}">
-              <i class="fas fa-check"></i> Duyệt
+              <i class="fas fa-check"></i>
             </button>
             <button class="delete-btn" data-id="${product._id}">
-              <i class="fas fa-trash"></i> Xóa
+              <i class="fas fa-trash"></i>
             </button>
           </div>
         </td>

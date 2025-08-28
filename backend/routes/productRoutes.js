@@ -19,7 +19,8 @@ const {
     getPriceRange,
     getFeaturedProducts,
     getRelatedProducts,
-    countApprovedProductsByShopId
+    countApprovedProductsByShopId,
+    countApprovedProductsByCategory
 } = require("../controllers/productController");
 
 const { protect, authorize } = require("../middlewares/authMiddleware");
@@ -44,10 +45,7 @@ router.get("/filter", getFilteredProducts);
 router.put("/approve-product/:id", protect, authorize(Role.ADMIN, Role.MOD, Role.MANAGER), approveProduct);
 router.put("/reject-product/:id", protect, authorize(Role.ADMIN, Role.MOD, Role.MANAGER), rejectProduct);
 
-// Lấy chi tiết sản phẩm
-router.get("/:id", getProductById);
-router.patch("/:id", protect, authorize(Role.SELLER, Role.STAFF), updateProduct);
-router.delete("/:id", protect, authorize(Role.SELLER, Role.STAFF, Role.ADMIN), deleteProduct);
+router.get("/count-approved-by-category/:categoryId", countApprovedProductsByCategory);
 
 // Lấy tất cả sản phẩm theo shopId
 router.get("/by-shop/:shopId", getAllProductsByShopId);
@@ -56,8 +54,12 @@ router.get("/by-shop/:shopId/pending", getPendingProductsByShopId);
 router.get("/by-shop/:shopId/rejected", getRejectedProductsByShopId);
 router.get("/by-shop/:shopId/approved/count", countApprovedProductsByShopId);
 
-
 router.get("/:id/related", getRelatedProducts);
+// Lấy chi tiết sản phẩm
+router.get("/:id", getProductById);
+router.patch("/:id", protect, authorize(Role.SELLER, Role.STAFF), updateProduct);
+router.delete("/:id", protect, authorize(Role.SELLER, Role.STAFF, Role.ADMIN), deleteProduct);
+
 
 
 module.exports = router;
