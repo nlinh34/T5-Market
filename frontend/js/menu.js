@@ -203,9 +203,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         paginationContainer.innerHTML = `
       <div class="pagination">
-        <button id="prevPage" ${currentPage === 1 ? "disabled" : ""}>◀</button>
+        <button id="prevPage" class="page-btn" ${currentPage === 1 ? "disabled" : ""}>◀</button>
         <span>Trang ${currentPage} / ${totalPages}</span>
-        <button id="nextPage" ${currentPage === totalPages ? "disabled" : ""}>▶</button>
+        <button id="nextPage"  class="page-btn" ${currentPage === totalPages ? "disabled" : ""}>▶</button>
       </div>`;
 
         document.getElementById("prevPage").onclick = () => {

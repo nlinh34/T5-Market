@@ -2,32 +2,32 @@ import { apiCall } from "./utils/api.js";
 
 export const ProductAPI = {
 
-    getAllProducts: async() => {
+    getAllProducts: async () => {
         return await apiCall({ endpoint: "/products/get-all-products" });
     },
 
     // Lấy sản phẩm chờ duyệt
-    getPendingProducts: async() => {
+    getPendingProducts: async () => {
         return await apiCall({ endpoint: "/products/get-pending-products" });
     },
 
     // Lấy sản phẩm đã duyệt
-    getApprovedProducts: async(page = 1, limit = 15) => {
+    getApprovedProducts: async (page = 1, limit = 15) => {
         return await apiCall({ endpoint: `/products/get-approved-products?page=${page}&limit=${limit}` });
     },
 
     // Lấy sản phẩm bị từ chối
-    getRejectedProducts: async() => {
+    getRejectedProducts: async () => {
         return await apiCall({ endpoint: "/products/get-rejected-products" });
     },
 
     // Lấy sản phẩm theo ID
-    getProductById: async(id) => {
+    getProductById: async (id) => {
         return await apiCall({ endpoint: `/products/${id}` });
     },
 
     // Tạo sản phẩm mới
-    createProduct: async(data) => {
+    createProduct: async (data) => {
         return await apiCall({
             endpoint: "/products",
             method: "POST",
@@ -36,7 +36,7 @@ export const ProductAPI = {
     },
 
     // Duyệt sản phẩm
-    approveProduct: async(id) => {
+    approveProduct: async (id) => {
         return await apiCall({
             endpoint: `/products/approve-product/${id}`,
             method: "PUT",
@@ -45,7 +45,7 @@ export const ProductAPI = {
     },
 
     // Từ chối sản phẩm
-    rejectProduct: async(id, reason) => {
+    rejectProduct: async (id, reason) => {
         return await apiCall({
             endpoint: `/products/reject-product/${id}`,
             method: "PUT",
@@ -57,7 +57,7 @@ export const ProductAPI = {
     },
 
     // Cập nhật sản phẩm
-    updateProduct: async(id, data) => {
+    updateProduct: async (id, data) => {
         return await apiCall({
             endpoint: `/products/${id}`,
             method: "PATCH",
@@ -66,7 +66,7 @@ export const ProductAPI = {
     },
 
     // Xoá sản phẩm
-    deleteProduct: async(id) => {
+    deleteProduct: async (id) => {
         return await apiCall({
             endpoint: `/products/${id}`,
             method: "DELETE",
@@ -74,19 +74,19 @@ export const ProductAPI = {
     },
 
     // Lấy sản phẩm theo shop ID và trạng thái 
-    getProductsByShopId: async(shopId) => {
+    getProductsByShopId: async (shopId) => {
         return await apiCall({ endpoint: `/products/by-shop/${shopId}` });
     },
 
-    getApprovedProductsByShopId: async(shopId) => {
+    getApprovedProductsByShopId: async (shopId) => {
         return await apiCall({ endpoint: `/products/by-shop/${shopId}/approved` });
     },
 
-    getPendingProductsByShopId: async(shopId) => {
+    getPendingProductsByShopId: async (shopId) => {
         return await apiCall({ endpoint: `/products/by-shop/${shopId}/pending` });
     },
 
-    getRejectedProductsByShopId: async(shopId) => {
+    getRejectedProductsByShopId: async (shopId) => {
         return await apiCall({ endpoint: `/products/by-shop/${shopId}/rejected` });
     },
 
@@ -94,7 +94,7 @@ export const ProductAPI = {
         return await apiCall({ endpoint: "/products/featured" });
     },
 
-    getProductsByShop: async(shopId, status = 'all', searchTerm = '', sortBy = 'createdAt-desc') => {
+    getProductsByShop: async (shopId, status = 'all', searchTerm = '', sortBy = 'createdAt-desc') => {
         let endpoint = `/products/by-shop/${shopId}`;
         const queryParams = new URLSearchParams();
 
@@ -119,14 +119,14 @@ export const ProductAPI = {
         });
     },
 
-    getPriceRange: async() => {
+    getPriceRange: async () => {
         return await apiCall({
             endpoint: "/products/price-range",
             method: "GET",
         });
     },
 
-    getAllProductsByFilter: async({ name, category, minPrice, maxPrice, page = 1, limit = 15 }) => {
+    getAllProductsByFilter: async ({ name, category, minPrice, maxPrice, page = 1, limit = 15 }) => {
         const queryParams = [];
 
         if (Array.isArray(category) && category.length > 0) {
@@ -156,9 +156,16 @@ export const ProductAPI = {
     },
 
     getApprovedProductCountByShopId: async (shopId) => {
-    return await apiCall({
-        endpoint: `/products/by-shop/${shopId}/approved/count`,
-        method: "GET",
-    });
-},
+        return await apiCall({
+            endpoint: `/products/by-shop/${shopId}/approved/count`,
+            method: "GET",
+        });
+    },
+    getApprovedProductsCountByCategory: async (categoryId) => {
+        console.log("Calling count API with:", categoryId); 
+        return await apiCall({
+            endpoint: `/products/count-approved-by-category/${categoryId}`,
+            method: "GET",
+        });
+    },
 };

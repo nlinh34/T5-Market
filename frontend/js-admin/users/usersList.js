@@ -60,7 +60,7 @@ async initUsersList() {
     this.totalPages = result.totalPages || 1;
 
     this.renderUsersList(users);
-    this.renderPagination(); // ➕ Thêm phân trang
+    this.renderPagination();
   } catch (error) {
     console.error("Error initializing users list:", error);
     this.renderError("Không thể tải danh sách người dùng!");
@@ -184,13 +184,8 @@ async initUsersList() {
         <td>${accountStatusDisplayVN[user.accountStatus] || "Chưa cập nhật"}</td>
         <td>
           <div class="action-buttons">
-            <button class="edit-btn" data-category='${JSON.stringify(
-              user
-            )}'>
-                <i class="fas fa-edit"></i> Sửa
-            </button>
             <button class="delete-btn" data-id="${user._id}">
-                <i class="fas fa-trash"></i> Xóa
+                <i class="fas fa-trash"></i>
             </button>
           </div>
         </td>

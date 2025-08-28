@@ -5,6 +5,8 @@ import { formatCurrency, formatTimeAgo } from '../APIs/utils/formatter.js';
 import { showNotification } from '../APIs/utils/notification.js';
 import { UserAPI } from '../APIs/userAPI.js';
 import { Role } from '../APIs/utils/roleEnum.js';
+import OrderAPI from "../APIs/orderAPI.js";
+
 
 let currentShopData = null; // To store the fetched shop data
 
@@ -17,17 +19,17 @@ function attachEventListeners(shop) {
 
     // Tab switching functionality
     const tabLinks = document.querySelectorAll(".tab-link");
-    
+
     tabLinks.forEach(tab => {
         tab.addEventListener("click", (e) => {
             e.preventDefault();
-            
+
             // Remove active class from all tabs
             tabLinks.forEach(t => t.classList.remove("active"));
-            
+
             // Add active class to clicked tab
             e.target.classList.add("active");
-            
+
             // Handle tab content switching
             const tabName = e.target.dataset.tab;
             handleTabSwitch(tabName);
@@ -124,7 +126,7 @@ function attachEventListeners(shop) {
             const editPermissionsModal = document.getElementById('editPermissionsModal');
             // This is static. The dynamic part will be handled in `renderStaffList`
             if (editPermissionsModal) {
-                 openModal(editPermissionsModal);
+                openModal(editPermissionsModal);
             }
         });
     });
@@ -146,7 +148,7 @@ function attachEventListeners(shop) {
         if (editShopNameInput) editShopNameInput.value = shop.name || '';
         if (editShopDescriptionTextarea) editShopDescriptionTextarea.value = shop.description || '';
         if (editShopAddressInput) editShopAddressInput.value = shop.address || '';
-        
+
         // Handle phone numbers
         const phones = shop.phone ? shop.phone.split(',').map(p => p.trim()) : [];
         if (editShopPhoneInput) editShopPhoneInput.value = phones[0] || '';
@@ -170,14 +172,14 @@ function attachEventListeners(shop) {
             const input = toggle.closest('.policy-item').querySelector('.policy-input-group input[type="text"]');
             if (input) input.value = '';
             const inputGroup = toggle.closest('.policy-item').querySelector('.policy-input-group');
-            if(inputGroup) inputGroup.classList.add('hidden');
+            if (inputGroup) inputGroup.classList.add('hidden');
         });
-        if(customPolicyContainerModal) customPolicyContainerModal.innerHTML = ''; // Clear custom policies
+        if (customPolicyContainerModal) customPolicyContainerModal.innerHTML = ''; // Clear custom policies
 
         if (shop.policies && shop.policies.length > 0) {
             shop.policies.forEach(policy => {
                 let policyToggle, policyInput;
-                switch(policy.type) {
+                switch (policy.type) {
                     case 'shipping':
                         policyToggle = editShippingPolicyToggle;
                         policyInput = editShippingPolicyInput;
@@ -206,7 +208,7 @@ function attachEventListeners(shop) {
                     policyToggle.checked = true;
                     policyInput.value = policy.value;
                     const inputGroup = policyInput.closest('.policy-input-group');
-                    if(inputGroup) inputGroup.classList.remove('hidden');
+                    if (inputGroup) inputGroup.classList.remove('hidden');
                 }
             });
         }
@@ -220,7 +222,7 @@ function attachEventListeners(shop) {
             <input type="text" class="custom-policy-text-input" placeholder="Nhập chính sách khác" value="${value}">
             <button type="button" class="remove-custom-policy-btn"><i class="fas fa-times"></i></button>
         `;
-        if(customPolicyContainerModal) customPolicyContainerModal.appendChild(newPolicyDiv);
+        if (customPolicyContainerModal) customPolicyContainerModal.appendChild(newPolicyDiv);
 
         // Add event listener to the new remove button
         newPolicyDiv.querySelector('.remove-custom-policy-btn').addEventListener('click', () => {
@@ -345,27 +347,27 @@ function attachEventListeners(shop) {
             }
         });
     }
-    
+
     // Event listener for policies toggles to show/hide input fields
     document.querySelectorAll('.policy-item input[type="checkbox"]').forEach(toggle => {
-        toggle.addEventListener('change', function() {
+        toggle.addEventListener('change', function () {
             const inputGroup = this.closest('.policy-item').querySelector('.policy-input-group');
             if (this.checked) {
-                if(inputGroup) inputGroup.classList.remove('hidden');
+                if (inputGroup) inputGroup.classList.remove('hidden');
             } else {
-                if(inputGroup) inputGroup.classList.add('hidden');
+                if (inputGroup) inputGroup.classList.add('hidden');
                 const input = inputGroup.querySelector('input[type="text"]');
                 if (input) input.value = ''; // Clear value when hidden
             }
         });
     });
-    
+
     // Handle avatar image preview in modal
     if (editShopAvatarInput) {
-        editShopAvatarInput.addEventListener('change', function() {
+        editShopAvatarInput.addEventListener('change', function () {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     if (editShopAvatarPreview) {
                         editShopAvatarPreview.src = e.target.result;
                     }
@@ -440,7 +442,6 @@ async function initializeShopData() {
                             </div>`;
                         return;
                     }
-                    // If staff account is approved, continue to load shop data
                 } else if (currentUser.role === Role.CUSTOMER) {
                     document.body.innerHTML = `
                         <div style="text-align: center; padding: 50px;">
@@ -450,7 +451,7 @@ async function initializeShopData() {
                         </div>`;
                     return;
                 }
-                
+
                 // If shop is approved and user is SELLER or approved STAFF, populate data
                 populateShopData(shop);
                 attachEventListeners(shop);
@@ -537,7 +538,7 @@ function updateShopHeaderRating({ averageRating = 0, totalReviews = 0 }) {
     }
 
     starsContainer.innerHTML = ''; // Clear current stars
-    
+
     // Loop to create 5 stars with accurate fractional rating
     for (let i = 1; i <= 5; i++) {
         const star = document.createElement('i');
@@ -555,7 +556,7 @@ function updateShopHeaderRating({ averageRating = 0, totalReviews = 0 }) {
         }
         starsContainer.appendChild(star);
     }
-    
+
     ratingText.textContent = `${averageRating.toFixed(1)} (${totalReviews} đánh giá)`;
 }
 
@@ -579,7 +580,7 @@ function populateShopData(shop) {
     if (shopFullAddressElement) shopFullAddressElement.textContent = shop.address || 'Địa chỉ chưa cập nhật';
     if (shopIntroDescriptionElement) shopIntroDescriptionElement.textContent = shop.description || 'Chưa có mô tả.';
     if (shopJoinedDate) shopJoinedDate.textContent = formatTimeAgo(shop.createdAt);
-    
+
     // Update Logo
     if (shopAvatarElement && shop.logoUrl) {
         shopAvatarElement.innerHTML = `<img loading="lazy" src="${shop.logoUrl}" alt="Shop Avatar">`;
@@ -627,7 +628,7 @@ function populateShopData(shop) {
             const policyItem = document.createElement('li');
             policyItem.className = 'policy-item';
             let iconClass = '';
-            switch(policy.type) {
+            switch (policy.type) {
                 case 'shipping': iconClass = 'fas fa-truck'; break;
                 case 'warranty': iconClass = 'fas fa-shield-alt'; break;
                 case 'return': iconClass = 'fas fa-exchange-alt'; break;
@@ -667,16 +668,16 @@ function handleTabSwitch(tabName) {
     const productsForSaleCard = document.getElementById('productsForSaleCard');
     const staffManagementCard = document.getElementById('staffManagementCard');
     const reviewContentCard = document.getElementById('reviewContentCard');
-    
+
     // Get the new section containers
     const topSection = document.querySelector('.top-section');
     const bottomSection = document.querySelector('.bottom-section');
 
     // Hide all main content cards first
-    if(shopIntroCard) shopIntroCard.classList.add('hidden');
-    if(productsForSaleCard) productsForSaleCard.classList.add('hidden');
-    if(staffManagementCard) staffManagementCard.classList.add('hidden');
-    if(reviewContentCard) reviewContentCard.classList.add('hidden');
+    if (shopIntroCard) shopIntroCard.classList.add('hidden');
+    if (productsForSaleCard) productsForSaleCard.classList.add('hidden');
+    if (staffManagementCard) staffManagementCard.classList.add('hidden');
+    if (reviewContentCard) reviewContentCard.classList.add('hidden');
 
     // Hide sections by default
     if (topSection) topSection.classList.add('hidden');
@@ -685,16 +686,16 @@ function handleTabSwitch(tabName) {
     if (tabName === 'cuaHang') {
         if (topSection) topSection.classList.remove('hidden');
         if (bottomSection) bottomSection.classList.remove('hidden');
-        if(shopIntroCard) shopIntroCard.classList.remove('hidden');
-        if(productsForSaleCard) productsForSaleCard.classList.remove('hidden');
+        if (shopIntroCard) shopIntroCard.classList.remove('hidden');
+        if (productsForSaleCard) productsForSaleCard.classList.remove('hidden');
         loadProductsForSaleContent();
     } else if (tabName === 'nhanVien') {
         if (bottomSection) bottomSection.classList.remove('hidden');
-        if(staffManagementCard) staffManagementCard.classList.remove('hidden');
+        if (staffManagementCard) staffManagementCard.classList.remove('hidden');
         loadStaffContent();
     } else if (tabName === 'danhGia') {
         if (bottomSection) bottomSection.classList.remove('hidden');
-        if(reviewContentCard) reviewContentCard.classList.remove('hidden');
+        if (reviewContentCard) reviewContentCard.classList.remove('hidden');
         loadReviewsContent();
     }
 }
@@ -750,7 +751,7 @@ async function loadProductsForSaleContent() {
             initialSelectedOption.classList.add('same-as-selected'); // Mark as selected
         }
 
-        selectSelectedSort.addEventListener('click', function(e) {
+        selectSelectedSort.addEventListener('click', function (e) {
             e.stopPropagation(); // Prevent document click from closing immediately
             closeAllSelect(this);
             selectItems.classList.toggle('select-hide');
@@ -758,8 +759,8 @@ async function loadProductsForSaleContent() {
         });
 
         // Handle clicks on custom select options
-        selectItems.querySelectorAll('div').forEach(function(item) {
-            item.addEventListener('click', function() {
+        selectItems.querySelectorAll('div').forEach(function (item) {
+            item.addEventListener('click', function () {
                 const prevSelected = selectItems.querySelector('.same-as-selected');
                 if (prevSelected) {
                     prevSelected.classList.remove('same-as-selected');
@@ -825,11 +826,11 @@ async function renderSellerProducts(status, searchTerm = '', sortBy = 'createdAt
             sellerProductsGrid.innerHTML = '';
             noProductsMessage.classList.add("hidden"); // Ensure message is hidden when products are present
             response.data.forEach(product => {
-                    const productCard = document.createElement("div");
-                    productCard.className = "product-card";
+                const productCard = document.createElement("div");
+                productCard.className = "product-card";
                 productCard.dataset.productId = product._id;
-                
-                    productCard.innerHTML = `
+
+                productCard.innerHTML = `
                     <img loading="lazy" src="${product.images[0] || './assests/images/default-product.png'}" alt="${product.name}" class="product-img" loading="lazy">
                         <div class="product-info">
                                 <h4 class="product-name">${product.name}</h4>
@@ -841,8 +842,8 @@ async function renderSellerProducts(status, searchTerm = '', sortBy = 'createdAt
                         <button class="btn btn-danger btn-delete-product"><i class="fas fa-trash-alt"></i> Xóa</button>
                         </div>
                     `;
-                    sellerProductsGrid.appendChild(productCard);
-                });
+                sellerProductsGrid.appendChild(productCard);
+            });
             // Update shop stats after products are loaded
             updateShopStats(response.data); // Pass products data
         } else {
@@ -898,11 +899,11 @@ let itemToDelete = { id: null, type: null }; // Generic object to store ID and t
 // Function to show the delete confirmation modal
 function showDeleteConfirmModal(id, type) {
     itemToDelete = { id, type };
-    
+
     const modalTitle = deleteConfirmModal.querySelector('.modal-header h2');
     const modalBody = deleteConfirmModal.querySelector('.modal-body p');
     const confirmButton = deleteConfirmModal.querySelector('#confirmDeleteBtn');
-    
+
     if (type === 'product') {
         if (modalTitle) modalTitle.textContent = 'Xác nhận xóa sản phẩm';
         if (modalBody) modalBody.textContent = 'Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.';
@@ -990,12 +991,12 @@ async function loadReviewsContent() {
 
     const reviewList = document.getElementById('reviewList');
     reviewList.innerHTML = '<p>Đang tải đánh giá...</p>';
-    
+
     try {
         const response = await ShopAPI.getShopRating(currentShopData._id);
         if (response.success) {
             const { averageRating, totalReviews, reviews, reviewCriteria } = response.data;
-            
+
             renderReviewSummary(averageRating, totalReviews, reviewCriteria);
             renderReviewList(reviews);
 
@@ -1012,7 +1013,7 @@ function renderReviewSummary(averageRating, totalReviews, reviewCriteria) {
     document.getElementById('overallRatingScore').textContent = averageRating.toFixed(1);
     const starsContainer = document.getElementById('overallRatingStars');
     starsContainer.innerHTML = '';
-    
+
     // Loop to create 5 stars with accurate fractional rating
     for (let i = 1; i <= 5; i++) {
         const star = document.createElement('i');
@@ -1030,7 +1031,7 @@ function renderReviewSummary(averageRating, totalReviews, reviewCriteria) {
         }
         starsContainer.appendChild(star);
     }
-    
+
     document.getElementById('overallTotalReviews').textContent = `(${totalReviews} đánh giá)`;
 
     const filtersContainer = document.getElementById('reviewFilters');
@@ -1065,10 +1066,10 @@ function renderReviewList(reviews) {
         const productImage = review.product && review.product.images && review.product.images.length > 0 ? review.product.images[0] : './assests/images/default-product.png';
 
         let criteriaTagsHTML = '';
-        if(review.criteria && review.criteria.length > 0) {
+        if (review.criteria && review.criteria.length > 0) {
             criteriaTagsHTML = review.criteria.map(crit => `<span class="criteria-tag">${crit}</span>`).join('');
         }
-        
+
         let starsHTML = '';
         for (let i = 1; i <= 5; i++) {
             starsHTML += `<i class="fas fa-star ${i <= review.rating ? 'filled' : ''}"></i>`;
@@ -1103,14 +1104,14 @@ function renderReviewList(reviews) {
     });
 }
 
-async function updateShopStats(productsData) { // Accept productsData as parameter
+async function updateShopStats(productsData) { 
     const shopProductsCountElement = document.getElementById("shopProductsCount");
     const shopSoldCountElement = document.getElementById("shopSoldCount");
 
     if (!shopProductsCountElement || !shopSoldCountElement) return;
 
     // Use provided productsData instead of making a new API call
-    if(productsData) {
+    if (productsData) {
         shopProductsCountElement.textContent = productsData.length;
         const totalSoldCount = productsData.reduce((acc, product) => acc + (product.sold_count || 0), 0);
         shopSoldCountElement.textContent = totalSoldCount;
@@ -1154,8 +1155,8 @@ async function loadStaffContent() {
 function renderStaffList(staff) {
     const staffTableBody = document.querySelector('.staff-table tbody');
     const noStaffMessage = document.getElementById('noStaffMessage');
-    
-    staffTableBody.innerHTML = ''; 
+
+    staffTableBody.innerHTML = '';
 
     if (staff.length === 0) {
         noStaffMessage.classList.remove('hidden');
@@ -1182,7 +1183,7 @@ function renderStaffList(staff) {
         const joinedDate = new Date(member.joinedAt).toLocaleDateString('vi-VN');
         const avatarInitial = userExists && member.user.fullName ? member.user.fullName.substring(0, 2).toUpperCase() : 'X';
         const staffName = userExists && member.user.fullName ? member.user.fullName : '[Người dùng không tồn tại]';
-        
+
         row.innerHTML = `
             <td>
                 <div class="staff-info">
@@ -1369,4 +1370,4 @@ async function handleUpdatePermissions(e) {
         console.error('Error updating permissions:', error);
         showNotification('Đã xảy ra lỗi máy chủ.', 'error');
     }
-} 
+}

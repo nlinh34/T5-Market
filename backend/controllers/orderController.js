@@ -2,6 +2,8 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
 const Shop = require("../models/Shop")
+const mongoose = require("mongoose");  // ✅ Thêm dòng này
+
 
 const { Role } = require("../constants/roleEnum")
 
@@ -281,20 +283,31 @@ exports.getProductPurchaseStats = async (req, res) => {
   }
 };
 
-//Đếm số lượt bán của shop dựa theo các đơn hàng ở trạng thái đã giao (delivered)
 exports.getDeliveredOrderCountByShop = async (req, res) => {
   try {
-    const shopId = req.params.shopId;
+    const { shopId } = req.params;
 
-    const count = await Order.countDocuments({
+    // Kiểm tra shopId hợp lệ
+    if (!mongoose.Types.ObjectId.isValid(shopId)) {
+      return res.status(400).json({ success: false, message: "Shop ID không hợp lệ" });
+    }
+
+    // Đếm số đơn có trạng thái delivered
+    const deliveredOrdersCount = await Order.countDocuments({
       shop: shopId,
-      status: "delivered"
+      status: "delivered",
     });
 
-    res.status(200).json({ success: true, shopId, deliveredOrders: count });
+    return res.status(200).json({
+      success: true,
+      sold_count: deliveredOrdersCount,
+    });
   } catch (error) {
-    console.error("Delivered order count error:", error);
-    res.status(500).json({ success: false, error: "Lỗi khi thống kê đơn hàng đã giao" });
+    console.error("❌ Lỗi khi đếm số đơn đã giao:", error);
+    res.status(500).json({
+      success: false,
+      message: "Không thể đếm số đơn hàng đã giao",
+    });
   }
 };
 

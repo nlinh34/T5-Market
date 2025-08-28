@@ -1,4 +1,5 @@
 import { CategoryAPI } from "../../APIs/categoryAPI.js";
+import { ProductAPI } from "../../APIs/productAPI.js";
 import { CategoryForm } from "./caterogyForm.js";
 
 export class CategoryList {
@@ -31,32 +32,43 @@ export class CategoryList {
     }
   }
 
-  renderCategories(categories) {
+  async renderCategories(categories) {
+    const rows = await Promise.all(
+      categories.map(async (category) => {
+        try {
+          const res = await ProductAPI.getApprovedProductsCountByCategory(category._id);
+          console.log("Count response:", res);
+          const count = res.success ? res.count : 0;
+          return this.renderCategoryRow(category, count);
+        } catch {
+          return this.renderCategoryRow(category, 0);
+        }
+      })
+    );
+
     const html = `
-            <div class="data-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tên</th>
-                            <th>Hình ảnh</th>
-                             <th>Số Lượng</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${categories
-        .map((category) => this.renderCategoryRow(category))
-        .join("")}
-                    </tbody>
-                </table>
-            </div>
-        `;
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tên</th>
+                        <th>Hình ảnh</th>
+                        <th>Số Lượng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows.join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
     this.container.innerHTML = html;
 
-    // Thêm event listeners cho các nút
+    // Thêm sự kiện chỉnh sửa và xóa
     this.container.querySelectorAll(".edit-btn").forEach((button) => {
       button.onclick = (e) => {
-        const btn = e.target.closest("button"); // Lấy đúng button
+        const btn = e.target.closest("button");
         if (!btn) return;
 
         const categoryDataStr = btn.dataset.category;
@@ -78,10 +90,9 @@ export class CategoryList {
         this.showDeleteConfirmation(categoryId);
       };
     });
-
   }
 
-  renderCategoryRow(category) {
+  renderCategoryRow(category, count) {
     return `
             <tr>
                 <td class="ellipsis">${category.name}</td>
@@ -89,16 +100,14 @@ export class CategoryList {
                     <img loading="lazy" src="${category.imageURL}" alt="${category.name}" 
                          onerror="this.src='../../../assets/images/default-product.png'">
                 </td>
-                <td>15</td>
+                <td>${count}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="edit-btn" data-category='${JSON.stringify(
-      category
-    )}'>
-                            <i class="fas fa-edit"></i> Sửa
+                        <button class="edit-btn" data-category='${JSON.stringify(category)}'>
+                          <i class="fas fa-edit"></i> Sửa
                         </button>
                         <button class="delete-btn" data-id="${category._id}">
-                            <i class="fas fa-trash"></i> Xóa
+                          <i class="fas fa-trash"></i> Xóa
                         </button>
                     </div>
                 </td>

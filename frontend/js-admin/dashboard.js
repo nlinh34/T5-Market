@@ -70,9 +70,6 @@ function loadPage(page) {
       contentDiv.innerHTML =`
           <div class="page-header">
             <h3>Người Dùng</h3>
-            <button class="add-btn" id="addUserBtn">
-              <i class="fas fa-plus"></i> Thêm người dùng
-            </button>
           </div>
           <div id="userListContainer"></div>
       `;
