@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 imagePreviewContainer.innerHTML = "";
                 existingImages = [];
                 setTimeout(() => {
-                    window.location.href = '/frontend/shop-manager.html?tab=cuaHang';
+                    window.location.href = './shop-manager.html?tab=cuaHang';
                 }, 1500);
             } else {
                 showNotification(`${productId ? "Cập nhật" : "Đăng"} sản phẩm thất bại.`, "error");
